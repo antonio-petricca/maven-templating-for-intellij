@@ -15,4 +15,9 @@
         <listener class="com.github.antoniopetricca.maventemplatingforintellij.listeners.MyProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
+
+    <applicationListeners>
+        <listener class="com.github.antoniopetricca.maventemplatingforintellij.listeners.MyVFSListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    </applicationListeners>
 </idea-plugin>
