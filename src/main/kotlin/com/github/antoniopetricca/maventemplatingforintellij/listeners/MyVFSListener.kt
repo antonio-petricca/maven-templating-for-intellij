@@ -3,12 +3,15 @@ package com.github.antoniopetricca.maventemplatingforintellij.listeners;
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import org.jetbrains.jps.model.java.JavaSourceRootType.*
+import java.net.URL
 
 /*
     https://plugins.jetbrains.com/docs/intellij/plugin-listeners.html#defining-application-level-listeners
@@ -24,7 +27,6 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.*
  */
 
 //TODO Make it configurable (activation, folder)
-//TODO Implement for moving and renaming
 //TODO Check java project type
 //TODO IDE logging
 
@@ -34,13 +36,13 @@ internal class MyVFSListener : BulkFileListener {
     private val SOURCES_FOLDER   = "main/${TEMPLATES_FOLDER}"
     private val TESTS_FOLDER     = "test/${TEMPLATES_FOLDER}"
 
-    private fun addSourceFolder(virtualFile: VirtualFile?, isTestFolder: Boolean) {
+    private fun addSourceFolder(virtualFile: VirtualFile, isTestFolder: Boolean) {
         ProjectManager
             .getInstance()
             .openProjects
-            .forEach {
-                val fileIndex = ProjectFileIndex.SERVICE.getInstance(it)
-                val module    = fileIndex.getModuleForFile(virtualFile!!)
+            .forEach { project ->
+                val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
+                val module    = fileIndex.getModuleForFile(virtualFile)
 
                 if (null != module) {
                     val model = ModuleRootManager
@@ -59,12 +61,80 @@ internal class MyVFSListener : BulkFileListener {
             }
     }
 
+    private fun moveSourceFolderAfter(newParent: VirtualFile, isTestFolder: Boolean) {
+        ProjectManager
+            .getInstance()
+            .openProjects
+            .forEach { project ->
+                val fileName    = "${newParent}/${TEMPLATES_FOLDER}"
+                val fileUrl     = URL(fileName)
+                val virtualFile = VfsUtil.findFileByURL(fileUrl)
+
+                if (null != virtualFile) {
+                    val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
+                    val module    = fileIndex.getModuleForFile(virtualFile)
+
+                    if (null != module) {
+                        val model = ModuleRootManager
+                            .getInstance(module)
+                            .modifiableModel
+
+                        val contentEntries = model.contentEntries
+                        val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
+                        val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
+
+                        if (!sourceRoots.contains(virtualFile)) {
+                            contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                            model.commit()
+                        }
+                    }
+                }
+            }
+
+    }
+
+    private fun moveSourceFolderBefore(oldParent: VirtualFile?) {
+        ProjectManager
+            .getInstance()
+            .openProjects
+            .forEach { project ->
+                val fileName    = "${oldParent}/${TEMPLATES_FOLDER}"
+                val fileUrl     = URL(fileName)
+                val virtualFile = VfsUtil.findFileByURL(fileUrl)
+
+                if (null != virtualFile) {
+                    val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
+                    val module    = fileIndex.getModuleForFile(virtualFile)
+
+                    if (null != module) {
+                        val model = ModuleRootManager
+                            .getInstance(module)
+                            .modifiableModel
+
+                        val contentEntries = model.contentEntries
+
+                        if (contentEntries.isNotEmpty()) {
+                            val contentEntry = contentEntries[0]
+
+                            contentEntry
+                                .sourceFolders
+                                .filter { it.file?.equals(virtualFile) ?: false }
+                                .forEach { sourceFolder ->
+                                    contentEntry.removeSourceFolder(sourceFolder)
+                                    model.commit()
+                                }
+                        }
+                    }
+                }
+            }
+    }
+
     private fun removeSourceFolder(virtualFile: VirtualFile?) {
         ProjectManager
             .getInstance()
             .openProjects
-            .forEach { it ->
-                val fileIndex = ProjectFileIndex.SERVICE.getInstance(it)
+            .forEach { project ->
+                val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
                 val module    = fileIndex.getModuleForFile(virtualFile!!)
 
                 if (null != module) {
@@ -73,33 +143,36 @@ internal class MyVFSListener : BulkFileListener {
                         .modifiableModel
 
                     val contentEntries = model.contentEntries
-                    val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
 
-                    contentEntry
-                        .sourceFolders
-                        .filter { it.file?.equals(virtualFile) ?: false }
-                        .forEach {
-                            contentEntry.removeSourceFolder(it)
-                            model.commit()
-                        }
+                    if (contentEntries.isNotEmpty()) {
+                        val contentEntry = contentEntries[0]
+
+                        contentEntry
+                            .sourceFolders
+                            .filter { it.file?.equals(virtualFile) ?: false }
+                            .forEach { sourceFolder ->
+                                contentEntry.removeSourceFolder(sourceFolder)
+                                model.commit()
+                            }
+                    }
                 }
             }
     }
 
     override fun after(events: MutableList<out VFileEvent>) {
-        events.forEach {
-            val path           = it.path;
+        events.forEach { event ->
+            val path           = event.path;
             val isSourceFolder = path.contains(SOURCES_FOLDER)
             val isTestFolder   = path.contains(TESTS_FOLDER)
 
-            if (it is VFileCreateEvent) {
-                val createEvent = it
-
+            if (isSourceFolder || isTestFolder) {
                 if (
-                       createEvent.isDirectory
-                    && (isSourceFolder || isTestFolder)
+                       (event is VFileCreateEvent)
+                    && (event.isDirectory)
                 ) {
-                    addSourceFolder(createEvent.file, isTestFolder)
+                    addSourceFolder(event.file!!, isTestFolder)
+                } else if (event is VFileMoveEvent) {
+                    moveSourceFolderAfter(event.newParent, isTestFolder)
                 }
             }
         }
@@ -108,16 +181,16 @@ internal class MyVFSListener : BulkFileListener {
     }
 
     override fun before(events: MutableList<out VFileEvent>) {
-        events.forEach {
-            val path           = it.path;
+        events.forEach { event ->
+            val path           = event.path;
             val isSourceFolder = path.contains(SOURCES_FOLDER)
             val isTestFolder   = path.contains(TESTS_FOLDER)
 
-            if (it is VFileDeleteEvent) {
-                val deleteEvent = it
-
-                if (isSourceFolder || isTestFolder) {
-                    removeSourceFolder(deleteEvent.file)
+            if (isSourceFolder || isTestFolder) {
+                if (event is VFileDeleteEvent) {
+                    removeSourceFolder(event.file)
+                } else if (event is VFileMoveEvent) {
+                    moveSourceFolderBefore(event.oldParent)
                 }
             }
         }
