@@ -1,6 +1,6 @@
 package com.github.antoniopetricca.maventemplatingforintellij.listeners;
 
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -18,26 +18,32 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import java.net.URL
 
 /*
-    https://plugins.jetbrains.com/docs/intellij/plugin-listeners.html#defining-application-level-listeners
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/206768495-Mark-directory-as-sources-root-from-plugin
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/360009670979-Mark-directory-as-excluded-from-BulkFileListener
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/360003028820-BulkFileListener-behavior-with-out-of-process-files
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008137000-Mark-directory-as-excluded-programmatically
-    https://hub.jetbrains.com/auth/login?response_type=code&client_id=0-0-0-0-0&redirect_uri=https:%2F%2Fhub.jetbrains.com%2Fapi%2Frest%2Fsaml2%2Foauth&scope=0-0-0-0-0&state=ysMztDui
+    // File system events listening
 
+    https://intellij-support.jetbrains.com/hc/en-us/community/posts/360003028820-BulkFileListener-behavior-with-out-of-process-files
+
+    // Add source directory
+
+    https://plugins.jetbrains.com/docs/intellij/module.html
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/4413381081234-Mark-folder-as-source-or-test-root?page=1#community_comment_4414998507282
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206116979-How-to-set-Sources-Root-directory-and-Test-Sources-Root-directory?page=1#community_comment_206125705
-    https://plugins.jetbrains.com/docs/intellij/module.html
+
+    // Logging
+
+    https://intellij-support.jetbrains.com/hc/en-us/community/posts/206779715-Proper-way-to-log-in-Idea-plugins
+    https://stackoverflow.com/a/65852985/418599
  */
 
 //TODO Make it configurable (activation, folder)
-//TODO IDE logging
+//TODO Manage renaming
+//FIXME exceptions on source root modification
 
 internal class MyVFSListener : BulkFileListener {
-
     private val TEMPLATES_FOLDER = "java-templates"
     private val SOURCES_FOLDER   = "main/${TEMPLATES_FOLDER}"
     private val TESTS_FOLDER     = "test/${TEMPLATES_FOLDER}"
+
+    private val log : Logger = Logger.getInstance(MyVFSListener::class.java)
 
     private fun addSourceFolder(virtualFile: VirtualFile, isTestFolder: Boolean) {
         getOpenProjects()
@@ -52,6 +58,12 @@ internal class MyVFSListener : BulkFileListener {
                     if (!sourceRoots.contains(virtualFile)) {
                         contentEntry.addSourceFolder(virtualFile, isTestFolder)
                         model.commit()
+
+                        log.info(String.format(
+                            "Added source folder: { virtualFile: \"%s\", isTestFolder: %s }",
+                            virtualFile.path,
+                            isTestFolder
+                        ))
                     }
                 }
             }
@@ -94,6 +106,12 @@ internal class MyVFSListener : BulkFileListener {
                         if (!sourceRoots.contains(virtualFile)) {
                             contentEntry.addSourceFolder(virtualFile, isTestFolder)
                             model.commit()
+
+                            log.info(String.format(
+                                "Added source folder (moving): { virtualFile: \"%s\", isTestFolder: %s }",
+                                virtualFile.path,
+                                isTestFolder
+                            ))
                         }
                     }
                 }
@@ -120,6 +138,11 @@ internal class MyVFSListener : BulkFileListener {
                                 .forEach { sourceFolder ->
                                     contentEntry.removeSourceFolder(sourceFolder)
                                     model.commit()
+
+                                    log.info(String.format(
+                                        "Removed source folder (moving): { virtualFile: \"%s\" }",
+                                        virtualFile.path
+                                    ))
                                 }
                         }
                     }
@@ -130,7 +153,7 @@ internal class MyVFSListener : BulkFileListener {
     private fun removeSourceFolder(virtualFile: VirtualFile) {
         getOpenProjects()
             .forEach { project ->
-                val model = getModelForFile(project, virtualFile!!)
+                val model = getModelForFile(project, virtualFile)
 
                 if (null != model) {
                     val contentEntries = model.contentEntries
@@ -144,6 +167,11 @@ internal class MyVFSListener : BulkFileListener {
                             .forEach { sourceFolder ->
                                 contentEntry.removeSourceFolder(sourceFolder)
                                 model.commit()
+
+                                log.info(String.format(
+                                    "Removed source folder: { virtualFile: \"%s\" }",
+                                    virtualFile.path
+                                ))
                             }
                     }
                 }
