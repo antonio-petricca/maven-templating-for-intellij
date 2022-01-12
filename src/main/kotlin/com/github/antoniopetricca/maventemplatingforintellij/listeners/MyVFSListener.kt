@@ -31,7 +31,6 @@ import java.net.URL
  */
 
 //TODO Make it configurable (activation, folder)
-//TODO Check java project type
 //TODO IDE logging
 
 internal class MyVFSListener : BulkFileListener {
@@ -63,9 +62,11 @@ internal class MyVFSListener : BulkFileListener {
         val module    = fileIndex.getModuleForFile(virtualFile)
 
         if (null != module) {
-            return ModuleRootManager
-                .getInstance(module)
-                .modifiableModel
+            if (module.moduleTypeName.equals("JAVA_MODULE")) {
+                return ModuleRootManager
+                    .getInstance(module)
+                    .modifiableModel
+            }
         }
 
         return null
