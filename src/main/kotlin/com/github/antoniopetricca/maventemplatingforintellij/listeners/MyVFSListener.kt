@@ -1,6 +1,9 @@
 package com.github.antoniopetricca.maventemplatingforintellij.listeners;
 
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VfsUtil
@@ -10,7 +13,8 @@ import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
-import org.jetbrains.jps.model.java.JavaSourceRootType.*
+import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
+import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import java.net.URL
 
 /*
@@ -37,18 +41,11 @@ internal class MyVFSListener : BulkFileListener {
     private val TESTS_FOLDER     = "test/${TEMPLATES_FOLDER}"
 
     private fun addSourceFolder(virtualFile: VirtualFile, isTestFolder: Boolean) {
-        ProjectManager
-            .getInstance()
-            .openProjects
+        getOpenProjects()
             .forEach { project ->
-                val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
-                val module    = fileIndex.getModuleForFile(virtualFile)
+                val model = getModelForFile(project, virtualFile)
 
-                if (null != module) {
-                    val model = ModuleRootManager
-                        .getInstance(module)
-                        .modifiableModel
-
+                if (null != model) {
                     val contentEntries = model.contentEntries
                     val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
                     val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
@@ -61,24 +58,34 @@ internal class MyVFSListener : BulkFileListener {
             }
     }
 
-    private fun moveSourceFolderAfter(newParent: VirtualFile, isTestFolder: Boolean) {
-        ProjectManager
+    private fun getModelForFile(project: Project, virtualFile: VirtualFile): ModifiableRootModel? {
+        val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
+        val module    = fileIndex.getModuleForFile(virtualFile)
+
+        if (null != module) {
+            return ModuleRootManager
+                .getInstance(module)
+                .modifiableModel
+        }
+
+        return null
+    }
+
+    private fun getOpenProjects(): Array<Project> {
+        return ProjectManager
             .getInstance()
             .openProjects
+    }
+
+    private fun moveSourceFolderAfter(newParent: VirtualFile, isTestFolder: Boolean) {
+        getOpenProjects()
             .forEach { project ->
-                val fileName    = "${newParent}/${TEMPLATES_FOLDER}"
-                val fileUrl     = URL(fileName)
-                val virtualFile = VfsUtil.findFileByURL(fileUrl)
+                val virtualFile = VfsUtil.findFileByURL(URL("${newParent}/${TEMPLATES_FOLDER}"))
 
                 if (null != virtualFile) {
-                    val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
-                    val module    = fileIndex.getModuleForFile(virtualFile)
+                    val model = getModelForFile(project, virtualFile)
 
-                    if (null != module) {
-                        val model = ModuleRootManager
-                            .getInstance(module)
-                            .modifiableModel
-
+                    if (null != model) {
                         val contentEntries = model.contentEntries
                         val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
                         val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
@@ -90,27 +97,17 @@ internal class MyVFSListener : BulkFileListener {
                     }
                 }
             }
-
     }
 
-    private fun moveSourceFolderBefore(oldParent: VirtualFile?) {
-        ProjectManager
-            .getInstance()
-            .openProjects
+    private fun moveSourceFolderBefore(oldParent: VirtualFile) {
+        getOpenProjects()
             .forEach { project ->
-                val fileName    = "${oldParent}/${TEMPLATES_FOLDER}"
-                val fileUrl     = URL(fileName)
-                val virtualFile = VfsUtil.findFileByURL(fileUrl)
+                val virtualFile = VfsUtil.findFileByURL(URL("${oldParent}/${TEMPLATES_FOLDER}"))
 
                 if (null != virtualFile) {
-                    val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
-                    val module    = fileIndex.getModuleForFile(virtualFile)
+                    val model = getModelForFile(project, virtualFile)
 
-                    if (null != module) {
-                        val model = ModuleRootManager
-                            .getInstance(module)
-                            .modifiableModel
-
+                    if (null != model) {
                         val contentEntries = model.contentEntries
 
                         if (contentEntries.isNotEmpty()) {
@@ -129,19 +126,12 @@ internal class MyVFSListener : BulkFileListener {
             }
     }
 
-    private fun removeSourceFolder(virtualFile: VirtualFile?) {
-        ProjectManager
-            .getInstance()
-            .openProjects
+    private fun removeSourceFolder(virtualFile: VirtualFile) {
+        getOpenProjects()
             .forEach { project ->
-                val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
-                val module    = fileIndex.getModuleForFile(virtualFile!!)
+                val model = getModelForFile(project, virtualFile!!)
 
-                if (null != module) {
-                    val model = ModuleRootManager
-                        .getInstance(module)
-                        .modifiableModel
-
+                if (null != model) {
                     val contentEntries = model.contentEntries
 
                     if (contentEntries.isNotEmpty()) {
