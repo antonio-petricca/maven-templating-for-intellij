@@ -22,11 +22,12 @@ import java.net.URL
 
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/360003028820-BulkFileListener-behavior-with-out-of-process-files
 
-    // Add source directory
+    // Manage source directories
 
     https://plugins.jetbrains.com/docs/intellij/module.html
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/4413381081234-Mark-folder-as-source-or-test-root?page=1#community_comment_4414998507282
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206116979-How-to-set-Sources-Root-directory-and-Test-Sources-Root-directory?page=1#community_comment_206125705
+    https://youtrack.jetbrains.com/issue/EDU-4505
 
     // Logging
 
