@@ -9,12 +9,10 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
-import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
-import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent
-import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
+import com.intellij.openapi.vfs.newvfs.events.*
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
+import java.io.File
 import java.net.URL
 
 /*
@@ -36,8 +34,7 @@ import java.net.URL
  */
 
 //TODO Make it configurable (activation, folder)
-//TODO Manage renaming
-//FIXME exceptions on source root modification
+//FIXME exceptions on source root modification ( https://youtrack.jetbrains.com/issue/EDU-4505 )
 
 internal class MyVFSListener : BulkFileListener {
     private val TEMPLATES_FOLDER = "java-templates"
@@ -179,6 +176,66 @@ internal class MyVFSListener : BulkFileListener {
             }
     }
 
+    private fun renameSourceFolderAfter(newPath: String, isTestFolder: Boolean) {
+        getOpenProjects()
+            .forEach { project ->
+                val virtualFile = VfsUtil.findFileByIoFile(File(newPath), true)
+
+                if (null != virtualFile) {
+                    val model = getModelForFile(project, virtualFile)
+
+                    if (null != model) {
+                        val contentEntries = model.contentEntries
+                        val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
+                        val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
+
+                        if (!sourceRoots.contains(virtualFile)) {
+                            contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                            model.commit()
+
+                            log.info(String.format(
+                                "Added source folder (renaming): { virtualFile: \"%s\", isTestFolder: %s }",
+                                virtualFile.path,
+                                isTestFolder
+                            ))
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun renameSourceFolderBefore(oldPath: String) {
+        getOpenProjects()
+            .forEach { project ->
+                val virtualFile = VfsUtil.findFileByIoFile(File(oldPath), true)
+
+                if (null != virtualFile) {
+                    val model = getModelForFile(project, virtualFile)
+
+                    if (null != model) {
+                        val contentEntries = model.contentEntries
+
+                        if (contentEntries.isNotEmpty()) {
+                            val contentEntry = contentEntries[0]
+
+                            contentEntry
+                                .sourceFolders
+                                .filter { it.file?.equals(virtualFile) ?: false }
+                                .forEach { sourceFolder ->
+                                    contentEntry.removeSourceFolder(sourceFolder)
+                                    model.commit()
+
+                                    log.info(String.format(
+                                        "Removed source folder (renaming): { virtualFile: \"%s\" }",
+                                        virtualFile.path
+                                    ))
+                                }
+                        }
+                    }
+                }
+            }
+    }
+
     override fun after(events: MutableList<out VFileEvent>) {
         events.forEach { event ->
             val path           = event.path;
@@ -193,6 +250,11 @@ internal class MyVFSListener : BulkFileListener {
                     addSourceFolder(event.file!!, isTestFolder)
                 } else if (event is VFileMoveEvent) {
                     moveSourceFolderAfter(event.newParent, isTestFolder)
+                } else if (
+                       (event is VFilePropertyChangeEvent)
+                    && (event.propertyName == "name")
+                ) {
+                    renameSourceFolderAfter(event.newPath, isTestFolder)
                 }
             }
         }
@@ -211,6 +273,11 @@ internal class MyVFSListener : BulkFileListener {
                     removeSourceFolder(event.file)
                 } else if (event is VFileMoveEvent) {
                     moveSourceFolderBefore(event.oldParent)
+                } else if (
+                       (event is VFilePropertyChangeEvent)
+                    && (event.propertyName == "name")
+                ) {
+                    renameSourceFolderBefore(event.oldPath)
                 }
             }
         }
