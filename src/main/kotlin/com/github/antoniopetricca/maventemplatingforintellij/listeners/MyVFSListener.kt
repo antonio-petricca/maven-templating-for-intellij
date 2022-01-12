@@ -7,8 +7,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
-import com.intellij.psi.PsiManager
-import org.jetbrains.jps.model.java.JavaSourceRootType
 import org.jetbrains.jps.model.java.JavaSourceRootType.*
 
 /*
@@ -21,6 +19,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.*
 
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/4413381081234-Mark-folder-as-source-or-test-root?page=1#community_comment_4414998507282
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206116979-How-to-set-Sources-Root-directory-and-Test-Sources-Root-directory?page=1#community_comment_206125705
+    https://plugins.jetbrains.com/docs/intellij/module.html
  */
 
 //TODO Make it configurable
@@ -35,7 +34,7 @@ internal class MyVFSListener : BulkFileListener {
         ProjectManager
             .getInstance()
             .openProjects
-            .forEach { it ->
+            .forEach {
                 val fileIndex = ProjectFileIndex.SERVICE.getInstance(it)
                 val module    = fileIndex.getModuleForFile(virtualFile!!)
 
@@ -44,20 +43,13 @@ internal class MyVFSListener : BulkFileListener {
                         .getInstance(module)
                         .modifiableModel
 
-                    val contentEntry = model
-                        .contentEntries
-                        .filter { it.equals(virtualFile) }
+                    var contentEntries = model.contentEntries
+                    val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0] )
+                    val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
 
-                    if (contentEntry.isEmpty()) {
-                        val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
-
-                        if (!sourceRoots.contains(virtualFile)) {
-                            model
-                                .addContentEntry(virtualFile)
-                                .addSourceFolder(virtualFile, isTestFolder)
-
-                            model.commit()
-                        }
+                    if (!sourceRoots.contains(virtualFile)) {
+                        contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                        model.commit()
                     }
                 }
             }
