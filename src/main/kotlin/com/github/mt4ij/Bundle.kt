@@ -1,4 +1,4 @@
-package com.github.antoniopetricca.maventemplatingforintellij
+package com.github.mt4ij
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.PropertyKey
 @NonNls
 private const val BUNDLE = "messages.Bundle"
 
-object MyBundle : DynamicBundle(BUNDLE) {
+object Bundle : DynamicBundle(BUNDLE) {
 
     @Suppress("SpreadOperator")
     @JvmStatic

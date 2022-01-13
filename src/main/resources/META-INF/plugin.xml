@@ -1,12 +1,16 @@
 <idea-plugin>
-    <id>com.github.antoniopetricca.maventemplatingforintellij</id>
-    <name>maven-templating-for-intellij</name>
+    <id>com.github.mt4ij</id>
+    <name>Maven Templating for IntelliJ</name>
     <vendor>antonio-petricca</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <applicationListeners>
-        <listener class="com.github.antoniopetricca.maventemplatingforintellij.listeners.MyVFSListener"
+        <listener class="com.github.mt4ij.listeners.VFSListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable instance="com.github.mt4ij.config.SettingsConfigurable"/>
+    </extensions>
 </idea-plugin>

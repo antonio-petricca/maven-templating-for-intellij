@@ -1,4 +1,4 @@
-package com.github.antoniopetricca.maventemplatingforintellij.listeners;
+package com.github.mt4ij.listeners;
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -15,7 +15,6 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import java.io.File
 import java.net.URL
-import javax.swing.SwingUtilities
 
 /*
     // File system events listening
@@ -33,22 +32,16 @@ import javax.swing.SwingUtilities
 
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206779715-Proper-way-to-log-in-Idea-plugins
     https://stackoverflow.com/a/65852985/418599
-
-    // Configuration UI
-
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/360003316280-Adding-Your-Plugin-Setting-to-the-IDE-Settings-Dialog
-    https://programtalk.com/vs/intellij-haxe/src/common/com/intellij/plugins/haxe/config/HaxeSettingsConfigurable.java/
-    https://programtalk.com/vs/?source=intellij-haxe/src/common/com/intellij/plugins/haxe/config/HaxeProjectSettings.java
  */
 
 //FIXME exceptions on source root modification ( https://youtrack.jetbrains.com/issue/EDU-4505 ) "Assertion failed: Do not use API that changes roots from roots events. Try using invoke later or something else."
 
-internal class MyVFSListener : BulkFileListener {
+internal class VFSListener : BulkFileListener {
     private val TEMPLATES_FOLDER = "java-templates"
     private val SOURCES_FOLDER   = "main/${TEMPLATES_FOLDER}"
     private val TESTS_FOLDER     = "test/${TEMPLATES_FOLDER}"
 
-    private val log : Logger = Logger.getInstance(MyVFSListener::class.java)
+    private val log : Logger = Logger.getInstance(VFSListener::class.java)
 
     private fun addSourceFolder(virtualFile: VirtualFile, isTestFolder: Boolean) {
         getOpenProjects()

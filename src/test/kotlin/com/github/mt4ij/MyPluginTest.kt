@@ -1,4 +1,4 @@
-package com.github.antoniopetricca.maventemplatingforintellij
+package com.github.mt4ij
 
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.psi.xml.XmlFile
