@@ -3,6 +3,7 @@ package com.github.antoniopetricca.maventemplatingforintellij.listeners;
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectFileIndex
@@ -49,22 +50,36 @@ internal class MyVFSListener : BulkFileListener {
                 val model = getModelForFile(project, virtualFile)
 
                 if (null != model) {
-                    val contentEntries = model.contentEntries
-                    val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
-                    val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
+                    val contentEntry = getContentEntry(model, virtualFile)
 
-                    if (!sourceRoots.contains(virtualFile)) {
-                        contentEntry.addSourceFolder(virtualFile, isTestFolder)
-                        model.commit()
+                    if (null != contentEntry) {
+                        val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
 
-                        log.info(String.format(
-                            "Added source folder: { virtualFile: \"%s\", isTestFolder: %s }",
-                            virtualFile.path,
-                            isTestFolder
-                        ))
+                        if (!sourceRoots.contains(virtualFile)) {
+                            contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                            model.commit()
+
+                            log.info(
+                                String.format(
+                                    "Added source folder: { virtualFile: \"%s\", isTestFolder: %s }",
+                                    virtualFile.path,
+                                    isTestFolder
+                                )
+                            )
+                        }
                     }
                 }
             }
+    }
+
+    private fun getContentEntry(model: ModifiableRootModel): ContentEntry? {
+        val contentEntries = model.contentEntries
+        return (if (contentEntries.isNotEmpty()) contentEntries[0] else null)
+    }
+
+    private fun getContentEntry(model: ModifiableRootModel, virtualFile: VirtualFile): ContentEntry? {
+        val contentEntries = model.contentEntries
+        return (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
     }
 
     private fun getModelForFile(project: Project, virtualFile: VirtualFile): ModifiableRootModel? {
@@ -97,19 +112,23 @@ internal class MyVFSListener : BulkFileListener {
                     val model = getModelForFile(project, virtualFile)
 
                     if (null != model) {
-                        val contentEntries = model.contentEntries
-                        val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
-                        val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
+                        val contentEntry = getContentEntry(model, virtualFile)
 
-                        if (!sourceRoots.contains(virtualFile)) {
-                            contentEntry.addSourceFolder(virtualFile, isTestFolder)
-                            model.commit()
+                        if (null != contentEntry) {
+                            val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
 
-                            log.info(String.format(
-                                "Added source folder (moving): { virtualFile: \"%s\", isTestFolder: %s }",
-                                virtualFile.path,
-                                isTestFolder
-                            ))
+                            if (!sourceRoots.contains(virtualFile)) {
+                                contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                                model.commit()
+
+                                log.info(
+                                    String.format(
+                                        "Added source folder (moving): { virtualFile: \"%s\", isTestFolder: %s }",
+                                        virtualFile.path,
+                                        isTestFolder
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -125,11 +144,9 @@ internal class MyVFSListener : BulkFileListener {
                     val model = getModelForFile(project, virtualFile)
 
                     if (null != model) {
-                        val contentEntries = model.contentEntries
+                        val contentEntry = getContentEntry(model)
 
-                        if (contentEntries.isNotEmpty()) {
-                            val contentEntry = contentEntries[0]
-
+                        if (null != contentEntry) {
                             contentEntry
                                 .sourceFolders
                                 .filter { it.file?.equals(virtualFile) ?: false }
@@ -154,11 +171,9 @@ internal class MyVFSListener : BulkFileListener {
                 val model = getModelForFile(project, virtualFile)
 
                 if (null != model) {
-                    val contentEntries = model.contentEntries
+                    val contentEntry = getContentEntry(model)
 
-                    if (contentEntries.isNotEmpty()) {
-                        val contentEntry = contentEntries[0]
-
+                    if (null != contentEntry) {
                         contentEntry
                             .sourceFolders
                             .filter { it.file?.equals(virtualFile) ?: false }
@@ -183,21 +198,24 @@ internal class MyVFSListener : BulkFileListener {
 
                 if (null != virtualFile) {
                     val model = getModelForFile(project, virtualFile)
-
                     if (null != model) {
-                        val contentEntries = model.contentEntries
-                        val contentEntry   = (if (contentEntries.isEmpty()) model.addContentEntry(virtualFile) else contentEntries[0])
-                        val sourceRoots    = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
+                        val contentEntry = getContentEntry(model, virtualFile)
 
-                        if (!sourceRoots.contains(virtualFile)) {
-                            contentEntry.addSourceFolder(virtualFile, isTestFolder)
-                            model.commit()
+                        if (null != contentEntry) {
+                            val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
 
-                            log.info(String.format(
-                                "Added source folder (renaming): { virtualFile: \"%s\", isTestFolder: %s }",
-                                virtualFile.path,
-                                isTestFolder
-                            ))
+                            if (!sourceRoots.contains(virtualFile)) {
+                                contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                                model.commit()
+
+                                log.info(
+                                    String.format(
+                                        "Added source folder (renaming): { virtualFile: \"%s\", isTestFolder: %s }",
+                                        virtualFile.path,
+                                        isTestFolder
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -213,11 +231,9 @@ internal class MyVFSListener : BulkFileListener {
                     val model = getModelForFile(project, virtualFile)
 
                     if (null != model) {
-                        val contentEntries = model.contentEntries
+                        val contentEntry = getContentEntry(model)
 
-                        if (contentEntries.isNotEmpty()) {
-                            val contentEntry = contentEntries[0]
-
+                        if (null != contentEntry) {
                             contentEntry
                                 .sourceFolders
                                 .filter { it.file?.equals(virtualFile) ?: false }
