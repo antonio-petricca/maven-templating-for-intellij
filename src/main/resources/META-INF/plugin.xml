@@ -1,20 +1,9 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.antoniopetricca.maventemplatingforintellij</id>
     <name>maven-templating-for-intellij</name>
     <vendor>antonio-petricca</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.antoniopetricca.maventemplatingforintellij.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.antoniopetricca.maventemplatingforintellij.services.MyProjectService"/>
-    </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.antoniopetricca.maventemplatingforintellij.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
 
     <applicationListeners>
         <listener class="com.github.antoniopetricca.maventemplatingforintellij.listeners.MyVFSListener"
