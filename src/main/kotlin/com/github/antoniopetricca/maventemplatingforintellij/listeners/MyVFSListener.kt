@@ -15,6 +15,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import java.io.File
 import java.net.URL
+import javax.swing.SwingUtilities
 
 /*
     // File system events listening
@@ -32,10 +33,15 @@ import java.net.URL
 
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206779715-Proper-way-to-log-in-Idea-plugins
     https://stackoverflow.com/a/65852985/418599
+
+    // Configuration UI
+
+    https://intellij-support.jetbrains.com/hc/en-us/community/posts/360003316280-Adding-Your-Plugin-Setting-to-the-IDE-Settings-Dialog
+    https://programtalk.com/vs/intellij-haxe/src/common/com/intellij/plugins/haxe/config/HaxeSettingsConfigurable.java/
+    https://programtalk.com/vs/?source=intellij-haxe/src/common/com/intellij/plugins/haxe/config/HaxeProjectSettings.java
  */
 
-//TODO Make it configurable (activation, folder)
-//FIXME exceptions on source root modification ( https://youtrack.jetbrains.com/issue/EDU-4505 )
+//FIXME exceptions on source root modification ( https://youtrack.jetbrains.com/issue/EDU-4505 ) "Assertion failed: Do not use API that changes roots from roots events. Try using invoke later or something else."
 
 internal class MyVFSListener : BulkFileListener {
     private val TEMPLATES_FOLDER = "java-templates"
