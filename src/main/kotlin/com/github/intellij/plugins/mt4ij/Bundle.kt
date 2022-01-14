@@ -1,4 +1,4 @@
-package com.github.mt4ij
+package com.github.intellij.plugins.mt4ij
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls

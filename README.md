@@ -15,7 +15,7 @@
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-This plugin adds support for the [Maven Templating Plugin](https://www.mojohaus.org/templating-maven-plugin/) in order to manage automatically the templates folder adding them to the **sources folders** or **test sources folder**.
+This plugin adds support for the [Maven Templating Plugin](https://www.mojohaus.org/templating-maven-plugin/) in order to manage automatically the templates folder adding them to the **sources folders** or **test sources folders**.
 
 The default `java-templates` folder name can be customized by the settings page under **Build Tools** section.
 <!-- Plugin description end -->

@@ -1,4 +1,4 @@
-package com.github.mt4ij.config
+package com.github.intellij.plugins.mt4ij.config
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent

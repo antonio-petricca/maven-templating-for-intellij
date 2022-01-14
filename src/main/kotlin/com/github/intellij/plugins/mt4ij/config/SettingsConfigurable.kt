@@ -1,6 +1,6 @@
-package com.github.mt4ij.config
+package com.github.intellij.plugins.mt4ij.config
 
-import com.github.mt4ij.Bundle
+import com.github.intellij.plugins.mt4ij.Bundle
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
 
