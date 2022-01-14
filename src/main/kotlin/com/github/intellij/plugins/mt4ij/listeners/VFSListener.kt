@@ -255,8 +255,8 @@ internal class VFSListener : BulkFileListener {
 
         events.forEach { event ->
             val path           = event.path;
-            val isSourceFolder = path.contains(sourcesFolder)
-            val isTestFolder   = path.contains(testsFolder)
+            val isSourceFolder = path.endsWith(sourcesFolder)
+            val isTestFolder   = path.endsWith(testsFolder)
 
             if (isSourceFolder || isTestFolder) {
                 if (
@@ -285,8 +285,8 @@ internal class VFSListener : BulkFileListener {
 
         events.forEach { event ->
             val path           = event.path;
-            val isSourceFolder = path.contains(sourcesFolder)
-            val isTestFolder   = path.contains(testsFolder)
+            val isSourceFolder = path.endsWith(sourcesFolder)
+            val isTestFolder   = path.endsWith(testsFolder)
 
             if (isSourceFolder || isTestFolder) {
                 if (event is VFileDeleteEvent) {

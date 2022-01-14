@@ -1,5 +1,11 @@
 # maven-templating-for-intellij Changelog
 
+## [0.0.2]
+
+### Changed
+
+- Fixed folder name detection from **contains** to **endsWith**. 
+
 ## [0.0.1]
 
 ### Added
