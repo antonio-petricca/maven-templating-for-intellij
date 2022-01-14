@@ -1,5 +1,11 @@
 # maven-templating-for-intellij Changelog
 
+## [0.0.3]
+
+### Changed
+
+- Added **org.jetbrains.idea.maven** dependency declaration.
+
 ## [0.0.2]
 
 ### Changed
