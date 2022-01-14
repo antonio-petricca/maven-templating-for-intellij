@@ -1,5 +1,6 @@
 package com.github.mt4ij.listeners;
 
+import com.github.mt4ij.config.SettingsStorage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -37,10 +38,6 @@ import java.net.URL
 //FIXME exceptions on source root modification ( https://youtrack.jetbrains.com/issue/EDU-4505 ) "Assertion failed: Do not use API that changes roots from roots events. Try using invoke later or something else."
 
 internal class VFSListener : BulkFileListener {
-    private val TEMPLATES_FOLDER = "java-templates"
-    private val SOURCES_FOLDER   = "main/${TEMPLATES_FOLDER}"
-    private val TESTS_FOLDER     = "test/${TEMPLATES_FOLDER}"
-
     private val log : Logger = Logger.getInstance(VFSListener::class.java)
 
     private fun addSourceFolder(virtualFile: VirtualFile, isTestFolder: Boolean) {
@@ -102,10 +99,10 @@ internal class VFSListener : BulkFileListener {
             .openProjects
     }
 
-    private fun moveSourceFolderAfter(newParent: VirtualFile, isTestFolder: Boolean) {
+    private fun moveSourceFolderAfter(templatesPath: String, newParent: VirtualFile, isTestFolder: Boolean) {
         getOpenProjects()
             .forEach { project ->
-                val virtualFile = VfsUtil.findFileByURL(URL("${newParent}/${TEMPLATES_FOLDER}"))
+                val virtualFile = VfsUtil.findFileByURL(URL("${newParent}/${templatesPath}"))
 
                 if (null != virtualFile) {
                     val model = getModelForFile(project, virtualFile)
@@ -134,10 +131,10 @@ internal class VFSListener : BulkFileListener {
             }
     }
 
-    private fun moveSourceFolderBefore(oldParent: VirtualFile) {
+    private fun moveSourceFolderBefore(templatesPath: String, oldParent: VirtualFile) {
         getOpenProjects()
             .forEach { project ->
-                val virtualFile = VfsUtil.findFileByURL(URL("${oldParent}/${TEMPLATES_FOLDER}"))
+                val virtualFile = VfsUtil.findFileByURL(URL("${oldParent}/${templatesPath}"))
 
                 if (null != virtualFile) {
                     val model = getModelForFile(project, virtualFile)
@@ -252,10 +249,14 @@ internal class VFSListener : BulkFileListener {
     }
 
     override fun after(events: MutableList<out VFileEvent>) {
+        val templatesPath = SettingsStorage.instance.state.templatesPath
+        val sourcesFolder = "main/${templatesPath}"
+        val testsFolder   = "test/${templatesPath}"
+
         events.forEach { event ->
             val path           = event.path;
-            val isSourceFolder = path.contains(SOURCES_FOLDER)
-            val isTestFolder   = path.contains(TESTS_FOLDER)
+            val isSourceFolder = path.contains(sourcesFolder)
+            val isTestFolder   = path.contains(testsFolder)
 
             if (isSourceFolder || isTestFolder) {
                 if (
@@ -264,7 +265,7 @@ internal class VFSListener : BulkFileListener {
                 ) {
                     addSourceFolder(event.file!!, isTestFolder)
                 } else if (event is VFileMoveEvent) {
-                    moveSourceFolderAfter(event.newParent, isTestFolder)
+                    moveSourceFolderAfter(templatesPath, event.newParent, isTestFolder)
                 } else if (
                        (event is VFilePropertyChangeEvent)
                     && (event.propertyName == "name")
@@ -278,16 +279,20 @@ internal class VFSListener : BulkFileListener {
     }
 
     override fun before(events: MutableList<out VFileEvent>) {
+        val templatesPath = SettingsStorage.instance.state.templatesPath
+        val sourcesFolder = "main/${templatesPath}"
+        val testsFolder   = "test/${templatesPath}"
+
         events.forEach { event ->
             val path           = event.path;
-            val isSourceFolder = path.contains(SOURCES_FOLDER)
-            val isTestFolder   = path.contains(TESTS_FOLDER)
+            val isSourceFolder = path.contains(sourcesFolder)
+            val isTestFolder   = path.contains(testsFolder)
 
             if (isSourceFolder || isTestFolder) {
                 if (event is VFileDeleteEvent) {
                     removeSourceFolder(event.file)
                 } else if (event is VFileMoveEvent) {
-                    moveSourceFolderBefore(event.oldParent)
+                    moveSourceFolderBefore(templatesPath, event.oldParent)
                 } else if (
                        (event is VFilePropertyChangeEvent)
                     && (event.propertyName == "name")
