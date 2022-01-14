@@ -15,26 +15,24 @@ import javax.swing.JComponent
     https://programtalk.com/vs/intellij-haxe/src/common/com/intellij/plugins/haxe/config/HaxeSettingsConfigurable.java/
  */
 
+ //TODO Make label searchable
+
 internal class SettingsConfigurable : Configurable {
     private val settingsForm = SettingsForm()
 
-    private fun getSettings() : SettingsStorage {
-        return SettingsStorage.instance
-    }
-
     override fun createComponent(): JComponent? {
         reset()
-        settingsForm.templatesPath?.text = getSettings().state.templatesPath //TODO Move to UI
+        settingsForm.setTemplatesPath(SettingsStorage.instance.state.templatesPath)
 
         return settingsForm.mainPanel
     }
 
     override fun isModified(): Boolean {
-        return (getSettings().state.templatesPath != settingsForm.templatesPath?.text?.trim()) //TODO Move to UI
+        return settingsForm.isModified(SettingsStorage.instance.state)
     }
 
     override fun apply() {
-        getSettings().state.templatesPath = settingsForm.templatesPath?.text?.trim().toString() //TODO Move to UI
+        SettingsStorage.instance.state.templatesPath = settingsForm.getTemplatesPath()!!
     }
 
     override fun getDisplayName(): String {
