@@ -5,6 +5,7 @@
 ### Changed
 
 - Added **org.jetbrains.idea.maven** dependency declaration.
+- Customized plugin icon.
 
 ## [0.0.2]
 
