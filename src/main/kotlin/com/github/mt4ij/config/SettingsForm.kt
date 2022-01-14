@@ -1,11 +1,9 @@
-package com.github.mt4ij.listeners
+package com.github.mt4ij.config
 
 import javax.swing.JPanel
+import javax.swing.JTextField
 
-class SettingsForm {
-    private var mainPanel: JPanel? = null
-
-    fun getMainPanel() : JPanel? {
-        return mainPanel
-    }
+internal class SettingsForm {
+    var mainPanel     : JPanel?     = null
+    var templatesPath : JTextField? = null
 }

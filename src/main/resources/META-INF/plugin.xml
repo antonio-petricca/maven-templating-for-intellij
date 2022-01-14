@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.github.mt4ij</id>
-    <name>Maven Templating for IntelliJ</name>
+    <name>Maven Templating for IJ</name>
     <vendor>antonio-petricca</vendor>
 
     <depends>com.intellij.modules.platform</depends>
@@ -11,6 +11,12 @@
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable instance="com.github.mt4ij.config.SettingsConfigurable"/>
+        <applicationService serviceImplementation="com.github.mt4ij.config.SettingsStorage" />
+
+        <projectConfigurable
+            instance="com.github.mt4ij.config.SettingsConfigurable"
+            groupId="build.tools"
+            id="mt4ij.settings"
+        />
     </extensions>
 </idea-plugin>
