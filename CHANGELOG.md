@@ -1,5 +1,11 @@
 # maven-templating-for-intellij Changelog
 
+## [0.0.4]
+
+### Changed
+
+- Fixed configuration file name from **mf4ij.xml** to **mt4ij.xml**.
+
 ## [0.0.3]
 
 ### Changed

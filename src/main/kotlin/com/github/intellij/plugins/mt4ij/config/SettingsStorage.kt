@@ -8,17 +8,19 @@ import com.intellij.openapi.components.Storage
 /*
     https://programtalk.com/vs/intellij-haxe/src/common/com/intellij/plugins/haxe/config/HaxeProjectSettings.java
     https://plugins.jetbrains.com/docs/intellij/persisting-state-of-components.html#implementing-the-persistentstatecomponent-interface
+    https://plugins.jetbrains.com/docs/intellij/plugin-components.html?from=jetbrains.org#manage-state
+    https://plugins.jetbrains.com/docs/intellij/persisting-state-of-components.html
  */
 
 @State(
     name     = "mf4ij.storage.state",
-    storages = [Storage("mf4ij.xml")]
+    storages = [Storage("mt4ij.xml")]
 )
 class SettingsStorage : PersistentStateComponent<SettingsState?> {
     private var state = SettingsState()
 
     companion object {
-        val instance = ApplicationManager.getApplication().getService(SettingsStorage::class.java)
+        val instance: SettingsStorage = ApplicationManager.getApplication().getService(SettingsStorage::class.java)
     }
 
     override fun getState(): SettingsState {
