@@ -2,6 +2,7 @@ package com.github.intellij.plugins.mt4ij.config
 
 import com.github.intellij.plugins.mt4ij.Bundle
 import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.project.Project
 import javax.swing.JComponent
 
 /*
@@ -17,22 +18,27 @@ import javax.swing.JComponent
 
  //TODO Make label searchable
 
-internal class SettingsConfigurable : Configurable {
+internal class SettingsConfigurable(project: Project) : Configurable {
+    private val projectRef   = project
     private val settingsForm = SettingsForm()
+
+    private fun getSettings() : SettingsStorage {
+        return SettingsStorage.getInstance(projectRef)
+    }
 
     override fun createComponent(): JComponent? {
         reset()
-        settingsForm.setTemplatesPath(SettingsStorage.instance.state.templatesPath)
+        settingsForm.setTemplatesPath(getSettings().state.templatesPath)
 
         return settingsForm.mainPanel
     }
 
     override fun isModified(): Boolean {
-        return settingsForm.isModified(SettingsStorage.instance.state)
+        return settingsForm.isModified(getSettings().state)
     }
 
     override fun apply() {
-        SettingsStorage.instance.state.templatesPath = settingsForm.getTemplatesPath()!!
+        getSettings().state.templatesPath = settingsForm.getTemplatesPath()!!
     }
 
     override fun getDisplayName(): String {

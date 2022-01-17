@@ -11,7 +11,7 @@
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.intellij.plugins.mt4ij.config.SettingsStorage" />
+        <projectService serviceImplementation="com.github.intellij.plugins.mt4ij.config.SettingsStorage" />
 
         <projectConfigurable
             instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"

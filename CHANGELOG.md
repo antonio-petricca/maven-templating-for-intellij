@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Fixed configuration file name from **mf4ij.xml** to **mt4ij.xml**.
+- Moved settings file **mt4ij.xml** to **.idea** project folder (Thank you to **Vojtěch Krása** and **Petr Makhnev**).
 
 ## [0.0.3]
 
