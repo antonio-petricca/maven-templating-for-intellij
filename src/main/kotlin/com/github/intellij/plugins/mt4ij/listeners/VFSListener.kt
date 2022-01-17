@@ -39,9 +39,14 @@ import java.net.URL
     // Getting project instance
 
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206763335-Getting-active-project-
- */
+    https://github.com/JetBrains/intellij-community/blob/master/platform/core-api/src/com/intellij/openapi/vfs/newvfs/BulkFileListener.java
+    https://developerlife.com/2021/03/13/ij-idea-plugin-advanced/
 
-//FIXME exceptions on source root modification ( https://youtrack.jetbrains.com/issue/EDU-4505 ) "Assertion failed: Do not use API that changes roots from roots events. Try using invoke later or something else."
+    // Exceptions on source root modification "Assertion failed: Do not use API that changes roots from roots events. Try using invoke later or something else."
+
+    https://youtrack.jetbrains.com/issue/EDU-4505
+    https://developerlife.com/2021/03/13/ij-idea-plugin-advanced/#invokelater-and-modalitystate
+ */
 
 internal class VFSListener : BulkFileListener {
     private val log : Logger = Logger.getInstance(VFSListener::class.java)
