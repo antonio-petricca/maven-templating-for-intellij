@@ -2,7 +2,6 @@ package com.github.intellij.plugins.mt4ij.listeners;
 
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.intellij.ide.DataManager
-import com.intellij.ide.impl.ProjectUtil.getOpenProjects
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -48,29 +47,26 @@ import java.net.URL
 internal class VFSListener : BulkFileListener {
     private val log : Logger = Logger.getInstance(VFSListener::class.java)
 
-    private fun addSourceFolder(virtualFile: VirtualFile, isTestFolder: Boolean) {
-        getOpenProjects()
-            .forEach { project ->
-                val model = getModelForFile(project, virtualFile)
+    private fun addSourceFolder(project: Project, virtualFile: VirtualFile, isTestFolder: Boolean) {
+            val model = getModelForFile(project, virtualFile)
 
-                if (null != model) {
-                    val contentEntry = getContentEntry(model, virtualFile)
+            if (null != model) {
+                val contentEntry = getContentEntry(model, virtualFile)
 
-                    if (null != contentEntry) {
-                        val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
+                if (null != contentEntry) {
+                    val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
 
-                        if (!sourceRoots.contains(virtualFile)) {
-                            contentEntry.addSourceFolder(virtualFile, isTestFolder)
-                            model.commit()
+                    if (!sourceRoots.contains(virtualFile)) {
+                        contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                        model.commit()
 
-                            log.info(
-                                String.format(
-                                    "Added source folder: { virtualFile: \"%s\", isTestFolder: %s }",
-                                    virtualFile.path,
-                                    isTestFolder
-                                )
+                        log.info(
+                            String.format(
+                                "Added source folder: { virtualFile: \"%s\", isTestFolder: %s }",
+                                virtualFile.path,
+                                isTestFolder
                             )
-                        }
+                        )
                     }
                 }
             }
@@ -264,7 +260,7 @@ internal class VFSListener : BulkFileListener {
                                 (event is VFileCreateEvent)
                                 && (event.isDirectory)
                             ) {
-                                addSourceFolder(event.file!!, isTestFolder)
+                                addSourceFolder(project, event.file!!, isTestFolder)
                             } else if (event is VFileMoveEvent) {
                                 moveSourceFolderAfter(project, templatesPath, event.newParent, isTestFolder)
                             } else if (
