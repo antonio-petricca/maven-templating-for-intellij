@@ -6,7 +6,10 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.*
+import com.intellij.openapi.roots.ContentEntry
+import com.intellij.openapi.roots.ModifiableRootModel
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
@@ -243,41 +246,31 @@ internal class VFSListener : BulkFileListener {
         val project = getActiveProject()
 
         if (null != project) {
-            val projectFileIndex = ProjectRootManager.getInstance(project).fileIndex
-
             val templatesPath = SettingsStorage.getInstance(project).state.templatesPath
             val sourcesFolder = "main/${templatesPath}"
             val testsFolder = "test/${templatesPath}"
 
-            events
-                .withIndex()
-                .forEach { (index, indexedEvent) ->
+            events.forEach { event ->
+                val path = event.path;
+                val isSourceFolder = path.endsWith(sourcesFolder)
+                val isTestFolder = path.endsWith(testsFolder)
 
-                    events
-                        .filter { (null != it.file) && projectFileIndex.isInContent(it.file!!) }
-                        .forEach { event ->
-                            val path = event.path;
-                            val isSourceFolder = path.endsWith(sourcesFolder)
-                            val isTestFolder = path.endsWith(testsFolder)
-
-                            if (isSourceFolder || isTestFolder) {
-                                if (
-                                    (event is VFileCreateEvent)
-                                    && (event.isDirectory)
-                                ) {
-                                    doAddSourceFolder(project, event.file!!, isTestFolder)
-                                } else if (event is VFileMoveEvent) {
-                                    doMoveSourceFolderAfter(project, templatesPath, event.newParent, isTestFolder)
-                                } else if (
-                                    (event is VFilePropertyChangeEvent)
-                                    && (event.propertyName == "name")
-                                ) {
-                                    doRenameSourceFolderAfter(project, event.newPath, isTestFolder)
-                                }
-                            }
-                        }
-
+                if (isSourceFolder || isTestFolder) {
+                    if (
+                        (event is VFileCreateEvent)
+                        && (event.isDirectory)
+                    ) {
+                        doAddSourceFolder(project, event.file!!, isTestFolder)
+                    } else if (event is VFileMoveEvent) {
+                        doMoveSourceFolderAfter(project, templatesPath, event.newParent, isTestFolder)
+                    } else if (
+                        (event is VFilePropertyChangeEvent)
+                        && (event.propertyName == "name")
+                    ) {
+                        doRenameSourceFolderAfter(project, event.newPath, isTestFolder)
+                    }
                 }
+            }
         }
 
         super.after(events)
@@ -287,38 +280,28 @@ internal class VFSListener : BulkFileListener {
         val project = getActiveProject()
 
         if (null != project) {
-            val projectFileIndex = ProjectRootManager.getInstance(project).fileIndex
-
             val templatesPath = SettingsStorage.getInstance(project).state.templatesPath
             val sourcesFolder = "main/${templatesPath}"
-            val testsFolder = "test/${templatesPath}"
+            val testsFolder   = "test/${templatesPath}"
 
-            events
-                .withIndex()
-                .forEach { (index, indexedEvent) ->
+            events.forEach { event ->
+                val path = event.path;
+                val isSourceFolder = path.endsWith(sourcesFolder)
+                val isTestFolder = path.endsWith(testsFolder)
 
-                    events
-                        .filter { (null != it.file) && projectFileIndex.isInContent(it.file!!) }
-                        .forEach { event ->
-                            val path = event.path;
-                            val isSourceFolder = path.endsWith(sourcesFolder)
-                            val isTestFolder = path.endsWith(testsFolder)
-
-                            if (isSourceFolder || isTestFolder) {
-                                if (event is VFileDeleteEvent) {
-                                    doRemoveSourceFolder(project, event.file)
-                                } else if (event is VFileMoveEvent) {
-                                    doMoveSourceFolderBefore(project, templatesPath, event.oldParent)
-                                } else if (
-                                    (event is VFilePropertyChangeEvent)
-                                    && (event.propertyName == "name")
-                                ) {
-                                    doRenameSourceFolderBefore(project, event.oldPath)
-                                }
-                            }
-                        }
-
+                if (isSourceFolder || isTestFolder) {
+                    if (event is VFileDeleteEvent) {
+                        doRemoveSourceFolder(project, event.file)
+                    } else if (event is VFileMoveEvent) {
+                        doMoveSourceFolderBefore(project, templatesPath, event.oldParent)
+                    } else if (
+                        (event is VFilePropertyChangeEvent)
+                        && (event.propertyName == "name")
+                    ) {
+                        doRenameSourceFolderBefore(project, event.oldPath)
+                    }
                 }
+            }
         }
 
         super.before(events)
