@@ -11,6 +11,8 @@
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="com.github.intellij.plugins.mt4ij.activities.PostStartupActivity" />
+
         <projectService serviceImplementation="com.github.intellij.plugins.mt4ij.config.SettingsStorage" />
 
         <projectConfigurable

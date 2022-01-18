@@ -1,7 +1,8 @@
 # maven-templating-for-intellij Changelog
                   
 ## [1.0.1]
-
+                                           
+- Added the post load project scanning for missing source/test folders.
 - Fixed get active project timeout exception.
 - Missing `:` on configuration panel label.
 
