@@ -75,7 +75,13 @@ internal class VFSListener : BulkFileListener {
 
     private fun getActiveProject() : Project {
         val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(0)
-        return dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
+        val project     = dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
+
+        if (null == project) {
+            log.warn("Active project not found.")
+        }
+
+        return project
     }
 
     private fun invokeLater(runnable: Runnable, project: Project) {
@@ -234,80 +240,86 @@ internal class VFSListener : BulkFileListener {
     }
 
     override fun after(events: MutableList<out VFileEvent>) {
-        val project          = getActiveProject()
-        val projectFileIndex = ProjectRootManager.getInstance(project).fileIndex
+        val project = getActiveProject()
 
-        val templatesPath    = SettingsStorage.getInstance(project).state.templatesPath
-        val sourcesFolder    = "main/${templatesPath}"
-        val testsFolder      = "test/${templatesPath}"
+        if (null != project) {
+            val projectFileIndex = ProjectRootManager.getInstance(project).fileIndex
 
-        events
-            .withIndex()
-            .forEach { (index, indexedEvent) ->
+            val templatesPath = SettingsStorage.getInstance(project).state.templatesPath
+            val sourcesFolder = "main/${templatesPath}"
+            val testsFolder = "test/${templatesPath}"
 
-                events
-                    .filter { (null != it.file) && projectFileIndex.isInContent(it.file!!) }
-                    .forEach { event ->
-                        val path = event.path;
-                        val isSourceFolder = path.endsWith(sourcesFolder)
-                        val isTestFolder = path.endsWith(testsFolder)
+            events
+                .withIndex()
+                .forEach { (index, indexedEvent) ->
 
-                        if (isSourceFolder || isTestFolder) {
-                            if (
-                                (event is VFileCreateEvent)
-                                && (event.isDirectory)
-                            ) {
-                                doAddSourceFolder(project, event.file!!, isTestFolder)
-                            } else if (event is VFileMoveEvent) {
-                                doMoveSourceFolderAfter(project, templatesPath, event.newParent, isTestFolder)
-                            } else if (
-                                (event is VFilePropertyChangeEvent)
-                                && (event.propertyName == "name")
-                            ) {
-                                doRenameSourceFolderAfter(project, event.newPath, isTestFolder)
+                    events
+                        .filter { (null != it.file) && projectFileIndex.isInContent(it.file!!) }
+                        .forEach { event ->
+                            val path = event.path;
+                            val isSourceFolder = path.endsWith(sourcesFolder)
+                            val isTestFolder = path.endsWith(testsFolder)
+
+                            if (isSourceFolder || isTestFolder) {
+                                if (
+                                    (event is VFileCreateEvent)
+                                    && (event.isDirectory)
+                                ) {
+                                    doAddSourceFolder(project, event.file!!, isTestFolder)
+                                } else if (event is VFileMoveEvent) {
+                                    doMoveSourceFolderAfter(project, templatesPath, event.newParent, isTestFolder)
+                                } else if (
+                                    (event is VFilePropertyChangeEvent)
+                                    && (event.propertyName == "name")
+                                ) {
+                                    doRenameSourceFolderAfter(project, event.newPath, isTestFolder)
+                                }
                             }
                         }
-                    }
 
-            }
+                }
+        }
 
         super.after(events)
     }
 
     override fun before(events: MutableList<out VFileEvent>) {
-        val project          = getActiveProject()
-        val projectFileIndex = ProjectRootManager.getInstance(project).fileIndex
+        val project = getActiveProject()
 
-        val templatesPath    = SettingsStorage.getInstance(project).state.templatesPath
-        val sourcesFolder    = "main/${templatesPath}"
-        val testsFolder      = "test/${templatesPath}"
+        if (null != project) {
+            val projectFileIndex = ProjectRootManager.getInstance(project).fileIndex
 
-        events
-            .withIndex()
-            .forEach { (index, indexedEvent) ->
+            val templatesPath = SettingsStorage.getInstance(project).state.templatesPath
+            val sourcesFolder = "main/${templatesPath}"
+            val testsFolder = "test/${templatesPath}"
 
-                events
-                    .filter { (null != it.file) && projectFileIndex.isInContent(it.file!!) }
-                    .forEach { event ->
-                        val path = event.path;
-                        val isSourceFolder = path.endsWith(sourcesFolder)
-                        val isTestFolder = path.endsWith(testsFolder)
+            events
+                .withIndex()
+                .forEach { (index, indexedEvent) ->
 
-                        if (isSourceFolder || isTestFolder) {
-                            if (event is VFileDeleteEvent) {
-                                doRemoveSourceFolder(project, event.file)
-                            } else if (event is VFileMoveEvent) {
-                                doMoveSourceFolderBefore(project, templatesPath, event.oldParent)
-                            } else if (
-                                (event is VFilePropertyChangeEvent)
-                                && (event.propertyName == "name")
-                            ) {
-                                doRenameSourceFolderBefore(project, event.oldPath)
+                    events
+                        .filter { (null != it.file) && projectFileIndex.isInContent(it.file!!) }
+                        .forEach { event ->
+                            val path = event.path;
+                            val isSourceFolder = path.endsWith(sourcesFolder)
+                            val isTestFolder = path.endsWith(testsFolder)
+
+                            if (isSourceFolder || isTestFolder) {
+                                if (event is VFileDeleteEvent) {
+                                    doRemoveSourceFolder(project, event.file)
+                                } else if (event is VFileMoveEvent) {
+                                    doMoveSourceFolderBefore(project, templatesPath, event.oldParent)
+                                } else if (
+                                    (event is VFilePropertyChangeEvent)
+                                    && (event.propertyName == "name")
+                                ) {
+                                    doRenameSourceFolderBefore(project, event.oldPath)
+                                }
                             }
                         }
-                    }
 
-            }
+                }
+        }
 
         super.before(events)
     }
