@@ -1,9 +1,10 @@
 # maven-templating-for-intellij Changelog
 
-## [0.0.4]
+## [1.0.0]
 
 ### Changed
-
+                                
+- Fixed unsafe project source folders updates.
 - Moved settings file **mt4ij.xml** to **.idea** project folder (Thank you to **Vojtěch Krása** and **Petr Makhnev**).
 
 ## [0.0.3]
