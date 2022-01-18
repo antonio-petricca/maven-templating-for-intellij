@@ -1,4 +1,8 @@
 # maven-templating-for-intellij Changelog
+                  
+## [1.0.1]
+
+- Missing `:` on configuration panel label.
 
 ## [1.0.0]
 
