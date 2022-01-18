@@ -18,6 +18,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import java.io.File
 import java.net.URL
+import java.util.concurrent.TimeUnit
 
 /*
     // File system events listening
@@ -50,7 +51,8 @@ import java.net.URL
  */
 
 internal class VFSListener : BulkFileListener {
-    private val log : Logger = Logger.getInstance(VFSListener::class.java)
+    private val GET_ACTIVE_PROJECT_TIMEOUT = 60
+    private val log : Logger               = Logger.getInstance(VFSListener::class.java)
 
     private fun getContentEntry(model: ModifiableRootModel): ContentEntry? {
         val contentEntries = model.contentEntries
@@ -78,7 +80,7 @@ internal class VFSListener : BulkFileListener {
     }
 
     private fun getActiveProject() : Project {
-        val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(0)
+        val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(GET_ACTIVE_PROJECT_TIMEOUT, TimeUnit.SECONDS)
         val project     = dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
 
         if (null == project) {
