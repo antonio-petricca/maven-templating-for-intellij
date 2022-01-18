@@ -45,6 +45,7 @@ import java.net.URL
     // Exceptions on source root modification "Assertion failed: Do not use API that changes roots from roots events. Try using invoke later or something else."
 
     https://youtrack.jetbrains.com/issue/EDU-4505
+    https://youtrack.jetbrains.com/issue/IDEA-247362
     https://developerlife.com/2021/03/13/ij-idea-plugin-advanced/#invokelater-and-modalitystate
  */
 
