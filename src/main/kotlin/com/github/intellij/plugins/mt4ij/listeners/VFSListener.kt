@@ -33,12 +33,6 @@ import java.net.URL
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206779715-Proper-way-to-log-in-Idea-plugins
     https://stackoverflow.com/a/65852985/418599
 
-    // Getting project instance
-
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/206763335-Getting-active-project-
-    https://github.com/JetBrains/intellij-community/blob/master/platform/core-api/src/com/intellij/openapi/vfs/newvfs/BulkFileListener.java
-    https://developerlife.com/2021/03/13/ij-idea-plugin-advanced/
-
     // Exceptions on source root modification "Assertion failed: Do not use API that changes roots from roots events. Try using invoke later or something else."
 
     https://youtrack.jetbrains.com/issue/EDU-4505

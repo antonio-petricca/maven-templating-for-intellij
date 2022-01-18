@@ -12,10 +12,29 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import java.util.concurrent.TimeUnit
 
+/*
+    // Getting project instance
+
+    https://intellij-support.jetbrains.com/hc/en-us/community/posts/206763335-Getting-active-project-
+    https://github.com/JetBrains/intellij-community/blob/master/platform/core-api/src/com/intellij/openapi/vfs/newvfs/BulkFileListener.java
+    https://developerlife.com/2021/03/13/ij-idea-plugin-advanced/
+ */
+
 class ApiHelpers {
     companion object {
-        private val GET_ACTIVE_PROJECT_TIMEOUT = 60
-        private val log : Logger               = Logger.getInstance(ApiHelpers::class.java)
+        private const val GET_ACTIVE_PROJECT_TIMEOUT = 10
+        private val log : Logger                     = Logger.getInstance(ApiHelpers::class.java)
+
+        fun getActiveProject() : Project {
+            val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(GET_ACTIVE_PROJECT_TIMEOUT, TimeUnit.SECONDS)
+            val project     = dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
+
+            if (null == project) {
+                log.warn("Active project not found.")
+            }
+
+            return project
+        }
 
         fun getContentEntry(model: ModifiableRootModel): ContentEntry? {
             val contentEntries = model.contentEntries
@@ -39,18 +58,9 @@ class ApiHelpers {
                 }
             }
 
+            log.warn("Not a java project.")
+
             return null
-        }
-
-        fun getActiveProject() : Project {
-            val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(GET_ACTIVE_PROJECT_TIMEOUT, TimeUnit.SECONDS)
-            val project     = dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
-
-            if (null == project) {
-                log.warn("Active project not found.")
-            }
-
-            return project
         }
 
         fun invokeLater(runnable: Runnable, project: Project) {
