@@ -102,20 +102,18 @@ internal class VFSListener : BulkFileListener {
             if (null != model) {
                 val contentEntry = getContentEntry(model)
 
-                if (null != contentEntry) {
-                    contentEntry
-                        .sourceFolders
-                        .filter { it.file?.equals(virtualFile) ?: false }
-                        .forEach { sourceFolder ->
-                            contentEntry.removeSourceFolder(sourceFolder)
-                            invokeCommit(model, project)
+                contentEntry
+                    ?.sourceFolders
+                    ?.filter { it.file?.equals(virtualFile) ?: false }
+                    ?.forEach { sourceFolder ->
+                        contentEntry.removeSourceFolder(sourceFolder)
+                        invokeCommit(model, project)
 
-                            log.info(String.format(
-                                "Removed source folder (moving): { virtualFile: \"%s\" }",
-                                virtualFile.path
-                            ))
-                        }
-                }
+                        log.info(String.format(
+                            "Removed source folder (moving): { virtualFile: \"%s\" }",
+                            virtualFile.path
+                        ))
+                    }
             }
         }
     }
@@ -126,20 +124,18 @@ internal class VFSListener : BulkFileListener {
         if (null != model) {
             val contentEntry = getContentEntry(model)
 
-            if (null != contentEntry) {
-                contentEntry
-                    .sourceFolders
-                    .filter { it.file?.equals(virtualFile) ?: false }
-                    .forEach { sourceFolder ->
-                        contentEntry.removeSourceFolder(sourceFolder)
-                        invokeCommit(model, project)
+            contentEntry
+                ?.sourceFolders
+                ?.filter { it.file?.equals(virtualFile) ?: false }
+                ?.forEach { sourceFolder ->
+                    contentEntry.removeSourceFolder(sourceFolder)
+                    invokeCommit(model, project)
 
-                        log.info(String.format(
-                            "Removed source folder: { virtualFile: \"%s\" }",
-                            virtualFile.path
-                        ))
-                    }
-            }
+                    log.info(String.format(
+                        "Removed source folder: { virtualFile: \"%s\" }",
+                        virtualFile.path
+                    ))
+                }
         }
     }
 
@@ -178,22 +174,20 @@ internal class VFSListener : BulkFileListener {
             if (null != model) {
                 val contentEntry = getContentEntry(model)
 
-                if (null != contentEntry) {
-                    contentEntry
-                        .sourceFolders
-                        .filter { it.file?.equals(virtualFile) ?: false }
-                        .forEach { sourceFolder ->
-                            contentEntry.removeSourceFolder(sourceFolder)
-                            invokeCommit(model, project)
+                contentEntry
+                    ?.sourceFolders
+                    ?.filter { it.file?.equals(virtualFile) ?: false }
+                    ?.forEach { sourceFolder ->
+                        contentEntry.removeSourceFolder(sourceFolder)
+                        invokeCommit(model, project)
 
-                            log.info(
-                                String.format(
-                                    "Removed source folder (renaming): { virtualFile: \"%s\" }",
-                                    virtualFile.path
-                                )
+                        log.info(
+                            String.format(
+                                "Removed source folder (renaming): { virtualFile: \"%s\" }",
+                                virtualFile.path
                             )
-                        }
-                }
+                        )
+                    }
             }
         }
     }
