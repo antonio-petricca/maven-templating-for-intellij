@@ -4,6 +4,7 @@
 
 - Added project scanning on settings apply.
 - Added project scanning as menu item into **Tools** menù.
+- Made settings panel searchable.
 - Reduced get active project timeout.
                   
 ## [1.0.1]
