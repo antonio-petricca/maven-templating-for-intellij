@@ -1,4 +1,8 @@
 # maven-templating-for-intellij Changelog
+
+## [1.0.2]
+
+- Added project scanning on settings apply.
                   
 ## [1.0.1]
                                            

@@ -1,6 +1,8 @@
 package com.github.intellij.plugins.mt4ij.config
 
+import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
+import com.github.intellij.plugins.mt4ij.activities.ProjectScannerActivity
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import javax.swing.JComponent
@@ -39,6 +41,14 @@ internal class SettingsConfigurable(project: Project) : Configurable {
 
     override fun apply() {
         getSettings().state.templatesPath = settingsForm.getTemplatesPath()!!
+
+        ApiHelpers.invokeLater(
+            {
+                val projectScannerActivity = ProjectScannerActivity()
+                projectScannerActivity.runActivity(projectRef)
+            },
+            projectRef
+        )
     }
 
     override fun getDisplayName(): String {
