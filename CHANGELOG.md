@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.4]
+
 - Fixed QODANA hints.
 - Managed (again) get active project timeout.
 
