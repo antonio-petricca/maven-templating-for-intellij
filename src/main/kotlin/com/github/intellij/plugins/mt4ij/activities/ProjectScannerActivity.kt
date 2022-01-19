@@ -26,7 +26,7 @@ class ProjectScannerActivity : StartupActivity {
         ProjectFileIndex
             .getInstance(project)
             .iterateContent { virtualFile ->
-                val path           = virtualFile.path;
+                val path           = virtualFile.path
                 val isSourceFolder = path.endsWith(sourcesFolder)
                 val isTestFolder   = path.endsWith(testsFolder)
 

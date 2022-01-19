@@ -2,9 +2,11 @@
 
 ## [Unreleased]
 
+- Fixed QODANA hints.
+
 ## [1.0.3]
 
-- Fixed CHANGELOG for missing **Unreleased** which causes build failure on *+github**.
+- Fixed CHANGELOG for missing **Unreleased** which causes build failure on **github**.
 
 ## [1.0.2]
 

@@ -1,4 +1,4 @@
-package com.github.intellij.plugins.mt4ij.listeners;
+package com.github.intellij.plugins.mt4ij.listeners
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.getActiveProject
 import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.getContentEntry
@@ -207,7 +207,7 @@ internal class VFSListener : BulkFileListener {
             val testsFolder = "test/${templatesPath}"
 
             events.forEach { event ->
-                val path = event.path;
+                val path = event.path
                 val isSourceFolder = path.endsWith(sourcesFolder)
                 val isTestFolder = path.endsWith(testsFolder)
 
@@ -241,7 +241,7 @@ internal class VFSListener : BulkFileListener {
             val testsFolder   = "test/${templatesPath}"
 
             events.forEach { event ->
-                val path = event.path;
+                val path = event.path
                 val isSourceFolder = path.endsWith(sourcesFolder)
                 val isTestFolder = path.endsWith(testsFolder)
 
