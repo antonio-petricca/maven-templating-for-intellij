@@ -25,15 +25,18 @@ class ApiHelpers {
         private const val GET_ACTIVE_PROJECT_TIMEOUT = 5
         private val log : Logger                     = Logger.getInstance(ApiHelpers::class.java)
 
-        fun getActiveProject() : Project {
-            val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(GET_ACTIVE_PROJECT_TIMEOUT, TimeUnit.SECONDS)
-            val project     = dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
+        fun getActiveProject() : Project? {
+            return try {
+                val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(
+                    GET_ACTIVE_PROJECT_TIMEOUT,
+                    TimeUnit.SECONDS
+                )
 
-            if (null == project) {
-                log.warn("Active project not found.")
+                dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
+            } catch (exception: Exception) {
+                log.warn("Active project not found.", exception)
+                null
             }
-
-            return project
         }
 
         fun getContentEntry(model: ModifiableRootModel): ContentEntry? {
