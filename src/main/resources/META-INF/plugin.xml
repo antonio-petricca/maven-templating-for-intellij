@@ -5,6 +5,15 @@
 
     <depends>com.intellij.modules.platform</depends>
 
+    <actions>
+        <action
+            class="com.github.intellij.plugins.mt4ij.actions.ProjectScannerAction"
+            id="mt4ij.actions.project-scanner"
+        >
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+
     <applicationListeners>
         <listener class="com.github.intellij.plugins.mt4ij.listeners.VFSListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>

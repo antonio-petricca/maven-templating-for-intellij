@@ -3,6 +3,7 @@
 ## [1.0.2]
 
 - Added project scanning on settings apply.
+- Added project scanning as menu item into **Tools** menù.
 - Reduced get active project timeout.
                   
 ## [1.0.1]
