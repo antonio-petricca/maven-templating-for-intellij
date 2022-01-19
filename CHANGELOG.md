@@ -3,7 +3,8 @@
 ## [Unreleased]
 
 ## [1.0.4]
-
+                                                  
+- Enabled QODANA build for **develop** branch too.
 - Fixed QODANA hints.
 - Managed (again) get active project timeout.
 
