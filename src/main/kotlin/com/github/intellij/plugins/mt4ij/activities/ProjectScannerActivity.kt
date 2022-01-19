@@ -13,8 +13,8 @@ import org.jetbrains.jps.model.java.JavaSourceRootType
     https://www.cqse.eu/en/news/blog/intellij-plugin-tutorial/
  */
 
-class PostStartupActivity : StartupActivity {
-    private val log : Logger = Logger.getInstance(PostStartupActivity::class.java)
+class ProjectScannerActivity : StartupActivity {
+    private val log : Logger = Logger.getInstance(ProjectScannerActivity::class.java)
 
     override fun runActivity(project: Project) {
         log.info("Scanning project for templates folders...")
