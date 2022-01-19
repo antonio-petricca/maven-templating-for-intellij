@@ -1,5 +1,11 @@
 # maven-templating-for-intellij Changelog
 
+## [Unreleased]
+
+## [1.0.3]
+
+- Fixed CHANGELOG for missing **Unreleased** which causes build failure on *+github**.
+
 ## [1.0.2]
 
 - Added project scanning on settings apply.
