@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 
 class ApiHelpers {
     companion object {
-        private const val GET_ACTIVE_PROJECT_TIMEOUT = 10
+        private const val GET_ACTIVE_PROJECT_TIMEOUT = 5
         private val log : Logger                     = Logger.getInstance(ApiHelpers::class.java)
 
         fun getActiveProject() : Project {
