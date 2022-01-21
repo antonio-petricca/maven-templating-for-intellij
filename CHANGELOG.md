@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.5]
+
+- Added project scanning as menu item into project view popup menù.
+
 ## [1.0.4]
                                                   
 - Enabled QODANA build for **develop** branch too.
@@ -10,7 +14,7 @@
 
 ## [1.0.3]
 
-- Fixed CHANGELOG for missing **Unreleased** which causes build failure on **github**.
+- Fixed CHANGELOG for missing **Unreleased** which causes build failure on **GitHub**.
 
 ## [1.0.2]
 

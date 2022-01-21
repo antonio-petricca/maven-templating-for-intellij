@@ -1,5 +1,11 @@
 <!--
     Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html
+
+    "add-to-group" ids
+
+    https://plugins.jetbrains.com/docs/intellij/basic-action-system.html#action-declaration-reference
+    https://upsource.jetbrains.com/~download?code=qYz1c84O&state=%2F%7Edownload.inline%2Fidea-ce%3Aidea-ce-679130dc0a5ed633b39e32864cca07b47a524690%3A%2Fplatform%2Fplatform-resources%2Fsrc%2Fidea%2FPlatformActions.xml
+    https://intellij-support.jetbrains.com/hc/en-us/community/posts/206761495-How-to-add-items-to-a-tab-context-menu-
 -->
 
 <idea-plugin>
@@ -14,6 +20,7 @@
             class="com.github.intellij.plugins.mt4ij.actions.ProjectScannerAction"
             id="mt4ij.actions.project-scanner"
         >
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>
