@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.1.0]
+
+- Improved dependency from Java IDE and Maven plugin. 
+
 ## [1.0.5]
 
 - Added project scanning as menu item into project view popup menù.
