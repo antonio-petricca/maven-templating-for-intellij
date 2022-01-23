@@ -32,11 +32,6 @@
         </action>
     </actions>
 
-    <applicationListeners>
-        <listener class="com.github.intellij.plugins.mt4ij.listeners.VFSListener"
-                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-    </applicationListeners>
-
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.github.intellij.plugins.mt4ij.activities.ProjectStartupActivity" />
 

@@ -1,8 +1,6 @@
 package com.github.intellij.plugins.mt4ij
 
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
-import com.intellij.ide.DataManager
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -12,7 +10,6 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.jps.model.java.JavaSourceRootType
-import java.util.concurrent.TimeUnit
 
 /*
     // Getting project instance
@@ -24,22 +21,7 @@ import java.util.concurrent.TimeUnit
 
 class ApiHelpers {
     companion object {
-        private const val GET_ACTIVE_PROJECT_TIMEOUT = 2
-        private val log : Logger                     = Logger.getInstance(ApiHelpers::class.java)
-
-        fun getActiveProject() : Project? {
-            return try {
-                val dataContext = DataManager.getInstance().dataContextFromFocusAsync.blockingGet(
-                    GET_ACTIVE_PROJECT_TIMEOUT,
-                    TimeUnit.SECONDS
-                )
-
-                dataContext?.getData(CommonDataKeys.PROJECT.name) as Project
-            } catch (exception: Exception) {
-                log.warn("Active project not found.", exception)
-                null
-            }
-        }
+        private val log : Logger = Logger.getInstance(ApiHelpers::class.java)
 
         fun getContentEntry(model: ModifiableRootModel): ContentEntry? {
             val contentEntries = model.contentEntries
