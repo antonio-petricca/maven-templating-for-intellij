@@ -2,8 +2,9 @@
 
 ## [Unreleased]
 
-## [1.1.0]
-
+## [1.0.6]
+         
+- Implemented listener for Maven project import event.
 - Improved dependency from Java IDE and Maven plugin. 
 
 ## [1.0.5]

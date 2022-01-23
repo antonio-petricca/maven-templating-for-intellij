@@ -1,5 +1,6 @@
 package com.github.intellij.plugins.mt4ij
 
+import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
@@ -10,6 +11,7 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
+import org.jetbrains.jps.model.java.JavaSourceRootType
 import java.util.concurrent.TimeUnit
 
 /*
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 class ApiHelpers {
     companion object {
-        private const val GET_ACTIVE_PROJECT_TIMEOUT = 5 //FIXME
+        private const val GET_ACTIVE_PROJECT_TIMEOUT = 2
         private val log : Logger                     = Logger.getInstance(ApiHelpers::class.java)
 
         fun getActiveProject() : Project? {
@@ -84,5 +86,48 @@ class ApiHelpers {
             )
         }
 
+        fun scanProject(project: Project) {
+            log.info("Scanning project for templates folders...")
+
+            val templatesPath = SettingsStorage.getInstance(project).state.templatesPath
+            val sourcesFolder = "main/${templatesPath}"
+            val testsFolder   = "test/${templatesPath}"
+
+            ProjectFileIndex
+                .getInstance(project)
+                .iterateContent { virtualFile ->
+                    val path           = virtualFile.path
+                    val isSourceFolder = path.endsWith(sourcesFolder)
+                    val isTestFolder   = path.endsWith(testsFolder)
+
+                    if (isSourceFolder || isTestFolder) {
+                        val model = getModelForFile(project, virtualFile)
+
+                        if (null != model) {
+                            val contentEntry = getContentEntry(model, virtualFile)
+
+                            if (null != contentEntry) {
+                                val sourceRoots =
+                                    model.getSourceRoots(if (!isTestFolder) JavaSourceRootType.SOURCE else JavaSourceRootType.TEST_SOURCE)
+
+                                if (!sourceRoots.contains(virtualFile)) {
+                                    contentEntry.addSourceFolder(virtualFile, isTestFolder)
+                                    invokeCommit(model, project)
+
+                                    log.info(
+                                        String.format(
+                                            "Added source folder (after project opening): { virtualFile: \"%s\", isTestFolder: %s }",
+                                            path,
+                                            isTestFolder
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    true
+                }
+        }
     }
 }
