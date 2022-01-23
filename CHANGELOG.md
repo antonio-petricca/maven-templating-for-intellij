@@ -6,6 +6,7 @@
          
 - Implemented listener for Maven project import event.
 - Improved dependency from Java IDE and Maven plugin. 
+- Improved usage instructions.
 
 ## [1.0.5]
 
