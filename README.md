@@ -26,7 +26,7 @@ The **Maven Templating Plugin for IJ** does all for you:
 - Managing templates folders on adding/removing/moving/renaming.
 - Auto scan project on project opening. 
 - Auto scan project on maven project (re)import.
-- Manually allow you, by **Project View Context** menù or **Tools** menù, to enforce a project scan. 
+- Allows you, by **Project View Context** menù or **Tools** menù, to enforce a project scan. 
 
 The default `java-templates` folder name can be customized by the settings page under **Build Tools** section.
 <!-- Plugin description end -->

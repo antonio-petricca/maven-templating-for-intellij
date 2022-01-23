@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.0.8]
+
+- Typo fix.
+- Implemented listener for Maven project import event.
+- Improved dependency from Java IDE and Maven plugin.
+- Improved usage instructions.
+- Improved/Fixed VFS listener.
+
 ## [1.0.7]
 
 - Typo fix.
