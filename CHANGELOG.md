@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.7]
+
+- Typo fix.
+
 ## [1.0.6]
          
 - Implemented listener for Maven project import event.
