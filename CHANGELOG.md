@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.9]
+
+- Declared compatibility with #IC-221.5080.210 (2022.1).
+
 ## [1.0.8]
 
 - Implemented listener for Maven project import event.
@@ -15,9 +19,9 @@
 - Typo fix.
 
 ## [1.0.6]
-         
+
 - Implemented listener for Maven project import event.
-- Improved dependency from Java IDE and Maven plugin. 
+- Improved dependency from Java IDE and Maven plugin.
 - Improved usage instructions.
 - Improved/Fixed VFS listener.
 
@@ -26,7 +30,7 @@
 - Added project scanning as menu item into project view popup menù.
 
 ## [1.0.4]
-                                                  
+
 - Enabled QODANA build for **develop** branch too.
 - Fixed QODANA hints.
 - Managed (again) get active project timeout.
@@ -41,9 +45,9 @@
 - Added project scanning as menu item into **Tools** menù.
 - Made settings panel searchable.
 - Reduced get active project timeout.
-                  
+
 ## [1.0.1]
-                                           
+
 - Added the post load project scanning for missing source/test folders.
 - Fixed get active project timeout exception.
 - Missing `:` on configuration panel label.
@@ -51,7 +55,7 @@
 ## [1.0.0]
 
 ### Changed
-                                               
+
 - Fixed unsafe project source folders updates.
 - Moved settings file **mt4ij.xml** to **.idea** project folder (Thank you to **Vojtěch Krása** and **Petr Makhnev**).
 
@@ -66,7 +70,7 @@
 
 ### Changed
 
-- Fixed folder name detection from **contains** to **endsWith**. 
+- Fixed folder name detection from **contains** to **endsWith**.
 
 ## [0.0.1]
 
