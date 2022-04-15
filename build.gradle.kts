@@ -4,16 +4,21 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
+    /*
+         https://youtrack.jetbrains.com/issue/IDEA-291192#focus=Comments-27-6005402.0-0
+         https://plugins.gradle.org/search
+     */
+
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.6.0"
-    // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.3.0"
+    id("org.jetbrains.kotlin.jvm") version "1.6.20"
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
+    // Gradle IntelliJ Plugin
+    id( "org.jetbrains.intellij") version "1.5.3"
 }
 
 group = properties("pluginGroup")

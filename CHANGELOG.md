@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.10]
+
+- Declared compatibility with #IC-221.5080.210 (2022.1).
+
 ## [1.0.9]
 
 - Declared compatibility with #IC-221.5080.210 (2022.1).
