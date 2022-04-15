@@ -1,6 +1,6 @@
 package com.github.intellij.plugins.mt4ij.listeners
 
-import com.github.intellij.plugins.mt4ij.ApiHelpers
+import com.github.intellij.plugins.mt4ij.PluginHelpers
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import org.jetbrains.idea.maven.project.MavenProjectsManager
@@ -11,7 +11,7 @@ class MavenProjectsManagerListener(project: Project) : MavenProjectsManager.List
 
     override fun projectImportCompleted() {
         log.info("Processing templates folders on maven project import...")
-        ApiHelpers.scanProject(projectRef)
+        PluginHelpers.scanProject(projectRef)
 
         super.projectImportCompleted()
     }

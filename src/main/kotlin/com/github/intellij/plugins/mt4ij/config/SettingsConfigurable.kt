@@ -1,6 +1,6 @@
 package com.github.intellij.plugins.mt4ij.config
 
-import com.github.intellij.plugins.mt4ij.ApiHelpers
+import com.github.intellij.plugins.mt4ij.PluginHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
@@ -43,9 +43,9 @@ internal class SettingsConfigurable(project: Project) : SearchableConfigurable {
     override fun apply() {
         getSettings().state.templatesPath = settingsForm.getTemplatesPath()!!
 
-        ApiHelpers.invokeLater(
+        PluginHelpers.invokeLater(
             {
-                ApiHelpers.scanProject(projectRef)
+                PluginHelpers.scanProject(projectRef)
             },
             projectRef
         )

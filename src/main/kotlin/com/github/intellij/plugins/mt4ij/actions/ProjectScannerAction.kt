@@ -1,6 +1,6 @@
 package com.github.intellij.plugins.mt4ij.actions
 
-import com.github.intellij.plugins.mt4ij.ApiHelpers
+import com.github.intellij.plugins.mt4ij.PluginHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -14,9 +14,9 @@ class ProjectScannerAction :
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project!!
 
-        ApiHelpers.invokeLater(
+        PluginHelpers.invokeLater(
             {
-                ApiHelpers.scanProject(project)
+                PluginHelpers.scanProject(project)
             },
             project
         )

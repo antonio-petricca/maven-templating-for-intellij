@@ -1,6 +1,6 @@
 package com.github.intellij.plugins.mt4ij.activities
 
-import com.github.intellij.plugins.mt4ij.ApiHelpers
+import com.github.intellij.plugins.mt4ij.PluginHelpers
 import com.github.intellij.plugins.mt4ij.listeners.MavenProjectsManagerListener
 import com.github.intellij.plugins.mt4ij.listeners.VFSListener
 import com.intellij.openapi.diagnostic.Logger
@@ -44,6 +44,6 @@ class ProjectStartupActivity : StartupActivity {
         registerMavenListener(project)
         registerVFSListener(project)
 
-        ApiHelpers.scanProject(project)
+        PluginHelpers.scanProject(project)
     }
 }
