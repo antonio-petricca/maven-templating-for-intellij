@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.1.0]
+
+- Declared compatibility with #IC-223.*.
+- 
 ## [1.0.11]
 
 - Declared compatibility with #IC-222.*.
