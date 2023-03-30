@@ -19,6 +19,7 @@ plugins {
     id("org.jetbrains.qodana") version "0.1.13"
     // Gradle IntelliJ Plugin
     id( "org.jetbrains.intellij") version "1.10.0"
+    kotlin("jvm") version "1.8.20-RC2"
 }
 
 group = properties("pluginGroup")
@@ -122,4 +123,10 @@ tasks {
     buildSearchableOptions { //FIXME https://youtrack.jetbrains.com/issue/KTIJ-782#focus=Comments-27-4613061.0-0
         enabled = false
     }
+}
+dependencies {
+    implementation(kotlin("stdlib-jdk8"))
+}
+kotlin {
+    jvmToolchain(11)
 }
