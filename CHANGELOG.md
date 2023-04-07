@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.2.0]
+
+- Gradle plugins upgrade.
+- Fixed: "java.lang.Throwable: Read access is allowed from inside read-action (or EDT) only (see com.intellij.openapi.application.Application.runReadAction())".
+
 ## [1.1.1]
 
 - Declared compatibility with #IC-231.*.
