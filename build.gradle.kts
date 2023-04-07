@@ -12,7 +12,7 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.6.20"
+    // id("org.jetbrains.kotlin.jvm") version "1.8.20" // Commented to avoid: "Plugin with id 'org.jetbrains.kotlin.jvm' was already requested at line 6".
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
