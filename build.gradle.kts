@@ -18,7 +18,7 @@ plugins {
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
     // Gradle IntelliJ Plugin
-    id( "org.jetbrains.intellij") version "1.10.0"
+    id( "org.jetbrains.intellij") version "1.13.3"
     kotlin("jvm") version "1.8.20-RC2"
 }
 
