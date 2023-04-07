@@ -3,11 +3,13 @@ package com.github.intellij.plugins.mt4ij
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.jps.model.java.JavaSourceRootType
 
@@ -34,19 +36,27 @@ class ApiHelpers {
         }
 
         fun getModelForFile(project: Project, virtualFile: VirtualFile): ModifiableRootModel? {
-            val fileIndex = ProjectFileIndex.SERVICE.getInstance(project)
-            val module    = fileIndex.getModuleForFile(virtualFile)
+            val module = ApplicationManager.getApplication().runReadAction(
+                Computable<Module> {
 
-            if (null != module) {
-                if (module.moduleTypeName.equals("JAVA_MODULE")) {
-                    return ModuleRootManager
-                        .getInstance(module)
-                        .modifiableModel
+                    ProjectFileIndex
+                        .SERVICE
+                        .getInstance(project)
+                        .getModuleForFile(virtualFile)
+
                 }
+            )
+
+            if (
+                  (null != module)
+                && module.moduleTypeName.equals("JAVA_MODULE")
+            ) {
+                return ModuleRootManager
+                    .getInstance(module)
+                    .modifiableModel
             }
 
             log.warn("Not a java project.")
-
             return null
         }
 
