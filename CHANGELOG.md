@@ -1,6 +1,8 @@
 # maven-templating-for-intellij Changelog
 
-## [Unreleased]
+## [1.2.1]
+
+- CHANGELOG not showing 1.2.0 changes fixup.
 
 ## [1.2.0]
 
