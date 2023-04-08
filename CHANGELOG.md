@@ -3,6 +3,7 @@
 ## [1.2.1]
 
 - CHANGELOG not showing 1.2.0 changes fixup.
+- Fixed: "Must not use `executable` property on `Test` together with `javaLauncher` property".
 
 ## [1.2.0]
 
