@@ -1,5 +1,9 @@
 # maven-templating-for-intellij Changelog
 
+## [1.3.0]
+
+- Declared compatibility with #IC-232.*.
+
 ## [1.2.1]
 
 - CHANGELOG not showing 1.2.0 changes fixup.
