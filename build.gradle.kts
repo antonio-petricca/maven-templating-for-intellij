@@ -11,15 +11,16 @@ plugins {
 
     // Java support
     id("java")
-    // Kotlin support
-    // id("org.jetbrains.kotlin.jvm") version "1.8.20" // Commented to avoid: "Plugin with id 'org.jetbrains.kotlin.jvm' was already requested at line 6".
+
     // Gradle Changelog Plugin
-    id("org.jetbrains.changelog") version "2.0.0"
+    id("org.jetbrains.changelog") version "2.1.2"
+
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
+
     // Gradle IntelliJ Plugin
-    id( "org.jetbrains.intellij") version "1.13.3"
-    kotlin("jvm") version "1.8.20-RC2"
+    id( "org.jetbrains.intellij") version "1.15.0"
+    kotlin("jvm") version "1.9.0"
 }
 
 group = properties("pluginGroup")
