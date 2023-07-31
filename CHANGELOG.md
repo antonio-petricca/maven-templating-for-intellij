@@ -1,5 +1,9 @@
 # maven-templating-for-intellij Changelog
 
+## [1.3.1]
+
+- Fix for "com.intellij.diagnostic.PluginException: No display name is specified for configurable com.github.intellij.plugins.mt4ij.config.SettingsConfigurable in xml file;".
+
 ## [1.3.0]
 
 - Declared compatibility with #IC-232.*.

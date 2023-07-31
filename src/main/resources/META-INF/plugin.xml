@@ -39,6 +39,7 @@
 
         <projectConfigurable
             instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"
+            displayName="maven-templating-for-intellij"
             groupId="build.tools"
             id="mt4ij.settings"
         />
