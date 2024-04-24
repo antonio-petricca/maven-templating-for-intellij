@@ -5,7 +5,7 @@ import com.github.intellij.plugins.mt4ij.listeners.MavenProjectsManagerListener
 import com.github.intellij.plugins.mt4ij.listeners.VFSListener
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.VirtualFileManager
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 
@@ -20,7 +20,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager
     https://plugins.jetbrains.com/docs/intellij/plugin-listeners.html#defining-application-level-listeners
  */
 
-class ProjectStartupActivity : StartupActivity {
+class ProjectStartupActivity : ProjectActivity {
     private val log : Logger = Logger.getInstance(ProjectStartupActivity::class.java)
 
     private fun registerMavenListener(project: Project) {
@@ -40,7 +40,7 @@ class ProjectStartupActivity : StartupActivity {
             .subscribe(VirtualFileManager.VFS_CHANGES, VFSListener(project))
     }
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         registerMavenListener(project)
         registerVFSListener(project)
 
