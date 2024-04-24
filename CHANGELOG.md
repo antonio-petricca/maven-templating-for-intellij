@@ -1,5 +1,9 @@
 # maven-templating-for-intellij Changelog
 
+## [1.4.3]
+
+- Fixed compatibility with 2024.1.
+
 ## [1.4.2]
 
 - Migrated com.github.intellij.plugins.mt4ij.activities.ProjectStartupActivity to ProjectActivity.
