@@ -2,9 +2,8 @@ package com.github.intellij.plugins.mt4ij.config
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import javax.swing.JComponent
 
@@ -23,49 +22,62 @@ import javax.swing.JComponent
     https://intellij-support.jetbrains.com/hc/en-us/community/posts/206133719-How-does-SearchableConfigurable-work
  */
 
-internal class SettingsConfigurable(project: Project) : SearchableConfigurable {
-    private val log : Logger = Logger.getInstance(SettingsConfigurable::class.java)
-
-    private val projectRef   = project
-    private val settingsForm = SettingsForm()
-
-    private fun getSettings() : SettingsStorage {
-        return SettingsStorage.getInstance(projectRef)
-    }
+internal class SettingsConfigurable(private val project: Project) : Configurable {
+    private val log: Logger = Logger.getInstance(SettingsConfigurable::class.java)
+    private var settingsForm: SettingsForm? = null
 
     override fun createComponent(): JComponent? {
         log.info("Creating settings form...")
 
-        ApplicationManager.getApplication().invokeLater {
-            reset()
-            settingsForm.setTemplatesPath(getSettings().state.templatesPath)
+        if (settingsForm == null) {
+            settingsForm = SettingsForm()
         }
 
-        return settingsForm.mainPanel
+        return settingsForm?.mainPanel
     }
 
     override fun isModified(): Boolean {
-        return settingsForm.isModified(getSettings().state)
+        log.debug("Checking if settings are modified...")
+
+        val settings = SettingsStorage
+            .getInstance(project)
+            .state
+
+        return settingsForm?.isModified(settings) ?: false
     }
 
     override fun apply() {
         log.info("Applying settings...")
 
-        getSettings().state.templatesPath = settingsForm.getTemplatesPath()!!
+        val settings = SettingsStorage
+            .getInstance(project)
+            .state
+
+        settingsForm?.apply {
+            settings.templatesPath = (getTemplatesPath() ?: "")
+        }
 
         ApiHelpers.invokeLater(
             {
-                ApiHelpers.scanProject(projectRef)
+                ApiHelpers.scanProject(project)
             },
-            projectRef
+            project
         )
     }
 
     override fun getDisplayName(): String {
+        log.debug("Getting display name...")
+
         return Bundle.message("mt4ij.settings.name")
     }
 
-    override fun getId(): String {
-        return displayName
+    override fun reset() {
+        log.info("Resetting settings...")
+
+        val settings = SettingsStorage
+            .getInstance(project)
+            .state
+
+        settingsForm?.setTemplatesPath(settings.templatesPath)
     }
 }
