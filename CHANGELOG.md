@@ -15,6 +15,7 @@
 - Settings form: fixed thread context invoke.                                       
 - Settings form: not showing fixed.                                       
 - Settings form: updated Build Tools label. 
+- Updated `README.md` file.
 
 ## [1.4.5]
 
