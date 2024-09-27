@@ -1,5 +1,9 @@
 # maven-templating-for-intellij Changelog
 
+## [1.4.5]
+
+- Declared compatibility with 2024.3.
+
 ## [1.4.4]
 
 - Declared compatibility with 2024.2.
