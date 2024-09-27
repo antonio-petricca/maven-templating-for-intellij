@@ -13,6 +13,7 @@
 - Fixed: "Internal method Module.getModuleTypeName() is invoked in ApiHelpers.Companion.getModelForFile(...). This method is marked with @ApiStatus.Internal annotation or @IntellijInternalApi annotation and indicates that the method is not supposed to be used in client code.".
 - Minor code cleanup.
 - Settings form: fixed thread context invoke.                                       
+- Settings form: not showing fixed.                                       
 - Settings form: updated Build Tools label. 
 
 ## [1.4.5]
