@@ -2,7 +2,7 @@
 
 ## [1.5.0]
            
-- Allow "intellij" into plug id
+- Allowed "intellij" word into plugin id.
 - Fixed: "Deprecated class ProjectFileIndex.SERVICE is referenced in ApiHelpers.Companion.getModelForFile$lambda$0(...)".
 - Fixed: "Deprecated class ServiceManager is referenced in SettingsStorage.Companion.getInstance(Project)".
 - Fixed: "Deprecated constructor URL.<init>(String) is invoked in VFSListener.doMoveSourceFolderBefore(...)" and "Deprecated constructor URL.<init>(String) is invoked in VFSListener.doMoveSourceFolderAfter(...)".
