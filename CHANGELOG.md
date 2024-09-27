@@ -10,6 +10,7 @@
 - Fixed: "Internal method Module.getModuleTypeName() is invoked in ApiHelpers.Companion.getModelForFile(...). This method is marked with @ApiStatus.Internal annotation or @IntellijInternalApi annotation and indicates that the method is not supposed to be used in client code.".
 - Fixed: "Deprecated constructor java.net.URL.<init>(java.lang.String spec) is invoked in com.github.jbij.plugins.mt4ij.listeners.VFSListener.doMoveSourceFolderAfter(Project, String, VirtualFile, boolean) : void</init>".
 - Fixed: changed `.intellij." namespace to `.jbib.` (JetBrains IntelliJ).
+- Minor code cleanup.
 
 ## [1.4.5]
 

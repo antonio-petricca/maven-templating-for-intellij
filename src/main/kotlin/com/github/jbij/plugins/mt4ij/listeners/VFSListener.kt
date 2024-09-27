@@ -14,7 +14,6 @@ import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import java.io.File
 import java.net.URI
-import java.net.URL
 
 /*
     // File system events listening
@@ -209,7 +208,7 @@ internal class VFSListener(project: Project) : BulkFileListener {
 
             if (isSourceFolder || isTestFolder) {
                 if (
-                    (event is VFileCreateEvent)
+                       (event is VFileCreateEvent)
                     && (event.isDirectory)
                 ) {
                     doAddSourceFolder(projectRef, event.file!!, isTestFolder)
