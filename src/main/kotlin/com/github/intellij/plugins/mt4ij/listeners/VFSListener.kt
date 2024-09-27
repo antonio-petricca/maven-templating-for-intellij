@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.newvfs.events.*
 import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
 import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
 import java.io.File
+import java.net.URI
 import java.net.URL
 
 /*
@@ -67,7 +68,9 @@ internal class VFSListener(project: Project) : BulkFileListener {
     }
 
     private fun doMoveSourceFolderAfter(project: Project, templatesPath: String, newParent: VirtualFile, isTestFolder: Boolean) {
-        val virtualFile = VfsUtil.findFileByURL(URL("${newParent}/${templatesPath}"))
+        val newParentUrl = newParent.url
+        val uri = URI("$newParentUrl/$templatesPath")
+        val virtualFile = VfsUtil.findFileByURL(URL(uri.toString()))
 
         if (null != virtualFile) {
             val model = getModelForFile(project, virtualFile)
@@ -94,7 +97,9 @@ internal class VFSListener(project: Project) : BulkFileListener {
     }
 
     private fun doMoveSourceFolderBefore(project: Project, templatesPath: String, oldParent: VirtualFile) {
-        val virtualFile = VfsUtil.findFileByURL(URL("${oldParent}/${templatesPath}"))
+        val oldParentUrl = oldParent.url
+        val uri = URI("$oldParentUrl/$templatesPath")
+        val virtualFile = VfsUtil.findFileByURL(URL(uri.toString()))
 
         if (null != virtualFile) {
             val model = getModelForFile(project, virtualFile)
