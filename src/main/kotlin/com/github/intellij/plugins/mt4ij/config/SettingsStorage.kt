@@ -4,6 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 
 /*
@@ -22,6 +23,8 @@ import com.intellij.openapi.project.Project
 )
 @Service(Service.Level.PROJECT)
 class SettingsStorage : PersistentStateComponent<SettingsState?> {
+    private val log : Logger = Logger.getInstance(SettingsStorage::class.java)
+
     private var state = SettingsState()
 
     companion object {
@@ -34,10 +37,12 @@ class SettingsStorage : PersistentStateComponent<SettingsState?> {
     }
 
     override fun getState(): SettingsState {
+        log.info("Getting state...")
         return state
     }
 
     override fun loadState(state: SettingsState) {
+        log.info("Loading state...")
         this.state = state
     }
 }

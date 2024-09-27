@@ -2,6 +2,7 @@ package com.github.intellij.plugins.mt4ij.config
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
 import javax.swing.JComponent
@@ -22,6 +23,8 @@ import javax.swing.JComponent
  */
 
 internal class SettingsConfigurable(project: Project) : SearchableConfigurable {
+    private val log : Logger = Logger.getInstance(SettingsConfigurable::class.java)
+
     private val projectRef   = project
     private val settingsForm = SettingsForm()
 
@@ -30,6 +33,8 @@ internal class SettingsConfigurable(project: Project) : SearchableConfigurable {
     }
 
     override fun createComponent(): JComponent? {
+        log.info("Creating settings form...")
+
         reset()
         settingsForm.setTemplatesPath(getSettings().state.templatesPath)
 
@@ -41,6 +46,8 @@ internal class SettingsConfigurable(project: Project) : SearchableConfigurable {
     }
 
     override fun apply() {
+        log.info("Applying settings...")
+
         getSettings().state.templatesPath = settingsForm.getTemplatesPath()!!
 
         ApiHelpers.invokeLater(
