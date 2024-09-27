@@ -1,4 +1,4 @@
-package com.github.intellij.plugins.mt4ij.config
+package com.github.jbij.plugins.mt4ij.config
 
 /*
     https://kotlinlang.org/docs/data-classes.html#properties-declared-in-the-class-body

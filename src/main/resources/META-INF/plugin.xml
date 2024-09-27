@@ -13,7 +13,7 @@
 -->
 
 <idea-plugin>
-    <id>com.github.intellij.plugins.mt4ij</id>
+    <id>com.github.jbij.plugins.mt4ij</id>
     <name>Maven Templating for IJ</name>
     <vendor>Antonio Petricca</vendor>
 
@@ -24,7 +24,7 @@
 
     <actions>
         <action
-            class="com.github.intellij.plugins.mt4ij.actions.ProjectScannerAction"
+            class="com.github.jbij.plugins.mt4ij.actions.ProjectScannerAction"
             id="mt4ij.actions.project-scanner"
         >
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
@@ -33,10 +33,10 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.intellij.plugins.mt4ij.activities.ProjectStartupActivity" />
+        <postStartupActivity implementation="com.github.jbij.plugins.mt4ij.activities.ProjectStartupActivity" />
 
         <projectConfigurable
-            instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"
+            instance="com.github.jbij.plugins.mt4ij.config.SettingsConfigurable"
             displayName="maven-templating-for-intellij"
             groupId="build.tools"
             id="mt4ij.settings"

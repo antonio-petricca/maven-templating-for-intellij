@@ -1,4 +1,4 @@
-package com.github.intellij.plugins.mt4ij.config
+package com.github.jbij.plugins.mt4ij.config
 
 import javax.swing.JPanel
 import javax.swing.JTextField

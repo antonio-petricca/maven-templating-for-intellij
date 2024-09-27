@@ -8,6 +8,7 @@
 - Fixed: "Deprecated class ServiceManager is referenced in SettingsStorage.Companion.getInstance(Project)".
 - Fixed: "Deprecated class ProjectFileIndex.SERVICE is referenced in ApiHelpers.Companion.getModelForFile$lambda$0(...)".
 - Fixed: "Internal method Module.getModuleTypeName() is invoked in ApiHelpers.Companion.getModelForFile(...). This method is marked with @ApiStatus.Internal annotation or @IntellijInternalApi annotation and indicates that the method is not supposed to be used in client code.".
+- Fixed: changed `.intellij." namespace to `.jbib.` (JetBrains IntelliJ).
 
 ## [1.4.5]
 
@@ -23,7 +24,7 @@
 
 ## [1.4.2]
 
-- Migrated com.github.intellij.plugins.mt4ij.activities.ProjectStartupActivity to ProjectActivity.
+- Migrated com.github.jbij.plugins.mt4ij.activities.ProjectStartupActivity to ProjectActivity.
 
 ## [1.4.1]
 
@@ -35,7 +36,7 @@
 
 ## [1.3.1]
 
-- Fix for "com.intellij.diagnostic.PluginException: No display name is specified for configurable com.github.intellij.plugins.mt4ij.config.SettingsConfigurable in xml file;".
+- Fix for "com.intellij.diagnostic.PluginException: No display name is specified for configurable com.github.jbij.plugins.mt4ij.config.SettingsConfigurable in xml file;".
 
 ## [1.3.0]
 

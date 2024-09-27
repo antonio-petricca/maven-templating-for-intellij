@@ -1,4 +1,4 @@
-package com.github.intellij.plugins.mt4ij.config
+package com.github.jbij.plugins.mt4ij.config
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
