@@ -24,8 +24,8 @@ class SettingsStorage : PersistentStateComponent<SettingsState?> {
     companion object {
 
         @JvmStatic
-        fun getInstance(project: Project) : SettingsStorage{
-            return project.service();
+        fun getInstance(project: Project) : SettingsStorage {
+            return project.getService(SettingsStorage::class.java)
         }
 
     }
