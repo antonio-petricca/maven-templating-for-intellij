@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg version="1.0" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.0" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
  <defs>
   <filter id="filter3881" x="-.00096766" y="-.0048095" width="1.0019" height="1.0096" color-interpolation-filters="sRGB">
    <feGaussianBlur stdDeviation="0.03821917"/>
