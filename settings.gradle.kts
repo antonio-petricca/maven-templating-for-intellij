@@ -1,1 +1,1 @@
-rootProject.name = "maven-templating-for-jbij"
+rootProject.name = "maven-templating-for-intellij"

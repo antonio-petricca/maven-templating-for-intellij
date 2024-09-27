@@ -1,8 +1,8 @@
-package com.github.jbij.plugins.mt4ij.activities
+package com.github.intellij.plugins.mt4ij.activities
 
-import com.github.jbij.plugins.mt4ij.ApiHelpers
-import com.github.jbij.plugins.mt4ij.listeners.MavenProjectsManagerListener
-import com.github.jbij.plugins.mt4ij.listeners.VFSListener
+import com.github.intellij.plugins.mt4ij.ApiHelpers
+import com.github.intellij.plugins.mt4ij.listeners.MavenProjectsManagerListener
+import com.github.intellij.plugins.mt4ij.listeners.VFSListener
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity

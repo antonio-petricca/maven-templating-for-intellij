@@ -1,6 +1,6 @@
-package com.github.jbij.plugins.mt4ij
+package com.github.intellij.plugins.mt4ij
 
-import com.github.jbij.plugins.mt4ij.config.SettingsStorage
+import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module

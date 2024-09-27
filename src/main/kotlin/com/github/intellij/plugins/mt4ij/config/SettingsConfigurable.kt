@@ -1,7 +1,7 @@
-package com.github.jbij.plugins.mt4ij.config
+package com.github.intellij.plugins.mt4ij.config
 
-import com.github.jbij.plugins.mt4ij.ApiHelpers
-import com.github.jbij.plugins.mt4ij.Bundle
+import com.github.intellij.plugins.mt4ij.ApiHelpers
+import com.github.intellij.plugins.mt4ij.Bundle
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
 import javax.swing.JComponent

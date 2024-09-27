@@ -1,4 +1,4 @@
-package com.github.jbij.plugins.mt4ij
+package com.github.intellij.plugins.mt4ij
 
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.psi.xml.XmlFile

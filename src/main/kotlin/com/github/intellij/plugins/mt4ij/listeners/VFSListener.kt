@@ -1,9 +1,9 @@
-package com.github.jbij.plugins.mt4ij.listeners
+package com.github.intellij.plugins.mt4ij.listeners
 
-import com.github.jbij.plugins.mt4ij.ApiHelpers.Companion.getContentEntry
-import com.github.jbij.plugins.mt4ij.ApiHelpers.Companion.getModelForFile
-import com.github.jbij.plugins.mt4ij.ApiHelpers.Companion.invokeCommit
-import com.github.jbij.plugins.mt4ij.config.SettingsStorage
+import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.getContentEntry
+import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.getModelForFile
+import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.invokeCommit
+import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
