@@ -38,17 +38,14 @@ class ApiHelpers {
         fun getModelForFile(project: Project, virtualFile: VirtualFile): ModifiableRootModel? {
             val module = ApplicationManager.getApplication().runReadAction(
                 Computable<Module> {
-
                     ProjectFileIndex
-                        .SERVICE
                         .getInstance(project)
                         .getModuleForFile(virtualFile)
-
                 }
             )
 
             if (
-                  (null != module)
+                (null != module)
                 && module.moduleTypeName.equals("JAVA_MODULE")
             ) {
                 return ModuleRootManager
