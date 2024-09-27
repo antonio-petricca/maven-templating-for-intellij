@@ -4,6 +4,7 @@ import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -46,7 +47,7 @@ class ApiHelpers {
 
             if (
                 (null != module)
-                && module.moduleTypeName.equals("JAVA_MODULE")
+                && ModuleType.get(module).id == "JAVA_MODULE"
             ) {
                 return ModuleRootManager
                     .getInstance(module)
