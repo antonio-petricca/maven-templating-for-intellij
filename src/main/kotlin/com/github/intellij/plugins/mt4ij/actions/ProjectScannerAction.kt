@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 
 class ProjectScannerAction :
-    AnAction(Bundle.message("mt4ij.actions.project-scanner.text")),
+    AnAction(Bundle.message("mt4ij.actions.project-scanner.title")),
     DumbAware
 {
 

@@ -1,7 +1,8 @@
 # maven-templating-for-intellij Changelog
 
 ## [1.5.0]
-           
+        
+- Added a project scan progress indicator.   
 - Allowed "intellij" word into plugin id.
 - Fixed: "Deprecated class ProjectFileIndex.SERVICE is referenced in ApiHelpers.Companion.getModelForFile$lambda$0(...)".
 - Fixed: "Deprecated class ServiceManager is referenced in SettingsStorage.Companion.getInstance(Project)".
