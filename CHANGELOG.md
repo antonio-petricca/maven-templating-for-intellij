@@ -1,7 +1,8 @@
 # maven-templating-for-intellij Changelog
 
 ## [1.5.0]
-
+           
+- Allow "intellij" into plug id
 - Fixed: "Deprecated method ServiceManager.getService(Project, Class) is invoked in SettingsStorage.Companion.getInstance(Project)".
 - Fixed: "Deprecated method MavenProjectsManager.addManagerListener(...) is invoked in ProjectStartupActivity.registerMavenListener(...)".
 - Fixed: "Deprecated constructor URL.<init>(String) is invoked in VFSListener.doMoveSourceFolderBefore(...)" and "Deprecated constructor URL.<init>(String) is invoked in VFSListener.doMoveSourceFolderAfter(...)".
@@ -10,7 +11,7 @@
 - Fixed: "Internal method Module.getModuleTypeName() is invoked in ApiHelpers.Companion.getModelForFile(...). This method is marked with @ApiStatus.Internal annotation or @IntellijInternalApi annotation and indicates that the method is not supposed to be used in client code.".
 - Fixed: "Deprecated constructor java.net.URL.<init>(java.lang.String spec) is invoked in com.github.intellij.plugins.mt4ij.listeners.VFSListener.doMoveSourceFolderAfter(Project, String, VirtualFile, boolean) : void</init>".
 - Minor code cleanup.
-  - Updated settings form Build Tools label.                                        
+- Updated settings form Build Tools label.                                        
 
 ## [1.4.5]
 
