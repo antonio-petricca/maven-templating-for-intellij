@@ -70,7 +70,7 @@ internal class VFSListener(project: Project) : BulkFileListener {
     private fun doMoveSourceFolderAfter(project: Project, templatesPath: String, newParent: VirtualFile, isTestFolder: Boolean) {
         val newParentUrl = newParent.url
         val uri = URI("$newParentUrl/$templatesPath")
-        val virtualFile = VfsUtil.findFileByURL(URL(uri.toString()))
+        val virtualFile = VfsUtil.findFileByURL(uri.toURL())
 
         if (null != virtualFile) {
             val model = getModelForFile(project, virtualFile)
@@ -99,7 +99,7 @@ internal class VFSListener(project: Project) : BulkFileListener {
     private fun doMoveSourceFolderBefore(project: Project, templatesPath: String, oldParent: VirtualFile) {
         val oldParentUrl = oldParent.url
         val uri = URI("$oldParentUrl/$templatesPath")
-        val virtualFile = VfsUtil.findFileByURL(URL(uri.toString()))
+        val virtualFile = VfsUtil.findFileByURL(uri.toURL())
 
         if (null != virtualFile) {
             val model = getModelForFile(project, virtualFile)

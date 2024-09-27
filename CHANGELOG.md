@@ -8,6 +8,7 @@
 - Fixed: "Deprecated class ServiceManager is referenced in SettingsStorage.Companion.getInstance(Project)".
 - Fixed: "Deprecated class ProjectFileIndex.SERVICE is referenced in ApiHelpers.Companion.getModelForFile$lambda$0(...)".
 - Fixed: "Internal method Module.getModuleTypeName() is invoked in ApiHelpers.Companion.getModelForFile(...). This method is marked with @ApiStatus.Internal annotation or @IntellijInternalApi annotation and indicates that the method is not supposed to be used in client code.".
+- Fixed: "Deprecated constructor java.net.URL.<init>(java.lang.String spec) is invoked in com.github.jbij.plugins.mt4ij.listeners.VFSListener.doMoveSourceFolderAfter(Project, String, VirtualFile, boolean) : void</init>".
 - Fixed: changed `.intellij." namespace to `.jbib.` (JetBrains IntelliJ).
 
 ## [1.4.5]
