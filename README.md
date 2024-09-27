@@ -21,7 +21,7 @@ Without using the **Maven Templating Plugin**, you have to create your own `java
 
 Unfortunately, IntelliJ often loses those settings, especially when you re-import the Maven project. For large projects, manually reconfiguring folders is tedious and time-consuming.
 
-The **Maven Templating Plugin for IJ** does all this for you:
+The **Maven Templating plugin for IntelliJ** does all this for you:
 
 - Manages template folders when adding/removing/moving/renaming.
 - Automatically scans the project on project opening.

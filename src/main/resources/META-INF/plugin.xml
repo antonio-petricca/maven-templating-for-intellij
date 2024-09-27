@@ -14,7 +14,7 @@
 
 <idea-plugin>
     <id>com.github.intellij.plugins.mt4ij</id>
-    <name>Maven Templating for IJ</name>
+    <name>Maven Templating plugin for IntelliJ</name>
     <vendor>Antonio Petricca</vendor>
 
     <depends>com.intellij.java</depends>
@@ -37,7 +37,7 @@
 
         <projectConfigurable
             instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"
-            displayName="Maven Templating for IJ"
+            displayName="Maven Templating plugin for IntelliJ"
             groupId="build.tools"
             id="mt4ij.settings"
         />
