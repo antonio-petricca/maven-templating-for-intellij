@@ -3,6 +3,7 @@
 ## [1.5.0]
 
 - Fixed: "Deprecated method ServiceManager.getService(Project, Class) is invoked in SettingsStorage.Companion.getInstance(Project)".
+- Fixed: "Deprecated method MavenProjectsManager.addManagerListener(...) is invoked in ProjectStartupActivity.registerMavenListener(...)".
 
 ## [1.4.5]
 

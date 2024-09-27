@@ -26,9 +26,10 @@ class ProjectStartupActivity : ProjectActivity {
     private fun registerMavenListener(project: Project) {
         log.info("Registering Maven Projects listener for templates folders...")
 
-        MavenProjectsManager
-            .getInstance(project)
-            .addManagerListener(MavenProjectsManagerListener(project))
+        val mavenProjectsManager = MavenProjectsManager.getInstance(project)
+        val listener             = MavenProjectsManagerListener(project)
+
+        mavenProjectsManager.addProjectsTreeListener(listener)
     }
 
     private fun registerVFSListener(project: Project) {
