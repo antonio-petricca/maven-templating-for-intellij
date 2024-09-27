@@ -2,6 +2,7 @@ package com.github.intellij.plugins.mt4ij.config
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
@@ -35,8 +36,10 @@ internal class SettingsConfigurable(project: Project) : SearchableConfigurable {
     override fun createComponent(): JComponent? {
         log.info("Creating settings form...")
 
-        reset()
-        settingsForm.setTemplatesPath(getSettings().state.templatesPath)
+        ApplicationManager.getApplication().invokeLater {
+            reset()
+            settingsForm.setTemplatesPath(getSettings().state.templatesPath)
+        }
 
         return settingsForm.mainPanel
     }
