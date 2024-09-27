@@ -121,7 +121,7 @@ class ApiHelpers {
             }
         }
 
-        private fun doScanFile(project: Project virtualFile: VirtualFile, sourcesFolder: String, testsFolder: String) {
+        private fun doScanFile(project: Project, virtualFile: VirtualFile, sourcesFolder: String, testsFolder: String) {
             val path           = virtualFile.path
             val isSourceFolder = path.endsWith(sourcesFolder)
             val isTestFolder   = path.endsWith(testsFolder)
