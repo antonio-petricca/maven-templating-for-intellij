@@ -29,7 +29,7 @@ class ApiHelpers {
     companion object {
         private val log : Logger = Logger.getInstance(ApiHelpers::class.java)
 
-        private const val SCAN_DELAY = 1L
+        private const val SCAN_DELAY = 2L
 
         fun getContentEntry(model: ModifiableRootModel): ContentEntry? {
             val contentEntries = model.contentEntries
