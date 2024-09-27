@@ -29,6 +29,8 @@ class ApiHelpers {
     companion object {
         private val log : Logger = Logger.getInstance(ApiHelpers::class.java)
 
+        private const val SCAN_DELAY = 10L
+
         fun getContentEntry(model: ModifiableRootModel): ContentEntry? {
             val contentEntries = model.contentEntries
             return (if (contentEntries.isNotEmpty()) contentEntries[0] else null)
@@ -116,6 +118,7 @@ class ApiHelpers {
                 indicator.fraction = processedFiles.toDouble() / totalFiles
 
                 doScanFile(project, virtualFile, sourcesFolder, testsFolder)
+                Thread.sleep(SCAN_DELAY)
 
                 true
             }
