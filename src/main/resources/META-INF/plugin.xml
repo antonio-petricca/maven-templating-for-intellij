@@ -35,8 +35,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.github.intellij.plugins.mt4ij.activities.ProjectStartupActivity" />
 
-        <projectService serviceImplementation="com.github.intellij.plugins.mt4ij.config.SettingsStorage" />
-
         <projectConfigurable
             instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"
             displayName="maven-templating-for-intellij"

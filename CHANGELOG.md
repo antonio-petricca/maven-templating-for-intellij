@@ -1,5 +1,9 @@
 # maven-templating-for-intellij Changelog
 
+## [1.5.0]
+
+- Fixed: "Deprecated method ServiceManager.getService(Project, Class) is invoked in SettingsStorage.Companion.getInstance(Project)".
+
 ## [1.4.5]
 
 - Declared compatibility with 2024.3.

@@ -1,9 +1,6 @@
 package com.github.intellij.plugins.mt4ij.config
 
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 
 /*
@@ -20,6 +17,7 @@ import com.intellij.openapi.project.Project
     name     = "mt4ij.storage.state",
     storages = [Storage("mt4ij.xml")]
 )
+@Service(Service.Level.PROJECT)
 class SettingsStorage : PersistentStateComponent<SettingsState?> {
     private var state = SettingsState()
 
@@ -27,7 +25,7 @@ class SettingsStorage : PersistentStateComponent<SettingsState?> {
 
         @JvmStatic
         fun getInstance(project: Project) : SettingsStorage{
-            return ServiceManager.getService(project, SettingsStorage::class.java)
+            return project.service();
         }
 
     }
