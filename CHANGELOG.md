@@ -11,6 +11,7 @@
 - Fixed: "Deprecated constructor java.net.URL.<init>(java.lang.String spec) is invoked in com.github.jbij.plugins.mt4ij.listeners.VFSListener.doMoveSourceFolderAfter(Project, String, VirtualFile, boolean) : void</init>".
 - Fixed: changed `.intellij." namespace to `.jbib.` (JetBrains IntelliJ).
 - Minor code cleanup.
+- Updated settings form Build Tools label.
 
 ## [1.4.5]
 
