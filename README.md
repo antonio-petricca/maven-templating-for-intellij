@@ -15,13 +15,13 @@
 - [x] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-This plugin adds support for the [Maven Templating plugin](https://www.mojohaus.org/templating-maven-plugin/).
+This plugin is an assistant for the official [Maven Templating Plugin](https://www.mojohaus.org/templating-maven-plugin/).
 
-Without using the **Maven Templating plugin**, you have to create your own `java-templates` folders and mark it as **Sources Root** or **Test Sources Root**.
+Without using the **Maven Templating assistant**, you have to create your own `java-templates` folders and mark it as **Sources Root** or **Test Sources Root**.
 
 Unfortunately, IntelliJ often loses those settings, especially when you re-import the Maven project. For large projects, manually reconfiguring folders is tedious and time-consuming.
 
-The **Maven Templating plugin for IntelliJ** does all this for you:
+The **Maven Templating assistant** does all this for you:
 
 - Manages template folders when adding/removing/moving/renaming.
 - Automatically scans the project on project opening.
