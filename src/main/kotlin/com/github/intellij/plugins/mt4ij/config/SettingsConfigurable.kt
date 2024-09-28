@@ -37,24 +37,18 @@ internal class SettingsConfigurable(private val project: Project) : Configurable
     }
 
     override fun isModified(): Boolean {
-        log.debug("Checking if settings are modified...")
+        val state = getState()
 
-        val settings = SettingsStorage
-            .getInstance(project)
-            .state
-
-        return settingsForm?.isModified(settings) ?: false
+        return settingsForm?.isModified(state) ?: false
     }
 
     override fun apply() {
         log.info("Applying settings...")
 
-        val settings = SettingsStorage
-            .getInstance(project)
-            .state
+        val state = getState()
 
         settingsForm?.apply {
-            settings.templatesPath = (getTemplatesPath() ?: "")
+            state.templatesPath = (getTemplatesPath() ?: "")
         }
 
         ApiHelpers.invokeLater(
@@ -66,18 +60,18 @@ internal class SettingsConfigurable(private val project: Project) : Configurable
     }
 
     override fun getDisplayName(): String {
-        log.debug("Getting display name...")
-
         return Bundle.message("mt4ij.settings.name")
     }
 
     override fun reset() {
-        log.info("Resetting settings...")
+        val state = getState()
 
-        val settings = SettingsStorage
+        settingsForm?.setTemplatesPath(state.templatesPath)
+    }
+
+    private fun getState(): SettingsState {
+        return SettingsStorage
             .getInstance(project)
             .state
-
-        settingsForm?.setTemplatesPath(settings.templatesPath)
     }
 }
