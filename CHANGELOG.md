@@ -1,5 +1,9 @@
 # maven-templating-for-intellij Changelog
 
+## [1.5.1]
+
+- Declared compatibility with 2025.1.
+
 ## [1.5.0]
         
 - Added a project scan progress indicator.   
