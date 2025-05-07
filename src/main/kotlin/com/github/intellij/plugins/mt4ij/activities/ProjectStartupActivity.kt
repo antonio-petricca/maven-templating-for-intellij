@@ -24,12 +24,18 @@ class ProjectStartupActivity : ProjectActivity {
     private val log : Logger = Logger.getInstance(ProjectStartupActivity::class.java)
 
     private fun registerMavenListener(project: Project) {
-        log.info("Registering Maven Projects listener for templates folders...")
+        try {
+            log.info("Registering Maven Projects listener for templates folders...")
 
-        val mavenProjectsManager = MavenProjectsManager.getInstance(project)
-        val listener             = MavenProjectsManagerListener(project)
+            Class.forName("org.jetbrains.idea.maven.project.MavenProjectsManager")
 
-        mavenProjectsManager.addProjectsTreeListener(listener)
+            val mavenProjectsManager = MavenProjectsManager.getInstance(project)
+            val listener             = MavenProjectsManagerListener(project)
+
+            mavenProjectsManager.addProjectsTreeListener(listener)
+        } catch (e: ClassNotFoundException) {
+            log.warn("Maven plugin not available: ${e.message}")
+        }
     }
 
     private fun registerVFSListener(project: Project) {
