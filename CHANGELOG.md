@@ -3,8 +3,7 @@
 ## [1.7.0]
 
 - Declared compatibility since 2025.3.
-- Fixed building issues.
-- Upgraded to Kotlin 2.2.1.
+- Upgraded and fixed plugin framework.
 
 ## [1.6.0]
 
