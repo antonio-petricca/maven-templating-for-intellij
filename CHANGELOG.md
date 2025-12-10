@@ -2,8 +2,8 @@
 
 ## [1.7.0]
 
-- Declared compatibility since 2025.3.
-- Upgraded and fixed plugin framework.
+- Declared compatibility from 2024 up to 2025.3.
+- Partially upgraded plugin framework 2.x.
 
 ## [1.6.0]
 
