@@ -1,5 +1,10 @@
 # maven-templating-for-intellij Changelog
 
+## [1.7.1]
+
+- Changelog compatibility information fixup (since `2023.2`).
+- Reduced scan delay to 1 millisecond (for large projects).
+
 ## [1.7.0]
 
 - Declared compatibility from 2024 up to 2025.3.
