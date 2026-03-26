@@ -2,8 +2,8 @@
 
 ## [1.7.1]
 
-- Changelog compatibility information fixup (since `2023.2`).
-- Reduced scan delay to 1 millisecond (for large projects).
+- Declared compatibility from 2024 up to 2026.1.
+- Reduced scan delay to 1 ms (for large projects).
 
 ## [1.7.0]
 
