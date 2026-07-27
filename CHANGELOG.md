@@ -1,5 +1,9 @@
 # maven-templating-for-intellij Changelog
 
+## [1.7.2]
+
+- Declared compatibility from 2024 up to 2026.2.
+- 
 ## [1.7.1]
 
 - Declared compatibility from 2024 up to 2026.1.
