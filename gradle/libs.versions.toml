@@ -5,10 +5,12 @@ annotations = "26.1.0"
 # plugins
 kotlin = "2.4.21"
 gradleIntelliJPlugin = "2.20.1"
+changelog = "2.5.0"
 
 [libraries]
 annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
 
 [plugins]
+changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 gradleIntelliJPlugin = { id = "org.jetbrains.intellij.platform", version.ref = "gradleIntelliJPlugin" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

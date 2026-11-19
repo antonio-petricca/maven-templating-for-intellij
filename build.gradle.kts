@@ -1,3 +1,5 @@
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
@@ -5,43 +7,11 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 
-// Simple markdown to HTML conversion (replaces org.jetbrains.changelog.markdownToHTML)
-fun markdownToHTML(markdown: String): String {
-    val sb = StringBuilder()
-    var inList = false
-    for (line in markdown.lines()) {
-        when {
-            line.startsWith("### ") -> { if (inList) { sb.append("</ul>\n"); inList = false }; sb.append("<h3>${line.removePrefix("### ").trim()}</h3>\n") }
-            line.startsWith("## ")  -> { if (inList) { sb.append("</ul>\n"); inList = false }; sb.append("<h2>${line.removePrefix("## ").trim()}</h2>\n") }
-            line.startsWith("# ")   -> { if (inList) { sb.append("</ul>\n"); inList = false }; sb.append("<h1>${line.removePrefix("# ").trim()}</h1>\n") }
-            line.startsWith("- ") || line.startsWith("* ") -> {
-                if (!inList) { sb.append("<ul>\n"); inList = true }
-                sb.append("<li>${line.drop(2).trim()}</li>\n")
-            }
-            line.isBlank() -> { if (inList) { sb.append("</ul>\n"); inList = false }; sb.append("\n") }
-            else -> { if (inList) { sb.append("</ul>\n"); inList = false }; sb.append("<p>${line.trim()}</p>\n") }
-        }
-    }
-    if (inList) sb.append("</ul>\n")
-    return sb.toString()
-}
-
-// Extract change notes for a given version from CHANGELOG.md
-fun extractChangeNotes(changelogFile: java.io.File, version: String): String {
-    val lines = changelogFile.readLines()
-    val start = lines.indexOfFirst { it.startsWith("## [$version]") || it.startsWith("## $version") }
-    if (start < 0) return "<p>See <a href=\"https://github.com/petricca/maven-templating-for-intellij/blob/main/CHANGELOG.md\">CHANGELOG.md</a></p>"
-    val end = lines.drop(start + 1).indexOfFirst { it.startsWith("## [") || it.startsWith("## ") }
-    val section = if (end >= 0) lines.subList(start + 1, start + 1 + end) else lines.drop(start + 1)
-    val items = section.filter { it.trim().startsWith("- ") || it.trim().startsWith("* ") }
-    return if (items.isEmpty()) "<p>Maintenance release.</p>"
-    else "<ul>${items.joinToString("") { "<li>${it.trim().drop(2).trim()}</li>" }}</ul>"
-}
-
 plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.gradleIntelliJPlugin) // IntelliJ Platform Gradle Plugin 2.x
+    alias(libs.plugins.changelog) // Changelog and Markdown to HTML support
 }
 
 group = properties("pluginGroup").get()
@@ -105,8 +75,15 @@ intellijPlatform {
             }
         }
 
+        // Render the changelog section of the current version (or the latest one) as HTML
+        val changelog = project.changelog
         changeNotes = properties("pluginVersion").map { pluginVersion ->
-            extractChangeNotes(layout.projectDirectory.file("CHANGELOG.md").asFile, pluginVersion)
+            with(changelog) {
+                renderItem(
+                    (getOrNull(pluginVersion) ?: getLatest()).withHeader(false).withEmptySections(false),
+                    Changelog.OutputType.HTML,
+                )
+            }
         }
 
         ideaVersion {
@@ -128,6 +105,12 @@ intellijPlatform {
     }
 }
 
+
+// Changelog plugin configuration - read more: https://github.com/JetBrains/gradle-changelog-plugin
+changelog {
+    groups.empty()
+    repositoryUrl = "https://github.com/antonio-petricca/maven-templating-for-intellij"
+}
 
 tasks {
     wrapper {
