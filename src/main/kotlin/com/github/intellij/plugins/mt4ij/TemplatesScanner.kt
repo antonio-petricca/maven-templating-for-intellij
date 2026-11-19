@@ -1,6 +1,7 @@
 package com.github.intellij.plugins.mt4ij
 
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
+import com.github.intellij.plugins.mt4ij.importing.TemplatingFolders
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.EDT
@@ -14,6 +15,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportSequentialProgress
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -21,6 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.idea.maven.project.MavenProjectsManager
+import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
@@ -43,7 +46,15 @@ class TemplatesScanner(private val project: Project, scope: CoroutineScope) {
         scope.launch {
             for (request in requests) {
                 delay(MERGE_DELAY_MS)
-                scan()
+
+                // A failing scan must not stop the loop: later requests still need to be served
+                try {
+                    scan()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    log.warn("Scan of the templates folders failed", e)
+                }
             }
         }
     }
@@ -68,13 +79,13 @@ class TemplatesScanner(private val project: Project, scope: CoroutineScope) {
         val notify = notifyPending.getAndSet(false)
         val previousName = previousNamePending.getAndSet(null)
 
-        var markedCount = 0
+        var applied = AppliedChanges(0, 0)
 
         withBackgroundProgress(project, title) {
             val mavenProjects = MavenProjectsManager.getInstance(project).projects
             val templatesName = SettingsStorage.getInstance(project).state.templatesPath
 
-            if (templatesName.isBlank()) {
+            if (!TemplatingFolders.isValidName(templatesName)) {
                 return@withBackgroundProgress
             }
 
@@ -84,59 +95,74 @@ class TemplatesScanner(private val project: Project, scope: CoroutineScope) {
 
             reportSequentialProgress(mavenProjects.size) { reporter ->
                 mavenProjects.forEachIndexed { index, mavenProject ->
-                    val text = Bundle.message("mt4ij.actions.project-scanner.progress", index + 1, mavenProjects.size)
+                    val text = Bundle.message("mt4ij.actions.project-scanner.progress.project", index + 1, mavenProjects.size)
 
                     reporter.itemStep(text) {
-                        val baseDir = mavenProject.directoryFile
-
                         changes += readAction {
+                            // Projects declaring the plugin keep their folders whatever the name was
                             val removals = previousName
-                                ?.let { findChanges(baseDir, it, SourceFolderChange::remove) }
+                                ?.let { TemplatingFolders.of(mavenProject, it) }
+                                ?.takeUnless { it.isPluginDeclared }
+                                ?.let { findChanges(it, SourceFolderChange::remove) }
                                 .orEmpty()
 
-                            removals + findChanges(baseDir, templatesName, SourceFolderChange::add)
+                            val folders = TemplatingFolders.of(mavenProject, templatesName)
+
+                            removals + findChanges(folders, SourceFolderChange::add)
                         }
                     }
                 }
             }
 
-            markedCount = changes.count { it.isAddition }
-
-            withContext(Dispatchers.EDT) {
+            applied = withContext(Dispatchers.EDT) {
                 SourceFolders.apply(changes)
             }
         }
 
         if (notify) {
-            showSummary(markedCount)
+            showSummary(applied)
         }
     }
 
+    // The templates folders of a Maven project that exist on disk and belong to a module
     private fun findChanges(
-        baseDir: VirtualFile,
-        templatesName: String,
+        folders: TemplatingFolders,
         createChange: (Module, VirtualFile, Boolean) -> SourceFolderChange,
     ): List<SourceFolderChange> {
-        return TemplatesFolderKind.entries.mapNotNull { kind ->
-            val subFolder = if (kind.isTest) "test" else "main"
-            val folder = VfsUtil.findRelativeFile(baseDir, "src", subFolder, templatesName)
-            val module = folder?.let { ProjectFileIndex.getInstance(project).getModuleForFile(it) }
+        val candidates = folders.sources.map { it to false } + folders.testSources.map { it to true }
+        val fileIndex = ProjectFileIndex.getInstance(project)
+
+        return candidates.mapNotNull { (path, isTest) ->
+            val folder = VfsUtil.findFileByIoFile(File(path), false)
+            val module = folder?.let { fileIndex.getModuleForFile(it) }
 
             if (folder != null && folder.isDirectory && module != null) {
-                createChange(module, folder, kind.isTest)
+                createChange(module, folder, isTest)
             } else {
                 null
             }
         }
     }
 
-    private fun showSummary(markedCount: Int) {
+    private fun showSummary(applied: AppliedChanges) {
+        val messages = mutableListOf<String>()
+
+        if (applied.added > 0) {
+            messages += Bundle.message("mt4ij.notification.scan-completed", applied.added)
+        }
+
+        if (applied.removed > 0) {
+            messages += Bundle.message("mt4ij.notification.scan-unmarked", applied.removed)
+        }
+
+        // Nothing changed: say that the folders were already as they should be
+        if (messages.isEmpty()) {
+            messages += Bundle.message("mt4ij.notification.scan-completed", 0)
+        }
+
         NotificationGroupManager.getInstance()
             .getNotificationGroup(NOTIFICATION_GROUP_ID)
-            .createNotification(
-                Bundle.message("mt4ij.notification.scan-completed", markedCount),
-                NotificationType.INFORMATION
-            )
+            .createNotification(messages.joinToString(". "), NotificationType.INFORMATION)
             .notify(project)
     }
 
