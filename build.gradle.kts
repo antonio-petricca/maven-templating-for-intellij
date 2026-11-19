@@ -92,6 +92,19 @@ intellijPlatform {
         }
     }
 
+    signing {
+        certificateChain = environment("CERTIFICATE_CHAIN")
+        privateKey = environment("PRIVATE_KEY")
+        password = environment("PRIVATE_KEY_PASSWORD")
+    }
+
+    publishing {
+        token = environment("PUBLISH_TOKEN")
+
+        // A version like 1.0.0-beta.1 is published on the "beta" channel, otherwise on "default"
+        channels = properties("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
+    }
+
     pluginVerification {
         // The plugin is already published with "intellij" in its ID and name
         freeArgs = listOf("-mute", "TemplateWordInPluginId,TemplateWordInPluginName")

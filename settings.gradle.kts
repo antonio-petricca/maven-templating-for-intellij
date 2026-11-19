@@ -1,7 +1,11 @@
 pluginManagement {
     repositories {
-        maven {
-            url = uri("${System.getProperty("user.home")}/.gradle/local-plugin-repo")
+        // Optional local repository, used only when present (not on CI)
+        val localRepo = File(System.getProperty("user.home"), ".gradle/local-plugin-repo")
+        if (localRepo.isDirectory) {
+            maven {
+                url = localRepo.toURI()
+            }
         }
         gradlePluginPortal()
         mavenCentral()

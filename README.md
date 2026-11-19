@@ -1,6 +1,6 @@
 # maven-templating-for-intellij
 
-![Build](https://github.com/antonio-petricca/maven-templating-for-intellij/workflows/Build/badge.svg)
+[![Build](https://github.com/antonio-petricca/maven-templating-for-intellij/actions/workflows/build.yml/badge.svg)](https://github.com/antonio-petricca/maven-templating-for-intellij/actions/workflows/build.yml)
 [![Version](https://img.shields.io/jetbrains/plugin/v/18410.svg)](https://plugins.jetbrains.com/plugin/18410)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/18410.svg)](https://plugins.jetbrains.com/plugin/18410)
 
