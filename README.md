@@ -4,16 +4,6 @@
 [![Version](https://img.shields.io/jetbrains/plugin/v/18410.svg)](https://plugins.jetbrains.com/plugin/18410)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/18410.svg)](https://plugins.jetbrains.com/plugin/18410)
 
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [x] Get familiar with the [template documentation][template].
-- [x] Verify the [pluginGroup](/gradle.properties), [plugin ID](/src/main/resources/META-INF/plugin.xml) and [sources package](/src/main/kotlin).
-- [x] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html).
-- [x] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [x] Set the Plugin ID in the above README badges.
-- [x] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html).
-- [x] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
-
 <!-- Plugin description -->
 This plugin is an assistant for the official [Maven Templating Plugin](https://www.mojohaus.org/templating-maven-plugin/).
 
@@ -23,12 +13,15 @@ Unfortunately, IntelliJ often loses those settings, especially when you re-impor
 
 The **Maven Templating assistant** does all this for you:
 
+- Declares the template folders (sources and test sources) during the Maven project import, reading them from the `pom.xml`.
 - Manages template folders when adding/removing/moving/renaming.
-- Automatically scans the project on project opening.
-- Automatically scans the project on Maven project (re)import.
+- Optionally scans the project on project opening, and shows a notification with the result when a scan you requested ends.
 - Allows you to enforce a project scan via the **Project View Context** menu or **Tools** menu.
+- Lets you exclude the generated sources (output folders), to avoid duplicate classes.
+- Navigates between a template and its generated source (gutter icon, **Go to** menu and editor context menu).
+- Completes, resolves and inspects the `${...}` Maven properties used in templates, with a quick fix to add a missing property to the `pom.xml`.
 
-The default `java-templates` folder name can be customized on the settings page under the **Build Tools** section.
+The `java-templates` folder name, the scan on startup and the exclusion of generated sources can be customized on the settings page under the **Build Tools** section. The settings page is also available in Italian, when the IDE uses the Italian language pack.
 
 The plugin requires the bundled **Maven** and **Java** plugins.
 <!-- Plugin description end -->
@@ -38,6 +31,7 @@ The plugin requires the bundled **Maven** and **Java** plugins.
 - Since build 262 (IntelliJ IDEA 2026.2) up to build 263.* (IntelliJ IDEA 2026.3).
 - Verified with the Plugin Verifier against IntelliJ IDEA 2026.2 and 2026.3.
 - Requires the bundled Maven (`org.jetbrains.idea.maven`) and Java plugins.
+- The plugin uses experimental APIs of the Maven plugin to declare the folders during the import; they are verified on every supported release.
 
 ## Installation
 

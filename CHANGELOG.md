@@ -2,10 +2,14 @@
 
 ## [2.0.0]
 
-- Compatible with IntelliJ IDEA from 2026.2 (build 262) up to 2026.3 (build 263.*); older versions are no longer supported, because the non-deprecated Maven projects tree listener registration is only available since 2026.2.
-- Replaced deprecated API usages (Maven projects tree listener registration, bundle class).
-- Message bus connections are now released together with the project.
-- Updated build toolchain: Gradle 9.9.1, IntelliJ Platform Gradle Plugin 2.20.1, Kotlin 2.4.21, Java 25.
+- Compatible with IntelliJ IDEA from 2026.2 (build 262) up to 2026.3 (build 263.*); older versions are no longer supported.
+- Template folders are now declared during the Maven import, reading them from the pom, so they are no longer lost when the project is reimported.
+- New option to exclude the generated sources, to avoid duplicate classes.
+- Navigation between a template and its generated source.
+- Completion, navigation and inspection of the ${...} Maven properties used in templates, with a quick fix to add a missing property to the pom.
+- Reworked settings, with validation and Italian localization.
+- Notification with the result at the end of a scan you request.
+- More robust and faster project scan, also on large projects.
 
 ## [1.7.2]
 
