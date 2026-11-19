@@ -1,0 +1,14 @@
+<html>
+<body>
+Reports <code>${property}</code> placeholders in Java templates (templating-maven-plugin) that cannot be resolved.
+<p>
+    A property is resolved when it is declared in the <code>&lt;properties&gt;</code> of the module pom or of its parents,
+    when it is a project model property such as <code>project.version</code>, or when the Maven model already provides it.
+    System and environment properties (<code>env.*</code>, <code>java.*</code>, <code>os.*</code>, <code>user.*</code>,
+    <code>settings.*</code>, <code>maven.*</code>) are never reported.
+</p>
+<p>
+    The quick fix adds an empty property to the pom of the module.
+</p>
+</body>
+</html>

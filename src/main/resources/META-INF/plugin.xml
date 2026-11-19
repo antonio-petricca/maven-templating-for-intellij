@@ -58,6 +58,22 @@
             implementationClass="com.github.intellij.plugins.mt4ij.navigation.TemplateLineMarkerProvider"
         />
 
+        <psi.referenceContributor
+            language="JAVA"
+            implementation="com.github.intellij.plugins.mt4ij.properties.MavenPropertyReferenceContributor"
+        />
+
+        <localInspection
+            language="JAVA"
+            shortName="UnresolvedMavenProperty"
+            bundle="messages.Bundle"
+            key="mt4ij.inspection.unresolved-property.name"
+            groupBundle="messages.Bundle"
+            groupKey="mt4ij.inspection.group"
+            enabledByDefault="true"
+            level="WARNING"
+            implementationClass="com.github.intellij.plugins.mt4ij.properties.UnresolvedMavenPropertyInspection"
+        />
 
         <projectConfigurable
             instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"
