@@ -1,19 +1,17 @@
 package com.github.intellij.plugins.mt4ij.listeners
 
-import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.getContentEntry
-import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.getModelForFile
-import com.github.intellij.plugins.mt4ij.ApiHelpers.Companion.invokeCommit
+import com.github.intellij.plugins.mt4ij.SourceFolderChange
+import com.github.intellij.plugins.mt4ij.SourceFolders
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
-import com.intellij.openapi.diagnostic.Logger
+import com.github.intellij.plugins.mt4ij.importing.TemplatingFolders
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.*
-import org.jetbrains.jps.model.java.JavaSourceRootType.SOURCE
-import org.jetbrains.jps.model.java.JavaSourceRootType.TEST_SOURCE
-import java.io.File
-import java.net.URI
+import org.jetbrains.idea.maven.project.MavenProjectsManager
+import java.util.concurrent.ConcurrentHashMap
 
 /*
     // File system events listening
@@ -39,217 +37,101 @@ import java.net.URI
     https://developerlife.com/2021/03/13/ij-idea-plugin-advanced/#invokelater-and-modalitystate
  */
 
-internal class VFSListener(project: Project) : BulkFileListener {
-    private val log : Logger = Logger.getInstance(VFSListener::class.java)
-    private val projectRef   = project
+internal class VFSListener(private val project: Project) : BulkFileListener {
 
-    private fun doAddSourceFolder(project: Project, virtualFile: VirtualFile, isTestFolder: Boolean) {
-        val model = getModelForFile(project, virtualFile)
+    // Template folders about to be renamed or moved: the IDE carries their source root along to the new URL
+    private val relocating = ConcurrentHashMap.newKeySet<VirtualFile>()
 
-        if (null != model) {
-            val contentEntry = getContentEntry(model, virtualFile)
-
-            if (null != contentEntry) {
-                val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
-
-                if (!sourceRoots.contains(virtualFile)) {
-                    contentEntry.addSourceFolder(virtualFile, isTestFolder)
-                    invokeCommit(model, project)
-
-                    log.info(String.format(
-                        "Added source folder: { virtualFile: \"%s\", isTestFolder: %s }",
-                        virtualFile.path,
-                        isTestFolder
-                    ))
-                }
+    override fun before(events: MutableList<out VFileEvent>) {
+        // The folder is still at its old place: unmark it
+        val changes = events.mapNotNull { event ->
+            val file = event.file
+            val isRemoval = when (event) {
+                is VFileDeleteEvent, is VFileMoveEvent -> true
+                is VFilePropertyChangeEvent -> event.isRename
+                else -> false
             }
-        }
-    }
 
-    private fun doMoveSourceFolderAfter(project: Project, templatesPath: String, newParent: VirtualFile, isTestFolder: Boolean) {
-        val newParentUrl = newParent.url
-        val uri = URI("$newParentUrl/$templatesPath")
-        val virtualFile = VfsUtil.findFileByURL(uri.toURL())
+            val change = if (isRemoval && file != null) toChange(event.path, file, false) else null
 
-        if (null != virtualFile) {
-            val model = getModelForFile(project, virtualFile)
-
-            if (null != model) {
-                val contentEntry = getContentEntry(model, virtualFile)
-
-                if (null != contentEntry) {
-                    val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
-
-                    if (!sourceRoots.contains(virtualFile)) {
-                        contentEntry.addSourceFolder(virtualFile, isTestFolder)
-                        invokeCommit(model, project)
-
-                        log.info(String.format(
-                            "Added source folder (moving): { virtualFile: \"%s\", isTestFolder: %s }",
-                            virtualFile.path,
-                            isTestFolder
-                        ))
-                    }
-                }
+            if (change != null && (event is VFileMoveEvent || event is VFilePropertyChangeEvent)) {
+                relocating += file!!
             }
+
+            change
         }
-    }
 
-    private fun doMoveSourceFolderBefore(project: Project, templatesPath: String, oldParent: VirtualFile) {
-        val oldParentUrl = oldParent.url
-        val uri = URI("$oldParentUrl/$templatesPath")
-        val virtualFile = VfsUtil.findFileByURL(uri.toURL())
-
-        if (null != virtualFile) {
-            val model = getModelForFile(project, virtualFile)
-
-            if (null != model) {
-                val contentEntry = getContentEntry(model)
-
-                contentEntry
-                    ?.sourceFolders
-                    ?.filter { it.file?.equals(virtualFile) ?: false }
-                    ?.forEach { sourceFolder ->
-                        contentEntry.removeSourceFolder(sourceFolder)
-                        invokeCommit(model, project)
-
-                        log.info(String.format(
-                            "Removed source folder (moving): { virtualFile: \"%s\" }",
-                            virtualFile.path
-                        ))
-                    }
-            }
-        }
-    }
-
-    private fun doRemoveSourceFolder(project: Project, virtualFile: VirtualFile) {
-        val model = getModelForFile(project, virtualFile)
-
-        if (null != model) {
-            val contentEntry = getContentEntry(model)
-
-            contentEntry
-                ?.sourceFolders
-                ?.filter { it.file?.equals(virtualFile) ?: false }
-                ?.forEach { sourceFolder ->
-                    contentEntry.removeSourceFolder(sourceFolder)
-                    invokeCommit(model, project)
-
-                    log.info(String.format(
-                        "Removed source folder: { virtualFile: \"%s\" }",
-                        virtualFile.path
-                    ))
-                }
-        }
-    }
-
-    private fun doRenameSourceFolderAfter(project: Project, newPath: String, isTestFolder: Boolean) {
-        val virtualFile = VfsUtil.findFileByIoFile(File(newPath), true)
-
-        if (null != virtualFile) {
-            val model = getModelForFile(project, virtualFile)
-
-            if (null != model) {
-                val contentEntry = getContentEntry(model, virtualFile)
-
-                if (null != contentEntry) {
-                    val sourceRoots = model.getSourceRoots(if (!isTestFolder) SOURCE else TEST_SOURCE)
-
-                    if (!sourceRoots.contains(virtualFile)) {
-                        contentEntry.addSourceFolder(virtualFile, isTestFolder)
-                        invokeCommit(model, project)
-
-                        log.info(String.format(
-                            "Added source folder (renaming): { virtualFile: \"%s\", isTestFolder: %s }",
-                            virtualFile.path,
-                            isTestFolder
-                        ))
-                    }
-                }
-            }
-        }
-    }
-
-    private fun doRenameSourceFolderBefore(project: Project, oldPath: String) {
-        val virtualFile = VfsUtil.findFileByIoFile(File(oldPath), true)
-        if (null != virtualFile) {
-            val model = getModelForFile(project, virtualFile)
-
-            if (null != model) {
-                val contentEntry = getContentEntry(model)
-
-                contentEntry
-                    ?.sourceFolders
-                    ?.filter { it.file?.equals(virtualFile) ?: false }
-                    ?.forEach { sourceFolder ->
-                        contentEntry.removeSourceFolder(sourceFolder)
-                        invokeCommit(model, project)
-
-                        log.info(
-                            String.format(
-                                "Removed source folder (renaming): { virtualFile: \"%s\" }",
-                                virtualFile.path
-                            )
-                        )
-                    }
-            }
-        }
+        scheduleUpdate(changes)
     }
 
     override fun after(events: MutableList<out VFileEvent>) {
-        val templatesPath = SettingsStorage.getInstance(projectRef).state.templatesPath
-        val sourcesFolder = "main/${templatesPath}"
-        val testsFolder = "test/${templatesPath}"
-
-        events.forEach { event ->
-            val path = event.path
-            val isSourceFolder = path.endsWith(sourcesFolder)
-            val isTestFolder = path.endsWith(testsFolder)
-
-            if (isSourceFolder || isTestFolder) {
-                if (
-                       (event is VFileCreateEvent)
-                    && (event.isDirectory)
-                ) {
-                    doAddSourceFolder(projectRef, event.file!!, isTestFolder)
-                } else if (event is VFileMoveEvent) {
-                    doMoveSourceFolderAfter(projectRef, templatesPath, event.newParent, isTestFolder)
-                } else if (
-                    (event is VFilePropertyChangeEvent)
-                    && (event.propertyName == "name")
-                ) {
-                    doRenameSourceFolderAfter(projectRef, event.newPath, isTestFolder)
-                }
+        // The folder is now at its new place: mark it
+        val changes = events.mapNotNull { event ->
+            val file = when (event) {
+                is VFileCreateEvent -> event.takeIf { it.isDirectory }?.file
+                is VFileMoveEvent -> event.file
+                is VFilePropertyChangeEvent -> event.takeIf { it.isRename }?.file
+                is VFileCopyEvent -> event.newParent.findChild(event.newChildName)
+                else -> null
             }
+
+            file?.let { (toChange(it.path, it, true) ?: unmarkRelocated(event, it)).also { _ -> relocating.remove(it) } }
         }
 
-        super.after(events)
+        scheduleUpdate(changes)
     }
 
-    override fun before(events: MutableList<out VFileEvent>) {
-        val templatesPath = SettingsStorage.getInstance(projectRef).state.templatesPath
-        val sourcesFolder = "main/${templatesPath}"
-        val testsFolder   = "test/${templatesPath}"
+    // A template folder renamed or moved to a place that is not a templates folder must not stay a source root
+    private fun unmarkRelocated(event: VFileEvent, file: VirtualFile): SourceFolderChange? {
+        val wasTemplates = (event is VFileMoveEvent || event is VFilePropertyChangeEvent) && file in relocating
+        val module = ProjectFileIndex.getInstance(project).getModuleForFile(file)
 
-        events.forEach { event ->
-            val path = event.path
-            val isSourceFolder = path.endsWith(sourcesFolder)
-            val isTestFolder = path.endsWith(testsFolder)
+        return if (wasTemplates && file.isValid && module != null) {
+            SourceFolderChange.remove(module, file, false)
+        } else {
+            null
+        }
+    }
 
-            if (isSourceFolder || isTestFolder) {
-                if (event is VFileDeleteEvent) {
-                    doRemoveSourceFolder(projectRef, event.file)
-                } else if (event is VFileMoveEvent) {
-                    doMoveSourceFolderBefore(projectRef, templatesPath, event.oldParent)
-                } else if (
-                    (event is VFilePropertyChangeEvent)
-                    && (event.propertyName == "name")
-                ) {
-                    doRenameSourceFolderBefore(projectRef, event.oldPath)
-                }
-            }
+    // Only directories matter; the templates folders are those of the Maven project containing them
+    private fun toChange(path: String, file: VirtualFile, isAddition: Boolean): SourceFolderChange? {
+        if (!file.isValid || !file.isDirectory) {
+            return null
         }
 
-        super.before(events)
+        val fileIndex = ProjectFileIndex.getInstance(project)
+
+        if (!fileIndex.isInContent(file)) {
+            return null
+        }
+
+        val mavenProject = MavenProjectsManager.getInstanceIfCreated(project)?.findContainingProject(file) ?: return null
+        val module       = fileIndex.getModuleForFile(file) ?: return null
+
+        val templatesName = SettingsStorage.getInstance(project).state.templatesPath
+        val folders       = TemplatingFolders.of(mavenProject, templatesName)
+        val folderPath    = path.trimEnd('/')
+
+        val isTest = when (folderPath) {
+            in folders.sources     -> false
+            in folders.testSources -> true
+            else                   -> return null
+        }
+
+        return if (isAddition) {
+            SourceFolderChange.add(module, file, isTest)
+        } else {
+            SourceFolderChange.remove(module, file, isTest)
+        }
+    }
+
+    // Roots cannot be changed while VFS events are being dispatched
+    private fun scheduleUpdate(changes: List<SourceFolderChange>) {
+        if (changes.isNotEmpty()) {
+            ApplicationManager.getApplication().invokeLater(
+                { SourceFolders.apply(changes) },
+                project.disposed
+            )
+        }
     }
 }

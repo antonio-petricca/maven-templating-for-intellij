@@ -51,12 +51,7 @@ internal class SettingsConfigurable(private val project: Project) : Configurable
             state.templatesPath = (getTemplatesPath() ?: "")
         }
 
-        ApiHelpers.invokeLater(
-            {
-                ApiHelpers.scanProject(project)
-            },
-            project
-        )
+        ApiHelpers.scanProject(project)
     }
 
     override fun getDisplayName(): String {
