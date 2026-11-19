@@ -13,7 +13,12 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 /** Builds the settings panel; the controls are bound straight to the project settings state. */
 internal object SettingsForm {
 
-    fun build(panel: Panel, state: () -> SettingsState) {
+    fun build(
+        panel: Panel,
+        appState: () -> AppSettingsState = { AppSettings.getInstance().state },
+        onOpenGuide: () -> Unit = {},
+        state: () -> SettingsState,
+    ) {
         panel.apply {
             row(Bundle.message("mt4ij.settings.label.path")) {
                 textField()
@@ -33,6 +38,16 @@ internal object SettingsForm {
                 checkBox(Bundle.message("mt4ij.settings.label.exclude-generated"))
                     .comment(Bundle.message("mt4ij.settings.comment.exclude-generated"))
                     .bindSelected({ state().excludeGeneratedSources }, { state().excludeGeneratedSources = it })
+            }
+
+            row {
+                checkBox(Bundle.message("mt4ij.settings.label.show-whats-new"))
+                    .comment(Bundle.message("mt4ij.settings.comment.show-whats-new"))
+                    .bindSelected({ appState().showWhatsNew }, { appState().showWhatsNew = it })
+            }
+
+            row {
+                link(Bundle.message("mt4ij.settings.link.guide")) { onOpenGuide() }
             }
         }
     }

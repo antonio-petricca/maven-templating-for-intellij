@@ -29,8 +29,31 @@
             id="mt4ij.actions.project-scanner"
         >
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
+
+        <action
+            class="com.github.intellij.plugins.mt4ij.actions.OpenGuideAction"
+            id="mt4ij.actions.open-guide"
+        />
+
+        <action
+            class="com.github.intellij.plugins.mt4ij.actions.OpenGuideAction"
+            id="mt4ij.actions.open-guide.help"
+        >
+            <add-to-group group-id="HelpMenu" anchor="after" relative-to-action="HelpTopics"/>
+        </action>
+
+        <action
+            class="com.github.intellij.plugins.mt4ij.actions.OpenWhatsNewAction"
+            id="mt4ij.actions.whats-new"
+        />
+
+        <group id="mt4ij.groups.tools" popup="true">
+            <reference ref="mt4ij.actions.project-scanner"/>
+            <reference ref="mt4ij.actions.open-guide"/>
+            <reference ref="mt4ij.actions.whats-new"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </group>
 
         <action
             class="com.github.intellij.plugins.mt4ij.navigation.GoToCounterpartAction"
@@ -43,6 +66,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.github.intellij.plugins.mt4ij.activities.ProjectStartupActivity" />
+        <postStartupActivity implementation="com.github.intellij.plugins.mt4ij.activities.WhatsNewStartupActivity" />
 
         <notificationGroup
             id="mt4ij.notifications"

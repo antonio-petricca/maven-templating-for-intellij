@@ -2,6 +2,9 @@ package com.github.intellij.plugins.mt4ij.config
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
+import com.github.intellij.plugins.mt4ij.guide.GuideLogic
+import com.intellij.DynamicBundle
+import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
@@ -14,7 +17,7 @@ internal class SettingsConfigurable(private val project: Project) :
     private var dialogPanel: DialogPanel? = null
 
     override fun createPanel(): DialogPanel = panel {
-        SettingsForm.build(this) { getState() }
+        SettingsForm.build(this, onOpenGuide = { BrowserUtil.browse(GuideLogic.guideUrl(DynamicBundle.getLocale().language)) }) { getState() }
     }.also { dialogPanel = it }
 
     override fun apply() {

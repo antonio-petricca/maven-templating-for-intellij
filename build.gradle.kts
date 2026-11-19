@@ -4,6 +4,100 @@ import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
+/** Renders the Markdown user guides and the change notes as HTML pages, bundled in the plugin and opened inside the IDE. */
+@CacheableTask
+abstract class RenderGuideTask : DefaultTask() {
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val englishGuide: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val italianGuide: RegularFileProperty
+
+    // Optional: without it (or without the section of the current version) the English notes are used
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val italianChangelog: ConfigurableFileCollection
+
+    @get:Input
+    abstract val pluginVersion: Property<String>
+
+    @get:Input
+    abstract val changeNotes: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDirectory: DirectoryProperty
+
+    @TaskAction
+    fun render() {
+        val target = outputDirectory.get().asFile.resolve("guide").apply { mkdirs() }
+        val css = STYLE.trimIndent()
+
+        fun write(name: String, text: String) = target.resolve(name).writeText(text, Charsets.UTF_8)
+
+        write("guide.css", css)
+        write("guide.html", page("en", css, englishGuide.get().asFile.readText()))
+        write("guide_it.html", page("it", css, italianGuide.get().asFile.readText()))
+
+        // Version and change notes are read at runtime from here, without asking the plugin manager
+        write("plugin-info.properties", "version=${pluginVersion.get()}\n")
+        write("whats-new.html", changeNotes.get())
+        write("whats-new_it.html", italianNotes() ?: changeNotes.get())
+    }
+
+    /** The "## [version]" section of CHANGELOG.it.md as HTML, or null when the file or the section is missing. */
+    private fun italianNotes(): String? {
+        val file = italianChangelog.files.firstOrNull { it.isFile } ?: return null
+        val lines = file.readLines(Charsets.UTF_8)
+        val start = lines.indexOfFirst { it.startsWith("## [${pluginVersion.get()}]") }
+
+        if (start < 0) {
+            return null
+        }
+
+        val body = lines.drop(start + 1).takeWhile { !it.startsWith("## [") }.joinToString("\n").trim()
+
+        return if (body.isEmpty()) null else markdownToHTML(body)
+    }
+
+    private fun page(language: String, css: String, markdown: String) = listOf(
+        "<!DOCTYPE html>",
+        "<html lang=\"$language\">",
+        "<head><meta charset=\"UTF-8\"><style>$css</style></head>",
+        "<body>",
+        markdownToHTML(markdown),
+        "</body>",
+        "</html>",
+    ).joinToString("\n")
+
+    private companion object {
+        const val STYLE = """
+            :root { color-scheme: light dark; }
+            body { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.6;
+                   max-width: 860px; margin: 0 auto; padding: 16px 32px; color: #222; background: #fff; }
+            h1, h2, h3 { line-height: 1.25; }
+            h2 { border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-top: 32px; }
+            a { color: #2470b3; }
+            code { font-family: "JetBrains Mono", Consolas, monospace; background: rgba(127,127,127,.15);
+                   padding: 1px 4px; border-radius: 3px; }
+            pre { background: rgba(127,127,127,.12); padding: 10px 14px; border-radius: 4px; overflow-x: auto; }
+            pre code { background: none; padding: 0; }
+            table { border-collapse: collapse; }
+            th, td { border: 1px solid #bbb; padding: 4px 10px; }
+            blockquote { margin-left: 0; padding-left: 14px; border-left: 4px solid #bbb; color: #666; }
+            @media (prefers-color-scheme: dark) {
+              body { color: #ddd; background: #2b2d30; }
+              h2 { border-color: #555; }
+              a { color: #6cb0f0; }
+              th, td { border-color: #555; }
+              blockquote { border-color: #555; color: #aaa; }
+            }
+        """
+    }
+}
+
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 
@@ -61,6 +155,18 @@ configurations.matching { it.name.startsWith("intellijPlatformTest") || it.name.
     exclude(group = "io.opentelemetry")
 }
 
+// Render the changelog section of the current version (or the latest one) as HTML
+val currentChangeNotes: Provider<String> = project.changelog.let { changelog ->
+    properties("pluginVersion").map { pluginVersion ->
+        with(changelog) {
+            renderItem(
+                (getOrNull(pluginVersion) ?: getLatest()).withHeader(false).withEmptySections(false),
+                Changelog.OutputType.HTML,
+            )
+        }
+    }
+}
+
 // Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html
 intellijPlatform {
     // Avoid resolving java compiler instrumentation artifacts from remote JetBrains repositories.
@@ -83,16 +189,8 @@ intellijPlatform {
             }
         }
 
-        // Render the changelog section of the current version (or the latest one) as HTML
-        val changelog = project.changelog
-        changeNotes = properties("pluginVersion").map { pluginVersion ->
-            with(changelog) {
-                renderItem(
-                    (getOrNull(pluginVersion) ?: getLatest()).withHeader(false).withEmptySections(false),
-                    Changelog.OutputType.HTML,
-                )
-            }
-        }
+        // The changelog section of the current version (or the latest one), as HTML
+        changeNotes = currentChangeNotes
 
         ideaVersion {
             sinceBuild = properties("pluginSinceBuild")
@@ -131,6 +229,20 @@ intellijPlatform {
 changelog {
     groups.empty()
     repositoryUrl = "https://github.com/antonio-petricca/maven-templating-for-intellij"
+}
+
+val renderGuide = tasks.register<RenderGuideTask>("renderGuide") {
+    englishGuide = layout.projectDirectory.file("docs/guide.md")
+    italianGuide = layout.projectDirectory.file("docs/guide.it.md")
+    italianChangelog.from(layout.projectDirectory.file("CHANGELOG.it.md"))
+    pluginVersion = properties("pluginVersion")
+    changeNotes = currentChangeNotes
+    outputDirectory = layout.buildDirectory.dir("generated/guide-resources")
+}
+
+// The generated pages end up in the plugin resources (guide/guide.html, guide/guide_it.html, guide/plugin-info.properties, guide/whats-new.html)
+sourceSets.main {
+    resources.srcDir(renderGuide)
 }
 
 tasks {
