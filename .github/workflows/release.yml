@@ -27,7 +27,7 @@ jobs:
         env:
           TAG: ${{ github.event.release.tag_name }}
         run: |
-          version=$(grep '^pluginVersion' gradle.properties | cut -d= -f2 | tr -d ' ')
+          version=$(grep '^pluginVersion' gradle.properties | cut -d= -f2 | tr -d '[:space:]')
           if [ "${TAG#v}" != "$version" ]; then
             echo "Tag $TAG does not match pluginVersion $version" >&2
             exit 1
