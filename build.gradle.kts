@@ -1,3 +1,4 @@
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
@@ -56,9 +57,9 @@ repositories {
     }
 }
 
-// Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
+// IntelliJ IDEA 2026.2+ requires Java 25.
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 
     compilerOptions {
         // Do not generate delegating stubs for Java interface default methods
@@ -70,7 +71,7 @@ kotlin {
 // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
 dependencies {
     intellijPlatform {
-        create(properties("platformType").get(), properties("platformVersion").get())
+        intellijIdea(properties("platformVersion"))
 
         // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
         bundledPlugins(properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) })
@@ -115,8 +116,14 @@ intellijPlatform {
     }
 
     pluginVerification {
+        // The plugin is already published with "intellij" in its ID and name
+        freeArgs = listOf("-mute", "TemplateWordInPluginId,TemplateWordInPluginName")
+
+        // Explicit IDEs: recommended() resolves "ideaIC" for 2025.3+, which no longer exists
+        // since JetBrains unified Community and Ultimate into a single IntelliJ IDEA distribution.
         ides {
-            recommended()
+            create(IntelliJPlatformType.IntellijIdea, "2026.2")
+            create(IntelliJPlatformType.IntellijIdea, "2026.3")
         }
     }
 }

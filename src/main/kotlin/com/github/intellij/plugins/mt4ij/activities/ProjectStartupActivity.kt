@@ -1,13 +1,15 @@
 package com.github.intellij.plugins.mt4ij.activities
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
+import com.github.intellij.plugins.mt4ij.MessageBusParent
 import com.github.intellij.plugins.mt4ij.listeners.MavenProjectsManagerListener
 import com.github.intellij.plugins.mt4ij.listeners.VFSListener
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.VirtualFileManager
-import org.jetbrains.idea.maven.project.MavenProjectsManager
+import org.jetbrains.idea.maven.project.MavenProjectsTree
 
 /*
     # Project startup hook
@@ -24,18 +26,12 @@ class ProjectStartupActivity : ProjectActivity {
     private val log : Logger = Logger.getInstance(ProjectStartupActivity::class.java)
 
     private fun registerMavenListener(project: Project) {
-        try {
-            log.info("Registering Maven Projects listener for templates folders...")
+        log.info("Registering Maven Projects listener for templates folders...")
 
-            Class.forName("org.jetbrains.idea.maven.project.MavenProjectsManager")
-
-            val mavenProjectsManager = MavenProjectsManager.getInstance(project)
-            val listener             = MavenProjectsManagerListener(project)
-
-            mavenProjectsManager.addProjectsTreeListener(listener)
-        } catch (e: ClassNotFoundException) {
-            log.warn("Maven plugin not available: ${e.message}")
-        }
+        project
+            .messageBus
+            .connect(project.service<MessageBusParent>())
+            .subscribe(MavenProjectsTree.Listener.TOPIC, MavenProjectsManagerListener(project))
     }
 
     private fun registerVFSListener(project: Project) {
@@ -43,7 +39,7 @@ class ProjectStartupActivity : ProjectActivity {
 
         project
             .messageBus
-            .connect()
+            .connect(project.service<MessageBusParent>())
             .subscribe(VirtualFileManager.VFS_CHANGES, VFSListener(project))
     }
 
