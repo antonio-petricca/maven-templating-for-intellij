@@ -48,9 +48,17 @@ dependencies {
 
         // IntelliJ Platform Gradle Plugin Dependencies - https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
         testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.Plugin.Java)
+        testFramework(TestFrameworkType.Plugin.Maven)
     }
 
     testImplementation("junit:junit:4.13.2")
+}
+
+// The Maven server of the tests gets only the jar of one OpenTelemetry class on its classpath: the separate
+// artifacts brought by the test framework hide the IDE's own merged library and the server then lacks the others
+configurations.matching { it.name.startsWith("intellijPlatformTest") || it.name.startsWith("test") }.configureEach {
+    exclude(group = "io.opentelemetry")
 }
 
 // Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html
