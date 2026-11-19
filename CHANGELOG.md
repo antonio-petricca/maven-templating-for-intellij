@@ -1,5 +1,12 @@
 # maven-templating-for-intellij Changelog
 
+## [2.0.0]
+
+- Compatible with IntelliJ IDEA from 2026.2 (build 262) up to 2026.3 (build 263.*); older versions are no longer supported, because the non-deprecated Maven projects tree listener registration is only available since 2026.2.
+- Replaced deprecated API usages (Maven projects tree listener registration, bundle class).
+- Message bus connections are now released together with the project.
+- Updated build toolchain: Gradle 9.9.1, IntelliJ Platform Gradle Plugin 2.20.1, Kotlin 2.4.21, Java 25.
+
 ## [1.7.2]
 
 - Declared compatibility from 2024 up to 2026.2.

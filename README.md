@@ -29,7 +29,15 @@ The **Maven Templating assistant** does all this for you:
 - Allows you to enforce a project scan via the **Project View Context** menu or **Tools** menu.
 
 The default `java-templates` folder name can be customized on the settings page under the **Build Tools** section.
+
+The plugin requires the bundled **Maven** and **Java** plugins.
 <!-- Plugin description end -->
+
+## Compatibility
+
+- Since build 262 (IntelliJ IDEA 2026.2) up to build 263.* (IntelliJ IDEA 2026.3).
+- Verified with the Plugin Verifier against IntelliJ IDEA 2026.2 and 2026.3.
+- Requires the bundled Maven (`org.jetbrains.idea.maven`) and Java plugins.
 
 ## Installation
 
@@ -43,6 +51,12 @@ The default `java-templates` folder name can be customized on the settings page 
   Download the [latest release](https://github.com/antonio-petricca/maven-templating-for-intellij/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
+## Building
+
+Versions are defined in `gradle.properties` and `gradle/libs.versions.toml`.
+
+- Build the plugin distribution: `./gradlew buildPlugin`
+- Verify compatibility with the configured IDEs: `./gradlew verifyPlugin`
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
