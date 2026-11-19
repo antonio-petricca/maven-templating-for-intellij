@@ -33,6 +33,14 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
+
+        <action
+            class="com.github.intellij.plugins.mt4ij.navigation.GoToCounterpartAction"
+            id="mt4ij.actions.go-to-counterpart"
+        >
+            <add-to-group group-id="GoToMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -44,6 +52,12 @@
             key="mt4ij.notification.group.name"
             bundle="messages.Bundle"
         />
+
+        <codeInsight.lineMarkerProvider
+            language="JAVA"
+            implementationClass="com.github.intellij.plugins.mt4ij.navigation.TemplateLineMarkerProvider"
+        />
+
 
         <projectConfigurable
             instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"
