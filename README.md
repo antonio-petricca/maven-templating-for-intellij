@@ -16,7 +16,8 @@ The **Maven Templating assistant** does all this for you:
 - Declares the template folders (sources and test sources) during the Maven project import, reading them from the `pom.xml`.
 - Manages template folders when adding/removing/moving/renaming.
 - Optionally scans the project on project opening, and shows a notification with the result when a scan you requested ends.
-- Allows you to enforce a project scan via the **Project View Context** menu or **Tools** menu.
+- Allows you to enforce a project scan via the **Project View Context** menu or the **Tools | Maven Templating** menu.
+- Includes a user guide, available from the **Help** and **Tools | Maven Templating** menus, and shows what's new after each update.
 - Lets you exclude the generated sources (output folders), to avoid duplicate classes.
 - Navigates between a template and its generated source (gutter icon, **Go to** menu and editor context menu).
 - Completes, resolves and inspects the `${...}` Maven properties used in templates, with a quick fix to add a missing property to the `pom.xml`.
@@ -24,6 +25,8 @@ The **Maven Templating assistant** does all this for you:
 The `java-templates` folder name, the scan on startup and the exclusion of generated sources can be customized on the settings page under the **Build Tools** section. The settings page is also available in Italian, when the IDE uses the Italian language pack.
 
 The plugin requires the bundled **Maven** and **Java** plugins.
+
+Read the [user guide](https://github.com/antonio-petricca/maven-templating-for-intellij/blob/main/docs/guide.md) for all the details ([Italiano](https://github.com/antonio-petricca/maven-templating-for-intellij/blob/main/docs/guide.it.md)).
 <!-- Plugin description end -->
 
 ## Compatibility

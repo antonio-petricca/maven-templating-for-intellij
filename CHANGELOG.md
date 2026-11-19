@@ -10,6 +10,8 @@
 - Reworked settings, with validation and Italian localization.
 - Notification with the result at the end of a scan you request.
 - More robust and faster project scan, also on large projects.
+- User guide in English and Italian, available from the Help and Tools | Maven Templating menus and from the settings page.
+- A What's New tab after each update, with a link to the guide (can be turned off in the settings).
 
 ## [1.7.2]
 
