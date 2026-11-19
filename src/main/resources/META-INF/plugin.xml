@@ -44,6 +44,10 @@
         />
     </extensions>
 
+    <extensions defaultExtensionNs="org.jetbrains.idea.maven">
+        <importing.workspaceConfigurator implementation="com.github.intellij.plugins.mt4ij.importing.TemplatingFoldersConfigurator" />
+    </extensions>
+
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
         <supportsKotlinPluginMode mode="ANY"/>
     </extensions>

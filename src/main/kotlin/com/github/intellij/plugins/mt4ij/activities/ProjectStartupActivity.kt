@@ -2,14 +2,12 @@ package com.github.intellij.plugins.mt4ij.activities
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.MessageBusParent
-import com.github.intellij.plugins.mt4ij.listeners.MavenProjectsManagerListener
 import com.github.intellij.plugins.mt4ij.listeners.VFSListener
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.VirtualFileManager
-import org.jetbrains.idea.maven.project.MavenProjectsTree
 
 /*
     # Project startup hook
@@ -25,15 +23,6 @@ import org.jetbrains.idea.maven.project.MavenProjectsTree
 class ProjectStartupActivity : ProjectActivity {
     private val log : Logger = Logger.getInstance(ProjectStartupActivity::class.java)
 
-    private fun registerMavenListener(project: Project) {
-        log.info("Registering Maven Projects listener for templates folders...")
-
-        project
-            .messageBus
-            .connect(project.service<MessageBusParent>())
-            .subscribe(MavenProjectsTree.Listener.TOPIC, MavenProjectsManagerListener(project))
-    }
-
     private fun registerVFSListener(project: Project) {
         log.info("Registering VFS listener for templates folders...")
 
@@ -44,7 +33,6 @@ class ProjectStartupActivity : ProjectActivity {
     }
 
     override suspend fun execute(project: Project) {
-        registerMavenListener(project)
         registerVFSListener(project)
 
         ApiHelpers.scanProject(project)
