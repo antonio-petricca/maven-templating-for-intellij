@@ -37,7 +37,7 @@ class TemplatingFolders private constructor(
          */
         fun of(mavenProject: MavenProject, templatesName: String = DEFAULT_TEMPLATES_NAME): TemplatingFolders {
             val plugin  = mavenProject.findPlugin(PLUGIN_GROUP_ID, PLUGIN_ARTIFACT_ID)
-            val baseDir = mavenProject.directory
+            val baseDir = mavenProject.directoryPath.toString()
             val buildDir = mavenProject.buildDirectory
 
             if (plugin == null) {

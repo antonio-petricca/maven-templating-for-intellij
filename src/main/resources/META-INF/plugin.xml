@@ -22,8 +22,6 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.idea.maven</depends>
-    <depends>com.intellij.modules.lang</depends>
-    <depends>com.intellij.modules.xml</depends>
 
     <actions>
         <action
@@ -84,11 +82,14 @@
         />
     </extensions>
 
+    <projectListeners>
+        <listener
+            class="com.github.intellij.plugins.mt4ij.listeners.VFSListener"
+            topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"
+        />
+    </projectListeners>
+
     <extensions defaultExtensionNs="org.jetbrains.idea.maven">
         <importing.workspaceConfigurator implementation="com.github.intellij.plugins.mt4ij.importing.TemplatingFoldersConfigurator" />
-    </extensions>
-
-    <extensions defaultExtensionNs="org.jetbrains.kotlin">
-        <supportsKotlinPluginMode mode="ANY"/>
     </extensions>
 </idea-plugin>

@@ -37,12 +37,12 @@ class SettingsStorage : PersistentStateComponent<SettingsState?> {
     }
 
     override fun getState(): SettingsState {
-        log.info("Getting state...")
+        log.debug("Getting state...")
         return state
     }
 
     override fun loadState(state: SettingsState) {
-        log.info("Loading state...")
+        log.debug("Loading state...")
         this.state = state
     }
 }

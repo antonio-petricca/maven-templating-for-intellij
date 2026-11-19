@@ -123,7 +123,7 @@ object SourceFolders {
 
             if (contentEntry.sourceFolders.none { it.url == change.folderUrl }) {
                 contentEntry.addSourceFolder(change.folder, change.isTest)
-                log.info("Added source folder: { url: \"${change.folderUrl}\", isTestFolder: ${change.isTest} }")
+                log.debug("Added source folder: { url: \"${change.folderUrl}\", isTestFolder: ${change.isTest} }")
             }
         } else {
             model.contentEntries.forEach { contentEntry ->
@@ -131,7 +131,7 @@ object SourceFolders {
                     .filter { it.url == change.folderUrl }
                     .forEach {
                         contentEntry.removeSourceFolder(it)
-                        log.info("Removed source folder: { url: \"${change.folderUrl}\" }")
+                        log.debug("Removed source folder: { url: \"${change.folderUrl}\" }")
                     }
             }
         }
