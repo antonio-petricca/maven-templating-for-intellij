@@ -29,6 +29,9 @@ class TemplatingFoldersConfigurator : MavenWorkspaceConfigurator, MavenStaticSyn
 
         const val DEFAULT_MAIN_FOLDER = "src/main/java-templates"
         const val DEFAULT_TEST_FOLDER = "src/test/java-templates"
+
+        const val DEFAULT_MAIN_OUTPUT = "\${project.build.directory}/generated-sources/java-templates"
+        const val DEFAULT_TEST_OUTPUT = "\${project.build.directory}/generated-test-sources/java-templates"
     }
 
     override fun getAdditionalFolders(context: FoldersContext): Stream<AdditionalFolder> {
@@ -42,6 +45,29 @@ class TemplatingFoldersConfigurator : MavenWorkspaceConfigurator, MavenStaticSyn
         }
 
         return folders.stream()
+    }
+
+    // The generated copies duplicate the template classes, so the IDE must not see them as sources
+    override fun getFoldersToExclude(context: FoldersContext): Stream<String> {
+        val mavenProject = context.mavenProject
+        val plugin       = mavenProject.findPlugin(PLUGIN_GROUP_ID, PLUGIN_ARTIFACT_ID)
+
+        if (plugin == null || !isExclusionEnabled(mavenProject)) {
+            return Stream.empty()
+        }
+
+        val baseDir = mavenProject.directory
+
+        val mainOutputs = configuredPaths(plugin, "filter-sources", "outputDirectory", baseDir, DEFAULT_MAIN_OUTPUT, mavenProject.buildDirectory)
+        val testOutputs = configuredPaths(plugin, "filter-test-sources", "testOutputDirectory", baseDir, DEFAULT_TEST_OUTPUT, mavenProject.buildDirectory)
+
+        return (mainOutputs + testOutputs).distinct().stream()
+    }
+
+    private fun isExclusionEnabled(mavenProject: MavenProject): Boolean {
+        val project = ProjectLocator.getInstance().guessProjectForFile(mavenProject.directoryFile)
+
+        return project?.let { SettingsStorage.getInstance(it).state.excludeGeneratedSources } ?: false
     }
 
     private fun pluginFolders(mavenProject: MavenProject, plugin: MavenPlugin): List<AdditionalFolder> {
@@ -60,7 +86,8 @@ class TemplatingFoldersConfigurator : MavenWorkspaceConfigurator, MavenStaticSyn
         goal: String,
         parameter: String,
         baseDir: String,
-        defaultFolder: String
+        defaultFolder: String,
+        buildDir: String = ""
     ): List<String> {
         val values = mutableListOf<String>()
 
@@ -70,9 +97,9 @@ class TemplatingFoldersConfigurator : MavenWorkspaceConfigurator, MavenStaticSyn
             .filter { goal in it.goals }
             .forEach { values += parameterValue(it.configurationElement, parameter) }
 
-        val resolved = values.map { resolvePath(it, baseDir) }
+        val resolved = values.map { resolvePath(it, baseDir, buildDir) }
 
-        return resolved.ifEmpty { listOf(resolvePath(defaultFolder, baseDir)) }.distinct()
+        return resolved.ifEmpty { listOf(resolvePath(defaultFolder, baseDir, buildDir)) }.distinct()
     }
 
     private fun parameterValue(configuration: Element?, parameter: String): List<String> {
@@ -81,8 +108,9 @@ class TemplatingFoldersConfigurator : MavenWorkspaceConfigurator, MavenStaticSyn
         return if (value.isNullOrEmpty()) emptyList() else listOf(value)
     }
 
-    private fun resolvePath(value: String, baseDir: String): String {
+    private fun resolvePath(value: String, baseDir: String, buildDir: String = ""): String {
         val path = value
+            .replace("\${project.build.directory}", buildDir)
             .replace("\${basedir}", baseDir)
             .replace("\${project.basedir}", baseDir)
             .replace('\\', '/')

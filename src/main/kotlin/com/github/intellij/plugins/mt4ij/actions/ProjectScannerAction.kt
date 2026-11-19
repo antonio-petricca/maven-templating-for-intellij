@@ -1,17 +1,14 @@
 package com.github.intellij.plugins.mt4ij.actions
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
-import com.github.intellij.plugins.mt4ij.Bundle
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 
-class ProjectScannerAction :
-    AnAction(Bundle.message("mt4ij.actions.project-scanner.title")),
-    DumbAware
-{
+// Text and description come from the bundle (action.mt4ij.actions.project-scanner.*)
+class ProjectScannerAction : AnAction(), DumbAware {
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
@@ -25,6 +22,6 @@ class ProjectScannerAction :
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        ApiHelpers.scanProject(project)
+        ApiHelpers.scanProject(project, notify = true)
     }
 }

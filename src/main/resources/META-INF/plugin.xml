@@ -17,6 +17,8 @@
     <name>Maven Templating assistant</name>
     <vendor>Antonio Petricca</vendor>
 
+    <resource-bundle>messages.Bundle</resource-bundle>
+
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
     <depends>org.jetbrains.idea.maven</depends>
@@ -36,9 +38,17 @@
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.github.intellij.plugins.mt4ij.activities.ProjectStartupActivity" />
 
+        <notificationGroup
+            id="mt4ij.notifications"
+            displayType="BALLOON"
+            key="mt4ij.notification.group.name"
+            bundle="messages.Bundle"
+        />
+
         <projectConfigurable
             instance="com.github.intellij.plugins.mt4ij.config.SettingsConfigurable"
-            displayName="Maven Templating assistant"
+            key="mt4ij.settings.name"
+            bundle="messages.Bundle"
             groupId="build.tools"
             id="mt4ij.settings"
         />

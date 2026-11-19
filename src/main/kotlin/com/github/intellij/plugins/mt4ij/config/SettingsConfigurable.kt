@@ -2,71 +2,41 @@ package com.github.intellij.plugins.mt4ij.config
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.Bundle
-import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.options.BoundSearchableConfigurable
+import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
-import javax.swing.JComponent
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.dsl.builder.panel
 
-/*
-    // Swing UI
+internal class SettingsConfigurable(private val project: Project) :
+    BoundSearchableConfigurable(Bundle.message("mt4ij.settings.name"), "mt4ij.settings", "mt4ij.settings")
+{
+    private var dialogPanel: DialogPanel? = null
 
-    https://stackoverflow.com/a/29258675/418599
-
-    // Configuration UI
-
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/360003316280-Adding-Your-Plugin-Setting-to-the-IDE-Settings-Dialog
-    https://programtalk.com/vs/intellij-haxe/src/common/com/intellij/plugins/haxe/config/HaxeSettingsConfigurable.java/
-
-    // Searchable label
-
-    https://intellij-support.jetbrains.com/hc/en-us/community/posts/206133719-How-does-SearchableConfigurable-work
- */
-
-internal class SettingsConfigurable(private val project: Project) : Configurable {
-    private val log: Logger = Logger.getInstance(SettingsConfigurable::class.java)
-    private var settingsForm: SettingsForm? = null
-
-    override fun createComponent(): JComponent? {
-        log.info("Creating settings form...")
-
-        if (settingsForm == null) {
-            settingsForm = SettingsForm()
-        }
-
-        return settingsForm?.mainPanel
-    }
-
-    override fun isModified(): Boolean {
-        val state = getState()
-
-        return settingsForm?.isModified(state) ?: false
-    }
+    override fun createPanel(): DialogPanel = panel {
+        SettingsForm.build(this) { getState() }
+    }.also { dialogPanel = it }
 
     override fun apply() {
-        log.info("Applying settings...")
+        // Invalid values must not be saved: the validators of the form run before anything is applied
+        dialogPanel?.validateAll()?.firstOrNull()?.let { throw ConfigurationException(it.message) }
 
-        val state = getState()
+        val previous = getState().copy()
 
-        settingsForm?.apply {
-            state.templatesPath = (getTemplatesPath() ?: "")
+        super.apply()
+
+        val current = getState()
+
+        if (current.templatesPath != previous.templatesPath) {
+            // Folders with the old name are unmarked before the new ones are looked for
+            ApiHelpers.scanProject(project, notify = true, previousName = previous.templatesPath)
         }
 
-        ApiHelpers.scanProject(project)
+        // The excluded folders are declared at Maven import time: only a reimport applies the change
+        if (current.excludeGeneratedSources != previous.excludeGeneratedSources) {
+            ApiHelpers.suggestReimport(project)
+        }
     }
 
-    override fun getDisplayName(): String {
-        return Bundle.message("mt4ij.settings.name")
-    }
-
-    override fun reset() {
-        val state = getState()
-
-        settingsForm?.setTemplatesPath(state.templatesPath)
-    }
-
-    private fun getState(): SettingsState {
-        return SettingsStorage
-            .getInstance(project)
-            .state
-    }
+    private fun getState(): SettingsState = SettingsStorage.getInstance(project).state
 }

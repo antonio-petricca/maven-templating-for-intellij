@@ -2,6 +2,7 @@ package com.github.intellij.plugins.mt4ij.activities
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.MessageBusParent
+import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.github.intellij.plugins.mt4ij.listeners.VFSListener
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
@@ -35,6 +36,8 @@ class ProjectStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         registerVFSListener(project)
 
-        ApiHelpers.scanProject(project)
+        if (SettingsStorage.getInstance(project).state.scanOnStartup) {
+            ApiHelpers.scanProject(project)
+        }
     }
 }
