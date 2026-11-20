@@ -163,8 +163,10 @@ intellijPlatform {
     // Avoid resolving java compiler instrumentation artifacts from remote JetBrains repositories.
     instrumentCode = false
 
+    // Names the zip and the jar; the name the IDE shows is the one in plugin.xml
+    projectName = properties("pluginName")
+
     pluginConfiguration {
-        name = properties("pluginName")
         version = properties("pluginVersion")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
@@ -229,6 +231,22 @@ val renderGuide = tasks.register<RenderGuideTask>("renderGuide") {
     pluginVersion = properties("pluginVersion")
     changeNotes = currentChangeNotes
     outputDirectory = layout.buildDirectory.dir("generated/guide-resources")
+}
+
+// The name the IDE lists is the one of plugin.xml: the patched descriptor must not carry the name of the module
+val checkPluginName = tasks.register("checkPluginName") {
+    val descriptor = tasks.named("patchPluginXml").map { layout.buildDirectory.file("tmp/patchPluginXml/plugin.xml").get().asFile }
+
+    dependsOn("patchPluginXml")
+    doLast {
+        check(descriptor.get().readText().contains("<name>Maven Templating assistant</name>")) {
+            "The name in the patched plugin.xml is not the display name"
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn(checkPluginName)
 }
 
 // The generated pages end up in the plugin resources (guide/guide.html, guide/guide_it.html, guide/plugin-info.properties, guide/whats-new.html)
