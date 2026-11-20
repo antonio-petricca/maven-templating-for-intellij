@@ -3,6 +3,7 @@ package com.github.intellij.plugins.mt4ij
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.github.intellij.plugins.mt4ij.importing.TemplatingFolders
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VfsUtil
 import org.jetbrains.idea.maven.project.MavenProject
@@ -23,8 +24,17 @@ object TemplateLocator {
             return null
         }
 
-        return MavenProjectsManager.getInstanceIfCreated(project)?.findContainingProject(file)
+        val manager = MavenProjectsManager.getInstanceIfCreated(project) ?: return null
+
+        // Files under target/ are excluded from the modules, so the module based lookup finds nothing for them
+        return manager.findContainingProject(file) ?: containingByPath(manager, file)
     }
+
+    // The innermost Maven project whose directory contains the file
+    private fun containingByPath(manager: MavenProjectsManager, file: VirtualFile): MavenProject? =
+        manager.projects
+            .filter { FileUtil.isAncestor(it.directoryPath.toString(), file.path, true) }
+            .maxByOrNull { it.directoryPath.toString().length }
 
     fun isTemplate(project: Project, file: VirtualFile): Boolean {
         val mavenProject = mavenProjectOf(project, file) ?: return false
@@ -55,7 +65,8 @@ object TemplateLocator {
     private fun relativeTo(file: VirtualFile, roots: List<String>): String? {
         val path = file.path
 
-        return roots.firstOrNull { path.startsWith("$it/") }?.let { path.substring(it.length + 1) }
+        // isAncestor ignores the case on case-insensitive file systems, and so the path lengths stay comparable
+        return roots.firstOrNull { FileUtil.isAncestor(it, path, true) }?.let { path.substring(it.length + 1) }
     }
 
     // Counterparts are looked up on disk only: no refresh, so a missing build output simply gives null
