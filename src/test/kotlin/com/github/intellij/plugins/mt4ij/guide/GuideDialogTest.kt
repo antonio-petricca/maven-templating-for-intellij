@@ -25,6 +25,12 @@ class GuideDialogTest : BasePlatformTestCase() {
         }
     }
 
+    fun testThePlainPaneGetsNoStyleSheet() {
+        val html = "<html><head><title>T</title><style>a { color: red; }</style><STYLE type=\"text/css\">\nb { gap: 1px; }\n</STYLE></head><body>x</body></html>"
+
+        assertEquals("<html><head><title>T</title></head><body>x</body></html>", GuideDialog.withoutStyleSheets(html))
+    }
+
     fun testOnlyWebLinksOpenInTheSystemBrowser() {
         assertTrue(GuideDialog.isWebLink("https://example.org"))
         assertTrue(GuideDialog.isWebLink("http://example.org"))

@@ -22,6 +22,12 @@ class PluginDescriptorTest : BasePlatformTestCase() {
         }
     }
 
+    // The guide window uses the embedded browser, which is a plugin of its own since 2026.2: without this dependency
+    // its classes are not visible to the plugin, the window fails to open, and neither the tests nor the verifier notice
+    fun testPluginDependsOnTheEmbeddedBrowser() {
+        assertTrue(resourceText("/META-INF/plugin.xml").contains("<depends>com.intellij.modules.jcef</depends>"))
+    }
+
     fun testEveryActionAndGroupOfThePluginHasAnIcon() {
         val manager = ActionManager.getInstance()
         val ids     = manager.getActionIdList("mt4ij.")

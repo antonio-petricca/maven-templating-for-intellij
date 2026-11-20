@@ -9,6 +9,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.jcef.JBCefApp
 import com.intellij.ui.jcef.JBCefBrowser
+import com.intellij.util.ui.HTMLEditorKitBuilder
 import com.intellij.util.ui.JBUI
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
@@ -76,7 +77,11 @@ class GuideDialog(project: Project, private val html: String, useBrowser: Boolea
         return created
     }
 
-    private fun createFallbackPane() = JEditorPane("text/html", html).apply {
+    // Swing understands only old CSS and fails on the style sheets written for the browser: they are left out,
+    // and the HTML kit of the IDE gives the page the fonts and colors of the theme
+    private fun createFallbackPane() = JEditorPane().apply {
+        editorKit = HTMLEditorKitBuilder().withWordWrapViewFactory().build()
+        text = withoutStyleSheets(html)
         isEditable = false
         caretPosition = 0
         addHyperlinkListener {
@@ -90,6 +95,9 @@ class GuideDialog(project: Project, private val html: String, useBrowser: Boolea
 
         // The window open for each project, forgotten when it is closed so that it never holds on to the project (EDT only)
         private val openWindows = mutableMapOf<Project, GuideDialog>()
+
+        internal fun withoutStyleSheets(html: String): String =
+            html.replace(Regex("<style[^>]*>.*?</style>", setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE)), "")
 
         fun isWebLink(url: String): Boolean = url.startsWith("http://") || url.startsWith("https://")
 
