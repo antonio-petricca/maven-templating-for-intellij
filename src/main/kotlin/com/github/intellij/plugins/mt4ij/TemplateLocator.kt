@@ -2,6 +2,7 @@ package com.github.intellij.plugins.mt4ij
 
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.github.intellij.plugins.mt4ij.importing.TemplatingFolders
+import com.intellij.openapi.keymap.KeymapUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -9,9 +10,39 @@ import com.intellij.openapi.vfs.VfsUtil
 import org.jetbrains.idea.maven.project.MavenProject
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 import java.io.File
+import javax.swing.Icon
 
-/** The generated source of a template, or the template of a generated source. */
-class Counterpart(val file: VirtualFile, val isGenerated: Boolean)
+/**
+ * The generated source of a template, or the template of a generated source.
+ * [isGenerated] tells which one [file] is; texts and icons describe the way to it.
+ */
+class Counterpart(val file: VirtualFile, val isGenerated: Boolean) {
+
+    val icon: Icon       get() = if (isGenerated) MavenTemplatingIcons.GoToGenerated else MavenTemplatingIcons.GoToTemplate
+    val gutterIcon: Icon get() = if (isGenerated) MavenTemplatingIcons.GoToGeneratedGutter else MavenTemplatingIcons.GoToTemplateGutter
+
+    /** The shortcut of the navigation action, like "(Ctrl+Alt+Shift+Space)", or nothing when it has none. */
+    private val shortcutHint: String
+        get() = KeymapUtil.getFirstKeyboardShortcutText(GO_TO_COUNTERPART_ACTION_ID).let { if (it.isEmpty()) "" else " ($it)" }
+
+    val actionText: String
+        get() = Bundle.message(if (isGenerated) "mt4ij.navigation.go-to-generated" else "mt4ij.navigation.go-to-template")
+
+    /** What the banner says about the file it is shown on, which is the opposite of [file]. */
+    val bannerText: String
+        get() = Bundle.message(if (isGenerated) "mt4ij.navigation.banner.template" else "mt4ij.navigation.banner.generated")
+
+    val bannerLinkText: String
+        get() = Bundle.message(if (isGenerated) "mt4ij.navigation.banner.open-generated" else "mt4ij.navigation.banner.open-template") + shortcutHint
+
+    /** [actionText] with the shortcut, for the tooltip of the gutter icon. */
+    val tooltipText: String
+        get() = actionText + shortcutHint
+
+    companion object {
+        const val GO_TO_COUNTERPART_ACTION_ID = "mt4ij.actions.go-to-counterpart"
+    }
+}
 
 /**
  * Tells whether a Java file is a template or a generated source of the templating-maven-plugin

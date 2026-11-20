@@ -1,6 +1,7 @@
 package com.github.intellij.plugins.mt4ij.navigation
 
 import com.github.intellij.plugins.mt4ij.Bundle
+import com.github.intellij.plugins.mt4ij.MavenTemplatingIcons
 import com.github.intellij.plugins.mt4ij.TemplateLocator
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -16,16 +17,29 @@ class GoToCounterpartAction : AnAction(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(event: AnActionEvent) {
-        val counterpart = event.project?.let { project ->
-            event.getData(CommonDataKeys.VIRTUAL_FILE)?.let { TemplateLocator.counterpartOf(project, it) }
-        }
+        val project      = event.project
+        val file         = event.getData(CommonDataKeys.VIRTUAL_FILE)
+        val counterpart  = if (project != null && file != null) TemplateLocator.counterpartOf(project, file) else null
+        val presentation = event.presentation
 
-        event.presentation.isEnabledAndVisible = counterpart != null
+        when {
+            counterpart != null -> {
+                presentation.isEnabledAndVisible = true
+                presentation.icon = counterpart.icon
+                presentation.text = counterpart.actionText
+                presentation.description = Bundle.message("action.mt4ij.actions.go-to-counterpart.description")
+            }
 
-        if (counterpart != null) {
-            event.presentation.text = Bundle.message(
-                if (counterpart.isGenerated) "mt4ij.navigation.go-to-generated" else "mt4ij.navigation.go-to-template"
-            )
+            // A template whose generated source does not exist yet: shown, but there is nowhere to go
+            project != null && file != null && TemplateLocator.isTemplate(project, file) -> {
+                presentation.isVisible = true
+                presentation.isEnabled = false
+                presentation.icon = MavenTemplatingIcons.GoToGenerated
+                presentation.text = Bundle.message("mt4ij.navigation.go-to-generated")
+                presentation.description = Bundle.message("mt4ij.navigation.go-to-generated.not-built")
+            }
+
+            else -> presentation.isEnabledAndVisible = false
         }
     }
 

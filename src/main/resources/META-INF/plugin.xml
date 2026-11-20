@@ -27,9 +27,7 @@
         <action
             class="com.github.intellij.plugins.mt4ij.actions.ProjectScannerAction"
             id="mt4ij.actions.project-scanner"
-        >
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-        </action>
+        />
 
         <action
             class="com.github.intellij.plugins.mt4ij.actions.OpenGuideAction"
@@ -48,20 +46,36 @@
             id="mt4ij.actions.whats-new"
         />
 
-        <group id="mt4ij.groups.tools" popup="true">
-            <reference ref="mt4ij.actions.project-scanner"/>
-            <reference ref="mt4ij.actions.open-guide"/>
-            <reference ref="mt4ij.actions.whats-new"/>
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </group>
-
         <action
             class="com.github.intellij.plugins.mt4ij.navigation.GoToCounterpartAction"
             id="mt4ij.actions.go-to-counterpart"
+            icon="com.github.intellij.plugins.mt4ij.MavenTemplatingIcons.GoToGenerated"
         >
-            <add-to-group group-id="GoToMenu" anchor="last"/>
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="GoToCodeGroup" anchor="after" relative-to-action="GotoRelated"/>
+            <add-to-group group-id="EditorPopupMenu.GoTo" anchor="after" relative-to-action="GotoRelated"/>
+            <!-- No letter is left free with Ctrl+Alt+Shift (G is Database Tools, Y is Code With Me), so Space it is -->
+            <keyboard-shortcut keymap="$default" first-keystroke="control alt shift SPACE"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta alt shift G"/>
+            <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta alt shift G"/>
         </action>
+
+        <group
+            id="mt4ij.groups.main"
+            class="com.github.intellij.plugins.mt4ij.actions.MavenTemplatingGroup"
+            popup="true"
+            icon="com.github.intellij.plugins.mt4ij.MavenTemplatingIcons.Plugin"
+        >
+            <reference ref="mt4ij.actions.go-to-counterpart"/>
+            <reference ref="mt4ij.actions.project-scanner"/>
+            <separator/>
+            <reference ref="mt4ij.actions.open-guide"/>
+            <reference ref="mt4ij.actions.whats-new"/>
+
+            <add-to-group group-id="EditorPopupMenu1" anchor="after" relative-to-action="EditorPopupMenu1.FindRefactor"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="ProjectViewEditSource"/>
+            <add-to-group group-id="EditorTabPopupMenu" anchor="after" relative-to-action="CopyPaths"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </group>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -78,6 +92,10 @@
         <codeInsight.lineMarkerProvider
             language="JAVA"
             implementationClass="com.github.intellij.plugins.mt4ij.navigation.TemplateLineMarkerProvider"
+        />
+
+        <editorNotificationProvider
+            implementation="com.github.intellij.plugins.mt4ij.navigation.CounterpartBannerProvider"
         />
 
         <psi.referenceContributor

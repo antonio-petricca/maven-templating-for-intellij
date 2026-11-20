@@ -10,6 +10,7 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.*
+import com.intellij.ui.EditorNotifications
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 import java.util.concurrent.ConcurrentHashMap
 
@@ -79,6 +80,19 @@ internal class VFSListener(private val project: Project) : BulkFileListener {
         }
 
         scheduleUpdate(changes)
+        refreshBanners(events)
+    }
+
+    // Builds create and delete generated sources (or whole output folders), and the banners must follow
+    private fun refreshBanners(events: List<VFileEvent>) {
+        val isBuildOutputChange = events.any {
+            (it is VFileCreateEvent || it is VFileDeleteEvent || it is VFileMoveEvent || it is VFileCopyEvent) &&
+                (it.path.endsWith(".java") || (it as? VFileCreateEvent)?.isDirectory ?: true)
+        }
+
+        if (isBuildOutputChange && !project.isDisposed) {
+            EditorNotifications.getInstance(project).updateAllNotifications()
+        }
     }
 
     // A template folder renamed or moved to a place that is not a templates folder must not stay a source root
