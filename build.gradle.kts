@@ -73,27 +73,18 @@ abstract class RenderGuideTask : DefaultTask() {
     ).joinToString("\n")
 
     private companion object {
+        // Layout only: colors and font come from the IDE theme, which the plugin appends when it opens a page
         const val STYLE = """
-            :root { color-scheme: light dark; }
-            body { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.6;
-                   max-width: 860px; margin: 0 auto; padding: 16px 32px; color: #222; background: #fff; }
+            body { line-height: 1.6; max-width: 860px; margin: 0 auto; padding: 16px 32px; }
             h1, h2, h3 { line-height: 1.25; }
-            h2 { border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-top: 32px; }
-            a { color: #2470b3; }
+            h2 { border-bottom: 1px solid; padding-bottom: 4px; margin-top: 32px; }
             code { font-family: "JetBrains Mono", Consolas, monospace; background: rgba(127,127,127,.15);
                    padding: 1px 4px; border-radius: 3px; }
             pre { background: rgba(127,127,127,.12); padding: 10px 14px; border-radius: 4px; overflow-x: auto; }
             pre code { background: none; padding: 0; }
             table { border-collapse: collapse; }
-            th, td { border: 1px solid #bbb; padding: 4px 10px; }
-            blockquote { margin-left: 0; padding-left: 14px; border-left: 4px solid #bbb; color: #666; }
-            @media (prefers-color-scheme: dark) {
-              body { color: #ddd; background: #2b2d30; }
-              h2 { border-color: #555; }
-              a { color: #6cb0f0; }
-              th, td { border-color: #555; }
-              blockquote { border-color: #555; color: #aaa; }
-            }
+            th, td { border: 1px solid; padding: 4px 10px; }
+            blockquote { margin-left: 0; padding-left: 14px; border-left: 4px solid; }
         """
     }
 }

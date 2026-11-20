@@ -3,35 +3,36 @@ package com.github.intellij.plugins.mt4ij.guide
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GuideLogicTest {
 
     @Test
-    fun firstInstallShowsWhatsNew() {
-        assertTrue(GuideLogic.shouldShowWhatsNew("1.2.0", "", enabled = true))
+    fun firstInstallShowsWhatsNewAsAnInstall() {
+        assertEquals(WhatsNewVisit.INSTALL, GuideLogic.whatsNewVisit("1.2.0", "", enabled = true))
     }
 
     @Test
     fun sameVersionIsNotShownAgain() {
-        assertFalse(GuideLogic.shouldShowWhatsNew("1.2.0", "1.2.0", enabled = true))
+        assertNull(GuideLogic.whatsNewVisit("1.2.0", "1.2.0", enabled = true))
     }
 
     @Test
-    fun differentVersionShowsWhatsNew() {
-        assertTrue(GuideLogic.shouldShowWhatsNew("1.3.0", "1.2.0", enabled = true))
+    fun differentVersionShowsWhatsNewAsAnUpdate() {
+        assertEquals(WhatsNewVisit.UPDATE, GuideLogic.whatsNewVisit("1.3.0", "1.2.0", enabled = true))
     }
 
     @Test
     fun disabledOptionNeverShowsWhatsNew() {
-        assertFalse(GuideLogic.shouldShowWhatsNew("1.3.0", "1.2.0", enabled = false))
-        assertFalse(GuideLogic.shouldShowWhatsNew("1.3.0", "", enabled = false))
+        assertNull(GuideLogic.whatsNewVisit("1.3.0", "1.2.0", enabled = false))
+        assertNull(GuideLogic.whatsNewVisit("1.3.0", "", enabled = false))
     }
 
     @Test
     fun unknownInstalledVersionIsIgnored() {
-        assertFalse(GuideLogic.shouldShowWhatsNew(null, "", enabled = true))
+        assertNull(GuideLogic.whatsNewVisit(null, "", enabled = true))
     }
 
     @Test
@@ -75,5 +76,15 @@ class GuideLogicTest {
         assertEquals("/guide/whats-new_it.html", GuideLogic.whatsNewResource("it"))
         assertEquals("/guide/whats-new.html", GuideLogic.whatsNewResource("en"))
         assertEquals("/guide/whats-new.html", GuideLogic.whatsNewResource("fr"))
+    }
+
+    @Test
+    fun iconAndChangelogFollowTheThemeAndTheLanguage() {
+        assertEquals("/META-INF/pluginIcon_dark.svg", GuideLogic.iconResource(dark = true))
+        assertEquals("/META-INF/pluginIcon.svg", GuideLogic.iconResource(dark = false))
+        assertNotNull(javaClass.getResource(GuideLogic.iconResource(dark = true)))
+        assertNotNull(javaClass.getResource(GuideLogic.iconResource(dark = false)))
+        assertTrue(GuideLogic.changelogUrl("it").endsWith("/CHANGELOG.it.md"))
+        assertTrue(GuideLogic.changelogUrl("en").endsWith("/CHANGELOG.md"))
     }
 }

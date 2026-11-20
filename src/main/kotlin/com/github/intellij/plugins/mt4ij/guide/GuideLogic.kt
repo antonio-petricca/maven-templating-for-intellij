@@ -1,5 +1,8 @@
 package com.github.intellij.plugins.mt4ij.guide
 
+/** Why the "What's New" tab is shown: the plugin has just been installed, or it has been updated. */
+enum class WhatsNewVisit { INSTALL, UPDATE }
+
 /** Pure decisions about the guide and the "What's New" tab, kept apart from the IDE APIs so they can be tested. */
 object GuideLogic {
 
@@ -7,7 +10,11 @@ object GuideLogic {
     const val CSS_RESOURCE = "/guide/guide.css"
 
     private const val ITALIAN = "it"
-    private const val GITHUB_DOCS = "https://github.com/antonio-petricca/maven-templating-for-intellij/blob/main/docs/"
+    const val ICON_RESOURCE = "/META-INF/pluginIcon.svg"
+    const val ICON_DARK_RESOURCE = "/META-INF/pluginIcon_dark.svg"
+
+    private const val GITHUB = "https://github.com/antonio-petricca/maven-templating-for-intellij/blob/main/"
+    private const val GITHUB_DOCS = GITHUB + "docs/"
 
     /** Italian guide for the Italian language, the English one for any other. */
     fun guideResource(language: String): String =
@@ -21,12 +28,21 @@ object GuideLogic {
     fun guideUrl(language: String): String =
         GITHUB_DOCS + if (language == ITALIAN) "guide.it.md" else "guide.md"
 
-    /** True on the first install (nothing stored yet) and whenever the installed version differs from the stored one. */
-    fun shouldShowWhatsNew(installedVersion: String?, lastShownVersion: String, enabled: Boolean): Boolean {
-        if (!enabled || installedVersion.isNullOrBlank()) {
-            return false
-        }
+    /** Changelog on GitHub, in the language of the IDE when there is a translation. */
+    fun changelogUrl(language: String): String =
+        GITHUB + if (language == ITALIAN) "CHANGELOG.it.md" else "CHANGELOG.md"
 
-        return installedVersion != lastShownVersion
+    /** The plugin icon for a dark or a light theme. */
+    fun iconResource(dark: Boolean): String = if (dark) ICON_DARK_RESOURCE else ICON_RESOURCE
+
+    /**
+     * [WhatsNewVisit.INSTALL] on the first install (nothing stored yet), [WhatsNewVisit.UPDATE] whenever the installed
+     * version differs from the stored one, null when there is nothing to show.
+     */
+    fun whatsNewVisit(installedVersion: String?, lastShownVersion: String, enabled: Boolean): WhatsNewVisit? = when {
+        !enabled || installedVersion.isNullOrBlank() -> null
+        lastShownVersion.isEmpty()                   -> WhatsNewVisit.INSTALL
+        installedVersion != lastShownVersion         -> WhatsNewVisit.UPDATE
+        else                                         -> null
     }
 }

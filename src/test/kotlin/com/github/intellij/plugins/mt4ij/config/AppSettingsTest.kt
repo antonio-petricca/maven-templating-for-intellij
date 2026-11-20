@@ -1,5 +1,6 @@
 package com.github.intellij.plugins.mt4ij.config
 
+import com.github.intellij.plugins.mt4ij.guide.WhatsNewVisit
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class AppSettingsTest : BasePlatformTestCase() {
@@ -22,31 +23,31 @@ class AppSettingsTest : BasePlatformTestCase() {
         }
     }
 
-    fun testFirstClaimWinsAndTheSecondOneDoesNot() {
-        assertTrue(settings.claimWhatsNew("1.0.0"))
-        assertFalse(settings.claimWhatsNew("1.0.0"))
+    fun testFirstClaimIsAnInstallAndTheSecondOneGetsNothing() {
+        assertEquals(WhatsNewVisit.INSTALL, settings.claimWhatsNew("1.0.0"))
+        assertNull(settings.claimWhatsNew("1.0.0"))
     }
 
-    fun testNewVersionIsClaimedAgain() {
+    fun testNewVersionIsClaimedAgainAsAnUpdate() {
         settings.claimWhatsNew("1.0.0")
 
-        assertTrue(settings.claimWhatsNew("1.1.0"))
+        assertEquals(WhatsNewVisit.UPDATE, settings.claimWhatsNew("1.1.0"))
     }
 
     fun testDisabledOptionStillRecordsTheVersion() {
         settings.state.showWhatsNew = false
 
-        assertFalse(settings.claimWhatsNew("1.0.0"))
+        assertNull(settings.claimWhatsNew("1.0.0"))
 
         // Turning the option on must not show the update that has been skipped
         settings.state.showWhatsNew = true
 
-        assertFalse(settings.claimWhatsNew("1.0.0"))
-        assertTrue(settings.claimWhatsNew("1.1.0"))
+        assertNull(settings.claimWhatsNew("1.0.0"))
+        assertEquals(WhatsNewVisit.UPDATE, settings.claimWhatsNew("1.1.0"))
     }
 
     fun testUnknownVersionIsNeverClaimed() {
-        assertFalse(settings.claimWhatsNew(null))
-        assertFalse(settings.claimWhatsNew(""))
+        assertNull(settings.claimWhatsNew(null))
+        assertNull(settings.claimWhatsNew(""))
     }
 }

@@ -14,8 +14,6 @@ class WhatsNewStartupActivity : ProjectActivity {
             return
         }
 
-        if (AppSettings.getInstance().claimWhatsNew(GuideTabs.installedVersion())) {
-            GuideTabs.openWhatsNew(project)
-        }
+        AppSettings.getInstance().claimWhatsNew(GuideTabs.installedVersion())?.let { GuideTabs.openWhatsNew(project, it) }
     }
 }

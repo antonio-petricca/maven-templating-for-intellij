@@ -1,6 +1,7 @@
 package com.github.intellij.plugins.mt4ij.config
 
 import com.github.intellij.plugins.mt4ij.guide.GuideLogic
+import com.github.intellij.plugins.mt4ij.guide.WhatsNewVisit
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
@@ -34,14 +35,14 @@ class AppSettings : PersistentStateComponent<AppSettingsState> {
     }
 
     /**
-     * Records the version as seen and tells whether its "What's New" tab has to be shown now.
+     * Records the version as seen and tells whether its "What's New" tab has to be shown now, and for what reason.
      * The version is recorded even when the option is off, so that turning it on does not show an old update.
-     * Synchronized, so that only one of the projects opened together gets true.
+     * Synchronized, so that only one of the projects opened together gets an answer.
      */
     @Synchronized
-    fun claimWhatsNew(installedVersion: String?): Boolean {
+    fun claimWhatsNew(installedVersion: String?): WhatsNewVisit? {
         if (installedVersion.isNullOrBlank()) {
-            return false
+            return null
         }
 
         val properties = PropertiesComponent.getInstance()
@@ -49,7 +50,7 @@ class AppSettings : PersistentStateComponent<AppSettingsState> {
 
         properties.setValue(LAST_VERSION_KEY, installedVersion)
 
-        return GuideLogic.shouldShowWhatsNew(installedVersion, lastVersion, state.showWhatsNew)
+        return GuideLogic.whatsNewVisit(installedVersion, lastVersion, state.showWhatsNew)
     }
 
     /** Forgets the recorded version, as on a fresh installation. */
