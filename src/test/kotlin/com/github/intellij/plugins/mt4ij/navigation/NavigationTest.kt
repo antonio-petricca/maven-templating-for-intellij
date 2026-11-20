@@ -11,11 +11,17 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.testFramework.PlatformTestUtil
+import com.github.intellij.plugins.mt4ij.MavenTemplatingIcons
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiJavaFile
 import com.intellij.testFramework.runInEdtAndGet
+import com.intellij.testFramework.runInEdtAndWait
 import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.TestActionEvent
 import com.intellij.testFramework.fixtures.impl.CodeInsightTestFixtureImpl
@@ -301,5 +307,67 @@ class NavigationTest : MavenTemplatingTestCase() {
         val plain = createProjectSubFile("src/main/java/demo/Plain.java", "package demo; class Plain {}")
 
         assertNull(bannerOf(plain))
+    }
+
+    private fun openedEditorOf(file: VirtualFile) = runInEdtAndGet {
+        FileEditorManager.getInstance(project).openFile(file, true)
+        FileEditorManager.getInstance(project).selectedTextEditor!!
+    }
+
+    // The icons the listener has put in the markup model of the editor, waiting up to the timeout for the background computation
+    private fun iconsOf(editor: Editor, expected: Int, timeoutMs: Long = 10_000): List<GutterIconRenderer> {
+        val deadline = System.currentTimeMillis() + timeoutMs
+
+        fun icons() = runInEdtAndGet { editor.markupModel.allHighlighters.mapNotNull { it.gutterIconRenderer } }
+
+        while (icons().size < expected && System.currentTimeMillis() < deadline) {
+            runInEdtAndGet { PlatformTestUtil.dispatchAllInvocationEventsInIdeEventQueue() }
+            Thread.sleep(50)
+        }
+        Thread.sleep(300)
+        runInEdtAndGet { PlatformTestUtil.dispatchAllInvocationEventsInIdeEventQueue() }
+
+        return icons()
+    }
+
+    private fun listenerIconsOf(file: VirtualFile, expected: Int, timeoutMs: Long = 10_000) =
+        iconsOf(openedEditorOf(file), expected, timeoutMs)
+
+    @Test
+    fun testGeneratedFileInAnExcludedFolderGetsTheGoToTemplateIcon() {
+        importTemplatesProject(excludeGenerated = true)
+
+        val icons = listenerIconsOf(generated, 1)
+
+        assertEquals(1, icons.size)
+        assertSame(MavenTemplatingIcons.GoToTemplateGutter, icons.single().icon)
+        assertTrue(icons.single().tooltipText!!.startsWith(Bundle.message("mt4ij.navigation.go-to-template")))
+    }
+
+    @Test
+    fun testListenerAddsNoIconOnTheTemplateNorOnAPlainFile() {
+        importTemplatesProject(excludeGenerated = true)
+        val plain = createProjectSubFile("src/main/java/demo/Plain.java", "package demo; class Plain {}")
+
+        assertTrue(listenerIconsOf(template, 1, 2_000).isEmpty())
+        assertTrue(listenerIconsOf(plain, 1, 2_000).isEmpty())
+    }
+
+    // An editor restored before the projects are known has no counterpart yet: the refresh draws the icon, once
+    @Test
+    fun testRefreshDrawsTheIconOnceTheTemplateIsKnownAndNeverTwice() {
+        importTemplatesProject(excludeGenerated = true)
+        com.intellij.openapi.application.WriteAction.runAndWait<java.io.IOException> { template.delete(this@NavigationTest) }
+
+        val editor = openedEditorOf(generated)
+        assertTrue(iconsOf(editor, 1, 2_000).isEmpty())
+
+        createProjectSubFile("src/main/java-templates/demo/Greeter.java", source)
+
+        GeneratedSourceGutterIcon.refresh(project)
+        assertEquals(1, iconsOf(editor, 1).size)
+
+        GeneratedSourceGutterIcon.refresh(project)
+        assertEquals(1, iconsOf(editor, 1).size)
     }
 }

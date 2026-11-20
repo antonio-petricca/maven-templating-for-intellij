@@ -1,5 +1,6 @@
 package com.github.intellij.plugins.mt4ij.listeners
 
+import com.github.intellij.plugins.mt4ij.navigation.GeneratedSourceGutterIcon
 import com.github.intellij.plugins.mt4ij.SourceFolderChange
 import com.github.intellij.plugins.mt4ij.SourceFolders
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
@@ -92,6 +93,7 @@ internal class VFSListener(private val project: Project) : BulkFileListener {
 
         if (isBuildOutputChange && !project.isDisposed) {
             EditorNotifications.getInstance(project).updateAllNotifications()
+            GeneratedSourceGutterIcon.refresh(project)
         }
     }
 

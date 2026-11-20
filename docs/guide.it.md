@@ -10,7 +10,7 @@ English version: [guide.md](https://github.com/antonio-petricca/maven-templating
 |---|---|
 | Tasto destro nell'editor, su un tab dell'editor o nella vista **Project** > **Maven Templating** | Vai al sorgente generato / Vai al template (Go to Generated Source / Go to Template), Cerca le cartelle dei template (Scan Project for Templates), Apri la guida (Open Guide), Novità (What's New). Il sottomenu è sempre presente; in un progetto non importato da Maven, Cerca le cartelle dei template è disabilitata. |
 | Icona nel margine dell'editor, accanto al nome della classe di primo livello | Porta al sorgente generato, o torna al template. |
-| Banner in cima a un template o a un sorgente generato | Stesso salto, con un link; funziona anche nelle cartelle dove l'IDE non disegna le icone nel margine. |
+| Banner in cima a un template o a un sorgente generato | Stesso salto, con un link. |
 | Ctrl+Alt+Shift+Space (Windows/Linux) o Cmd+Alt+Shift+G (macOS) | Vai al sorgente generato / Vai al template. |
 | **Navigate** > **Vai al sorgente generato / Vai al template**, e il sottomenu **Go To** del menu del tasto destro dell'editor | Lo stesso salto, accanto a **Related Symbol**. |
 | **Tools** > **Maven Templating** | Le stesse voci del sottomenu del tasto destro. |
@@ -124,8 +124,8 @@ L'esclusione è dichiarata durante l'import di Maven, quindi ha effetto solo dop
 
 Per un file Java in una cartella di template, il plugin trova il file generato con lo stesso percorso relativo nella cartella di output, e viceversa. Il file generato deve esistere su disco, quindi compila prima il progetto (vedi sotto).
 
-- **Icona nel margine** (gutter) accanto al nome della classe di primo livello, con il tooltip **Vai al sorgente generato** (Go to Generated Source) o **Vai al template** (Go to Template). Le due direzioni hanno icone diverse: un riquadro arancione con `${}` e una freccia a destra sul template, un cerchio blu con la "C" di una classe Java e una freccia a sinistra sul sorgente generato. Con l'opzione **Escludi i sorgenti generati dai template** attiva (il default) l'IDE non disegna icone nel margine del file generato: restano il banner, i menu e la scorciatoia.
-- **Banner** in alto nell'editor, sia nel template sia nel sorgente generato, con un link all'altro file. Sul sorgente generato dice "Generato dal templating-maven-plugin a partire da un template." con il link **Apri il template**; sul template, "Questo template viene trasformato in un sorgente generato dal templating-maven-plugin." con il link **Apri il sorgente generato**. Funziona anche dove l'IDE non disegna le icone nel margine, come nella cartella `target` esclusa.
+- **Icona nel margine** (gutter) accanto al nome della classe di primo livello, con il tooltip **Vai al sorgente generato** (Go to Generated Source) o **Vai al template** (Go to Template). Le due direzioni hanno icone diverse: un riquadro arancione con `${}` e una freccia a destra sul template, un cerchio blu con la "C" di una classe Java e una freccia a sinistra sul sorgente generato.
+- **Banner** in alto nell'editor, sia nel template sia nel sorgente generato, con un link all'altro file. Sul sorgente generato dice "Generato dal templating-maven-plugin a partire da un template." con il link **Apri il template**; sul template, "Questo template viene trasformato in un sorgente generato dal templating-maven-plugin." con il link **Apri il sorgente generato**.
 - **Navigate** > **Vai al sorgente generato / Vai al template**, accanto a **Related Symbol**, e la stessa voce nel sottomenu **Go To** del menu del tasto destro dell'editor.
 - **Scorciatoia** Ctrl+Alt+Shift+Space su Windows e Linux, Cmd+Alt+Shift+G su macOS. Si può cambiare in **Settings** > **Keymap**.
 - Il sottomenu **Maven Templating** nei menu del tasto destro: nell'editor, sul tab dell'editor e sul file nella vista **Project**. Qui la voce è disabilitata su un file che non è né un template né un sorgente generato, mentre nei menu **Navigate** e **Go To** è nascosta.
@@ -164,9 +164,6 @@ I testi italiani del plugin compaiono solo quando anche l'IDE è in italiano, co
 
 **Vai al sorgente generato è disabilitata.**
 Il sorgente generato non esiste ancora: compila il progetto (per esempio `mvn generate-sources`).
-
-**Non vedo icone nel margine del sorgente generato.**
-Con **Escludi i sorgenti generati dai template** attiva l'IDE non vi disegna icone nel margine. Usa il banner, il sottomenu **Maven Templating** o la scorciatoia.
 
 **Dove trovo la guida?**
 In **Help** > **Maven Templating Guide**, **Tools** > **Maven Templating** > **Apri la guida**, oppure nel link **Apri la guida online** delle impostazioni.

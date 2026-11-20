@@ -2,6 +2,7 @@ package com.github.intellij.plugins.mt4ij.activities
 
 import com.github.intellij.plugins.mt4ij.ApiHelpers
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
+import com.github.intellij.plugins.mt4ij.navigation.GeneratedSourceGutterIcon
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 
@@ -18,5 +19,8 @@ class ProjectStartupActivity : ProjectActivity {
         if (SettingsStorage.getInstance(project).state.scanOnStartup) {
             ApiHelpers.scanProject(project)
         }
+
+        // The editors restored at startup may have been opened before the Maven projects were known
+        GeneratedSourceGutterIcon.refresh(project)
     }
 }

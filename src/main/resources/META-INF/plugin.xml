@@ -106,6 +106,8 @@
             implementationClass="com.github.intellij.plugins.mt4ij.navigation.TemplateLineMarkerProvider"
         />
 
+        <editorFactoryListener implementation="com.github.intellij.plugins.mt4ij.navigation.GeneratedSourceGutterIcon" />
+
         <editorNotificationProvider
             implementation="com.github.intellij.plugins.mt4ij.navigation.CounterpartBannerProvider"
         />
@@ -140,6 +142,14 @@
         <listener
             class="com.github.intellij.plugins.mt4ij.listeners.VFSListener"
             topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"
+        />
+        <listener
+            class="com.github.intellij.plugins.mt4ij.navigation.GutterIconImportListener"
+            topic="org.jetbrains.idea.maven.project.MavenImportListener"
+        />
+        <listener
+            class="com.github.intellij.plugins.mt4ij.navigation.GutterIconSelectionListener"
+            topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"
         />
     </projectListeners>
 
