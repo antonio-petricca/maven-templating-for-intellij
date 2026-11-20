@@ -27,16 +27,19 @@
         <action
             class="com.github.intellij.plugins.mt4ij.actions.ProjectScannerAction"
             id="mt4ij.actions.project-scanner"
+            icon="AllIcons.Actions.Refresh"
         />
 
         <action
             class="com.github.intellij.plugins.mt4ij.actions.OpenGuideAction"
             id="mt4ij.actions.open-guide"
+            icon="AllIcons.Actions.Help"
         />
 
         <action
             class="com.github.intellij.plugins.mt4ij.actions.OpenGuideAction"
             id="mt4ij.actions.open-guide.help"
+            icon="AllIcons.Actions.Help"
         >
             <add-to-group group-id="HelpMenu" anchor="after" relative-to-action="HelpTopics"/>
         </action>
@@ -44,6 +47,7 @@
         <action
             class="com.github.intellij.plugins.mt4ij.actions.OpenWhatsNewAction"
             id="mt4ij.actions.whats-new"
+            icon="AllIcons.General.Information"
         />
 
         <action
