@@ -41,7 +41,9 @@ object GuideTabs {
         val theme = GuideTheme.current()
         val language = language()
 
+        val title = Bundle.message("mt4ij.whats-new.tab.title", pluginName())
         val content = WhatsNewContent(
+            title = title,
             pluginName = pluginName(),
             version = installedVersion().orEmpty(),
             intro = Bundle.message(if (visit == WhatsNewVisit.INSTALL) "mt4ij.whats-new.intro.install" else "mt4ij.whats-new.intro"),
@@ -57,7 +59,7 @@ object GuideTabs {
 
         val html = WhatsNewPage.render(theme, readResource(GuideLogic.CSS_RESOURCE).orEmpty(), content)
 
-        openTab(project, Bundle.message("mt4ij.whats-new.tab.title", pluginName()), html)
+        openTab(project, title, html)
     }
 
     // The shortcut is the one in the keymap of the user, not a text to keep up to date by hand

@@ -2,6 +2,8 @@ package com.github.intellij.plugins.mt4ij.guide
 
 /** What the "What's New" page shows, already localized. */
 data class WhatsNewContent(
+    /** The title of the page, the same as the one of its editor tab. */
+    val title: String,
     val pluginName: String,
     val version: String,
     val intro: String,
@@ -33,7 +35,7 @@ object WhatsNewPage {
 
     fun render(theme: GuideTheme, layoutCss: String, content: WhatsNewContent): String = listOf(
         "<!DOCTYPE html>",
-        "<html><head><meta charset=\"UTF-8\">",
+        "<html><head><meta charset=\"UTF-8\"><title>${escape(content.title)}</title>",
         "<style>$layoutCss</style>",
         "<style>$PAGE_STYLE</style>",
         "<style>${theme.css()}</style>",

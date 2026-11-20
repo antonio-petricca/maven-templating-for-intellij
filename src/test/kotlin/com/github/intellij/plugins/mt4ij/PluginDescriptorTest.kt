@@ -13,4 +13,9 @@ class PluginDescriptorTest : BasePlatformTestCase() {
 
         assertEquals("Maven Templating assistant", name)
     }
+
+    fun testGuidePagesHaveTheTitleOfTheirTab() {
+        assertTrue(resourceText("/guide/guide.html").contains("<title>Maven Templating assistant — Guide</title>"))
+        assertTrue(resourceText("/guide/guide_it.html").contains("<title>Maven Templating assistant — Guida</title>"))
+    }
 }

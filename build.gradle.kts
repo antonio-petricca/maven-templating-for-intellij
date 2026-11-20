@@ -1,3 +1,4 @@
+import java.util.Properties
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
@@ -21,6 +22,15 @@ abstract class RenderGuideTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val italianChangelog: ConfigurableFileCollection
 
+    // The messages bundles: the title of each page is the one of its editor tab (mt4ij.guide.tab.title)
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val englishBundle: RegularFileProperty
+
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val italianBundle: RegularFileProperty
+
     @get:Input
     abstract val pluginVersion: Property<String>
 
@@ -38,8 +48,8 @@ abstract class RenderGuideTask : DefaultTask() {
         fun write(name: String, text: String) = target.resolve(name).writeText(text, Charsets.UTF_8)
 
         write("guide.css", css)
-        write("guide.html", page("en", css, englishGuide.get().asFile.readText()))
-        write("guide_it.html", page("it", css, italianGuide.get().asFile.readText()))
+        write("guide.html", page("en", title(englishBundle), css, englishGuide.get().asFile.readText()))
+        write("guide_it.html", page("it", title(italianBundle), css, italianGuide.get().asFile.readText()))
 
         // Version and change notes are read at runtime from here, without asking the plugin manager
         write("plugin-info.properties", "version=${pluginVersion.get()}\n")
@@ -62,10 +72,13 @@ abstract class RenderGuideTask : DefaultTask() {
         return if (body.isEmpty()) null else markdownToHTML(body)
     }
 
-    private fun page(language: String, css: String, markdown: String) = listOf(
+    private fun title(bundle: RegularFileProperty): String =
+        bundle.get().asFile.reader(Charsets.UTF_8).use { Properties().apply { load(it) } }.getProperty("mt4ij.guide.tab.title")
+
+    private fun page(language: String, title: String, css: String, markdown: String) = listOf(
         "<!DOCTYPE html>",
         "<html lang=\"$language\">",
-        "<head><meta charset=\"UTF-8\"><style>$css</style></head>",
+        "<head><meta charset=\"UTF-8\"><title>$title</title><style>$css</style></head>",
         "<body>",
         markdownToHTML(markdown),
         "</body>",
@@ -227,6 +240,8 @@ changelog {
 val renderGuide = tasks.register<RenderGuideTask>("renderGuide") {
     englishGuide = layout.projectDirectory.file("docs/guide.md")
     italianGuide = layout.projectDirectory.file("docs/guide.it.md")
+    englishBundle = layout.projectDirectory.file("src/main/resources/messages/Bundle.properties")
+    italianBundle = layout.projectDirectory.file("src/main/resources/messages/Bundle_it.properties")
     italianChangelog.from(layout.projectDirectory.file("CHANGELOG.it.md"))
     pluginVersion = properties("pluginVersion")
     changeNotes = currentChangeNotes

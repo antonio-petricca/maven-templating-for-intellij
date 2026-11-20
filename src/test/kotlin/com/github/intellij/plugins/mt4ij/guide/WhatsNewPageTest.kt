@@ -19,6 +19,7 @@ class WhatsNewPageTest {
     )
 
     private val content = WhatsNewContent(
+        title = "Maven Templating assistant — What's New",
         pluginName = "Maven Templating assistant",
         version = "2.0.0",
         intro = "Thanks for updating! Here is what's new in this version.",
@@ -82,6 +83,11 @@ class WhatsNewPageTest {
         val escaped = WhatsNewPage.render(theme, "", content.copy(pluginName = "A <b> & \"C\""))
 
         assertTrue(escaped.contains("A &lt;b&gt; &amp; &quot;C&quot;"))
+    }
+
+    @Test
+    fun pageHasTheTitleOfItsTab() {
+        assertTrue(page.contains("<title>Maven Templating assistant — What's New</title>"))
     }
 
     @Test
