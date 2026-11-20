@@ -39,6 +39,22 @@ class MavenTemplatingGroupTest : MavenTemplatingTestCase() {
     }
 
     @Test
+    fun testScanGuideAndWhatsNewAreEnabledInAMavenProject() {
+        runBlocking { importProjectAsync(pomWithPlugin("project")) }
+
+        listOf("mt4ij.actions.project-scanner", "mt4ij.actions.open-guide", "mt4ij.actions.whats-new").forEach {
+            val action  = ActionManager.getInstance().getAction(it)
+            val context = SimpleDataContext.builder().add(CommonDataKeys.PROJECT, project).build()
+            val event   = TestActionEvent.createTestEvent(action, context)
+
+            runReadActionBlocking { action.update(event) }
+
+            assertTrue("$it is not visible", event.presentation.isVisible)
+            assertTrue("$it is not enabled", event.presentation.isEnabled)
+        }
+    }
+
+    @Test
     fun testGroupRunsOnABackgroundThread() {
         assertEquals(ActionUpdateThread.BGT, MavenTemplatingGroup().actionUpdateThread)
     }
@@ -69,6 +85,6 @@ class MavenTemplatingGroupTest : MavenTemplatingTestCase() {
         val goTo = ActionManager.getInstance().getAction("EditorPopupMenu.GoTo") as DefaultActionGroup
         val ids  = goTo.getChildren(null).map { ActionManager.getInstance().getId(it) }
 
-        assertTrue(ids.toString(), ids.contains("mt4ij.actions.go-to-counterpart"))
+        assertTrue(ids.toString(), ids.contains("mt4ij.actions.go-to-counterpart.navigate"))
     }
 }

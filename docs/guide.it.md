@@ -8,7 +8,7 @@ English version: [guide.md](https://github.com/antonio-petricca/maven-templating
 
 | Dove | Cosa fa |
 |---|---|
-| Tasto destro nell'editor, su un tab dell'editor o nella vista **Project** > **Maven Templating** | Vai al sorgente generato / Vai al template (Go to Generated Source / Go to Template), Cerca le cartelle dei template (Scan Project for Templates), Apri la guida (Open Guide), Novità (What's New). Il sottomenu compare solo nei progetti Maven. |
+| Tasto destro nell'editor, su un tab dell'editor o nella vista **Project** > **Maven Templating** | Vai al sorgente generato / Vai al template (Go to Generated Source / Go to Template), Cerca le cartelle dei template (Scan Project for Templates), Apri la guida (Open Guide), Novità (What's New). Il sottomenu è sempre presente; in un progetto non importato da Maven, Cerca le cartelle dei template è disabilitata. |
 | Icona nel margine dell'editor, accanto al nome della classe di primo livello | Porta al sorgente generato, o torna al template. |
 | Banner in cima a un template o a un sorgente generato | Stesso salto, con un link; funziona anche nelle cartelle dove l'IDE non disegna le icone nel margine. |
 | Ctrl+Alt+Shift+Space (Windows/Linux) o Cmd+Alt+Shift+G (macOS) | Vai al sorgente generato / Vai al template. |
@@ -95,7 +95,7 @@ Il plugin osserva il file system per le cartelle dei template di ogni modulo Mav
 La scansione cerca le cartelle dei template di ogni modulo Maven e marca quelle che esistono.
 
 - **All'avvio**: parte all'apertura del progetto se **Scansiona il progetto all'avvio** è attivo (default). Non viene mostrata alcuna notifica.
-- **Manualmente**: esegui **Cerca le cartelle dei template** da **Tools** > **Maven Templating**, oppure dal sottomenu **Maven Templating** del menu del tasto destro dell'editor, di un tab dell'editor o della vista **Project**. L'azione è disponibile solo nei progetti Maven.
+- **Manualmente**: esegui **Cerca le cartelle dei template** da **Tools** > **Maven Templating**, oppure dal sottomenu **Maven Templating** del menu del tasto destro dell'editor, di un tab dell'editor o della vista **Project**. L'azione è disponibile solo nei progetti importati da Maven: negli altri resta nel menu ma è disabilitata, e la sua descrizione ne spiega il motivo.
 - **Dopo aver cambiato il nome della cartella** nelle impostazioni: parte una scansione che prima smarca le cartelle col vecchio nome.
 
 Al termine di una scansione che hai richiesto, una notifica con titolo **Maven Templating assistant** dice, per esempio, "1 cartella di template contrassegnata come cartella dei sorgenti" oppure "Cartelle di template già aggiornate" e, se ce ne sono state, "1 cartella di template non più contrassegnata come cartella dei sorgenti". Un indicatore di avanzamento mostra il modulo Maven in scansione. Le richieste ravvicinate vengono unite in una sola scansione.
@@ -128,7 +128,7 @@ Per un file Java in una cartella di template, il plugin trova il file generato c
 - **Banner** in alto nell'editor, sia nel template sia nel sorgente generato, con un link all'altro file. Sul sorgente generato dice "Generato dal templating-maven-plugin a partire da un template." con il link **Apri il template**; sul template, "Questo template viene trasformato in un sorgente generato dal templating-maven-plugin." con il link **Apri il sorgente generato**. Funziona anche dove l'IDE non disegna le icone nel margine, come nella cartella `target` esclusa.
 - **Navigate** > **Vai al sorgente generato / Vai al template**, accanto a **Related Symbol**, e la stessa voce nel sottomenu **Go To** del menu del tasto destro dell'editor.
 - **Scorciatoia** Ctrl+Alt+Shift+Space su Windows e Linux, Cmd+Alt+Shift+G su macOS. Si può cambiare in **Settings** > **Keymap**.
-- Il sottomenu **Maven Templating** nei menu del tasto destro: nell'editor, sul tab dell'editor e sul file nella vista **Project**.
+- Il sottomenu **Maven Templating** nei menu del tasto destro: nell'editor, sul tab dell'editor e sul file nella vista **Project**. Qui la voce è disabilitata su un file che non è né un template né un sorgente generato, mentre nei menu **Navigate** e **Go To** è nascosta.
 
 ### Prima della prima build
 
@@ -157,7 +157,7 @@ Esegui **Tools** > **Maven Templating** > **Cerca le cartelle dei template**, op
 Verifica che **Escludi i sorgenti generati dai template** sia attivo nelle impostazioni (lo è di default) e reimporta il progetto Maven. L'esclusione vale solo per i moduli che dichiarano il templating-maven-plugin.
 
 **Il plugin non fa nulla nel mio progetto.**
-Funziona solo con i progetti Maven: altrimenti l'azione di scansione è nascosta.
+Funziona solo con i progetti Maven. Il sottomenu **Maven Templating** è sempre presente, ma negli altri progetti Cerca le cartelle dei template è disabilitata.
 
 **La pagina delle impostazioni e i messaggi sono in italiano.**
 I testi italiani del plugin compaiono solo quando anche l'IDE è in italiano, cosa che richiede un language pack di terze parti (JetBrains non ne distribuisce uno). Altrimenti tutto è in inglese, e i menu dell'IDE restano comunque in inglese.

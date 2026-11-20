@@ -55,12 +55,20 @@
             id="mt4ij.actions.go-to-counterpart"
             icon="com.github.intellij.plugins.mt4ij.MavenTemplatingIcons.GoToGenerated"
         >
-            <add-to-group group-id="GoToCodeGroup" anchor="after" relative-to-action="GotoRelated"/>
-            <add-to-group group-id="EditorPopupMenu.GoTo" anchor="after" relative-to-action="GotoRelated"/>
             <!-- No letter is left free with Ctrl+Alt+Shift (G is Database Tools, Y is Code With Me), so Space it is -->
             <keyboard-shortcut keymap="$default" first-keystroke="control alt shift SPACE"/>
             <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta alt shift G"/>
             <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta alt shift G"/>
+        </action>
+
+        <!-- Same jump for the Navigate and Go To menus, where it is hidden when it does not apply -->
+        <action
+            class="com.github.intellij.plugins.mt4ij.navigation.GoToCounterpartNavigateAction"
+            id="mt4ij.actions.go-to-counterpart.navigate"
+            icon="com.github.intellij.plugins.mt4ij.MavenTemplatingIcons.GoToGenerated"
+        >
+            <add-to-group group-id="GoToCodeGroup" anchor="after" relative-to-action="GotoRelated"/>
+            <add-to-group group-id="EditorPopupMenu.GoTo" anchor="after" relative-to-action="GotoRelated"/>
         </action>
 
         <group

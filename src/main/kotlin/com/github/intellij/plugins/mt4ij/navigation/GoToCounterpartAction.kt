@@ -11,10 +11,18 @@ import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.DumbAware
 
-/** Opens the generated source of the current template, or the template of the current generated source. */
-class GoToCounterpartAction : AnAction(), DumbAware {
+/**
+ * Opens the generated source of the current template, or the template of the current generated source.
+ *
+ * In the Maven Templating submenu it stays in view, disabled, when the file has no counterpart;
+ * [GoToCounterpartNavigateAction] is the variant that hides itself in the Navigate and Go To menus.
+ */
+open class GoToCounterpartAction : AnAction(), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    /** Whether the action disappears, instead of being disabled, when the file is neither a template nor a generated source. */
+    protected open val hiddenWhenNotApplicable = false
 
     override fun update(event: AnActionEvent) {
         val project      = event.project
@@ -39,7 +47,15 @@ class GoToCounterpartAction : AnAction(), DumbAware {
                 presentation.description = Bundle.message("mt4ij.navigation.go-to-generated.not-built")
             }
 
-            else -> presentation.isEnabledAndVisible = false
+            hiddenWhenNotApplicable -> presentation.isEnabledAndVisible = false
+
+            else -> {
+                presentation.isVisible = true
+                presentation.isEnabled = false
+                presentation.icon = MavenTemplatingIcons.GoToGenerated
+                presentation.text = Bundle.message("action.mt4ij.actions.go-to-counterpart.text")
+                presentation.description = Bundle.message("mt4ij.navigation.go-to-counterpart.unavailable")
+            }
         }
     }
 
@@ -51,4 +67,10 @@ class GoToCounterpartAction : AnAction(), DumbAware {
 
         OpenFileDescriptor(project, target.file).navigate(true)
     }
+}
+
+/** The jump as listed in the Navigate menu and in the Go To submenu of the editor, where it shows up only when it applies. */
+class GoToCounterpartNavigateAction : GoToCounterpartAction() {
+
+    override val hiddenWhenNotApplicable = true
 }
