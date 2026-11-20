@@ -162,7 +162,7 @@ class TemplatesScanner(private val project: Project, scope: CoroutineScope) {
 
         NotificationGroupManager.getInstance()
             .getNotificationGroup(NOTIFICATION_GROUP_ID)
-            .createNotification(messages.joinToString(". "), NotificationType.INFORMATION)
+            .createNotification(Bundle.message("mt4ij.notification.group.name"), messages.joinToString(". "), NotificationType.INFORMATION)
             .notify(project)
     }
 

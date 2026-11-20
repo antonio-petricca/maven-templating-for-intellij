@@ -6,8 +6,10 @@ import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.codeStyle.CodeStyleManager
+import com.intellij.psi.xml.XmlTag
 
 /** Declares the missing property, empty, in the `<properties>` of the module pom. */
 class AddPropertyToPomFix(private val propertyName: String) : LocalQuickFix {
@@ -26,6 +28,8 @@ class AddPropertyToPomFix(private val propertyName: String) : LocalQuickFix {
         val mavenProject = TemplateLocator.mavenProjectOf(project, file) ?: return
         val pom          = TemplateProperties.modulePom(project, mavenProject) ?: return
 
+        var caret = -1
+
         // Also checks that the pom is writable
         WriteCommandAction.writeCommandAction(project, pom).withName(familyName).run<RuntimeException> {
             val root = pom.rootTag ?: return@run
@@ -33,11 +37,33 @@ class AddPropertyToPomFix(private val propertyName: String) : LocalQuickFix {
             val properties = root.findFirstSubTag("properties")
                 ?: root.addSubTag(root.createChildTag("properties", root.namespace, null, false), false)
 
-            if (properties.findFirstSubTag(propertyName) == null) {
-                val added = properties.addSubTag(properties.createChildTag(propertyName, properties.namespace, "", false), false)
+            val existing = properties.findFirstSubTag(propertyName)
 
-                CodeStyleManager.getInstance(project).reformat(added)
+            if (existing != null) {
+                caret = existing.textRange.startOffset
+
+                return@run
             }
+
+            val added = properties.addSubTag(properties.createChildTag(propertyName, properties.namespace, "", false), false)
+
+            CodeStyleManager.getInstance(project).reformat(added)
+
+            caret = insideValue(added)
         }
+
+        // Leaves the cursor in the empty value, ready to be filled in
+        val pomFile = pom.virtualFile
+
+        if (caret >= 0 && pomFile != null) {
+            OpenFileDescriptor(project, pomFile, caret).navigate(true)
+        }
+    }
+
+    // Right after the start tag; an empty-element tag has no inside, so the cursor goes at its start
+    private fun insideValue(tag: XmlTag): Int {
+        val text = tag.text
+
+        return tag.textRange.startOffset + if (text.endsWith("/>")) 0 else text.indexOf('>') + 1
     }
 }

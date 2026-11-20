@@ -1,5 +1,6 @@
 package com.github.intellij.plugins.mt4ij.importing
 
+import com.github.intellij.plugins.mt4ij.config.SettingsState
 import com.github.intellij.plugins.mt4ij.config.SettingsStorage
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectLocator
@@ -54,7 +55,7 @@ class TemplatingFoldersConfigurator : MavenWorkspaceConfigurator, MavenStaticSyn
     private fun isExclusionEnabled(mavenProject: MavenProject): Boolean {
         val project = projectOf(mavenProject)
 
-        return project?.let { SettingsStorage.getInstance(it).state.excludeGeneratedSources } ?: false
+        return project?.let { SettingsStorage.getInstance(it).state.excludeGeneratedSources } ?: SettingsState().excludeGeneratedSources
     }
 
     private fun pluginFolders(mavenProject: MavenProject): List<AdditionalFolder> {

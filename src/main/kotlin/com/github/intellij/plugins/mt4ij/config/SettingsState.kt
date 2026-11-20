@@ -9,5 +9,5 @@ package com.github.intellij.plugins.mt4ij.config
 data class SettingsState(
     var templatesPath: String = "java-templates",
     var scanOnStartup: Boolean = true,
-    var excludeGeneratedSources: Boolean = false,
+    var excludeGeneratedSources: Boolean = true,
 )

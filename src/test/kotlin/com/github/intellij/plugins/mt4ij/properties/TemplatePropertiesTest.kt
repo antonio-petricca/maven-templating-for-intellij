@@ -5,8 +5,11 @@ import com.github.intellij.plugins.mt4ij.MavenTemplatingTestCase
 import com.github.intellij.plugins.mt4ij.TemplateLocator
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlTag
+import com.intellij.testFramework.runInEdtAndGet
 import kotlinx.coroutines.runBlocking
 
 class TemplatePropertiesTest : MavenTemplatingTestCase() {
@@ -88,6 +91,25 @@ class TemplatePropertiesTest : MavenTemplatingTestCase() {
 
         assertContainsElements(declaredPomProperties(), "no.such.property", "greeting.name")
         assertTrue("the warning must be gone", runInspection(file).isEmpty())
+    }
+
+    @Test
+    fun testQuickFixOpensThePomWithTheCursorInTheEmptyValue() {
+        val file = importProjectWithTemplate()
+
+        invokeQuickFix(file, runInspection(file).single())
+
+        val editor = runInEdtAndGet { FileEditorManager.getInstance(project).selectedTextEditor!! }
+        val (before, after) = runInEdtAndGet {
+            val text   = editor.document.text
+            val offset = editor.caretModel.offset
+
+            text.substring(0, offset) to text.substring(offset)
+        }
+
+        assertEquals(projectPom, FileDocumentManager.getInstance().getFile(editor.document))
+        assertTrue(before, before.endsWith("<no.such.property>"))
+        assertTrue(after, after.startsWith("</no.such.property>"))
     }
 
     @Test

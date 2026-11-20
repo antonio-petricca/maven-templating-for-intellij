@@ -42,6 +42,10 @@ class SettingsConfigurableTest : BasePlatformTestCase() {
         }
     }
 
+    fun testGeneratedSourcesAreExcludedByDefault() {
+        assertTrue(SettingsState().excludeGeneratedSources)
+    }
+
     fun testValidNameIsSaved() {
         applyName("tpl")
 

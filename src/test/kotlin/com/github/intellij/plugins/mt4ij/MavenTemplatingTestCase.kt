@@ -38,6 +38,19 @@ abstract class MavenTemplatingTestCase : MavenMultiVersionImportingTestCase() {
         fun getMavenVersions(): List<Array<String>> = listOf(arrayOf("bundled", "4.0.0"))
     }
 
+    // Editors left open would still be around when the files of the test project are deleted
+    override fun tearDown() {
+        try {
+            ApplicationManager.getApplication().invokeAndWait {
+                val manager = FileEditorManager.getInstance(project)
+
+                manager.openFiles.forEach { manager.closeFile(it) }
+            }
+        } finally {
+            super.tearDown()
+        }
+    }
+
     protected val pluginDeclaration = """
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
