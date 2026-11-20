@@ -1,6 +1,22 @@
 # Maven Templating assistant: user guide
 
+In short: the Maven Templating assistant makes IntelliJ IDEA treat the template folders of the templating-maven-plugin as sources, keeps them that way after every Maven reimport, and helps you work with templates, their generated sources and the Maven properties they use.
+
 Italian version: [guide.it.md](https://github.com/antonio-petricca/maven-templating-for-intellij/blob/main/docs/guide.it.md).
+
+## Where to find the features
+
+| Where | What it does |
+|---|---|
+| Right-click in the editor, on an editor tab or in the **Project** view > **Maven Templating** | Go to Generated Source / Go to Template, Scan Project for Templates, Open Guide, What's New. The submenu appears only in Maven projects. |
+| Icon in the editor margin, next to the top-level class name | Jumps to the generated source, or back to the template. |
+| Banner on top of a template or of a generated source | Same jump, with a link; it also works in folders where the IDE draws no margin icons. |
+| Ctrl+Alt+Shift+Space (Windows/Linux) or Cmd+Alt+Shift+G (macOS) | Go to Generated Source / Go to Template. |
+| **Navigate** > **Go to Generated Source / Go to Template**, and the **Go To** submenu of the editor right-click menu | The same jump, next to **Related Symbol**. |
+| **Tools** > **Maven Templating** | The same entries as the right-click submenu. |
+| **Help** > **Maven Templating Guide** | Opens this guide in an editor tab. |
+| **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant** | Folder name for modules without the plugin, scan on startup, exclusion of generated sources, what's new after updates, link to the online guide. |
+| **Tools** > **Maven Templating** > **What's New** | Reopens the **What's New** tab. |
 
 ## What the plugin does
 
@@ -10,7 +26,7 @@ The **Maven Templating assistant** does this for you:
 
 - it declares the template folders as source roots during the Maven import, reading them from the `pom.xml`, so they are kept after every reimport;
 - it keeps the folders marked when you create, rename, move, copy or delete them;
-- it can exclude the generated sources to avoid duplicate classes;
+- it excludes the generated sources (on by default) to avoid duplicate classes;
 - it lets you jump between a template and its generated source;
 - it completes, resolves and inspects the `${...}` Maven properties used in templates.
 
@@ -57,11 +73,11 @@ You can set custom folders with `sourceDirectory` (goal `filter-sources`) and `t
 </plugin>
 ```
 
-Relative paths are resolved against the module folder, and `${basedir}`, `${project.basedir}` and `${project.build.directory}` are supported. For these modules the folder name in the settings is not used.
+Relative paths are resolved against the module folder, and `${basedir}`, `${project.basedir}` and `${project.build.directory}` are supported. For these modules the folder name in the settings is not used: the pom decides.
 
 ### Modules without the plugin
 
-If the plugin is not declared, the plugin falls back to the folder name set in the settings (default `java-templates`): `src/main/<name>` is marked as a source root and `src/test/<name>` as a test source root, but only when the folder exists.
+If the plugin is not declared, the plugin falls back to the folder name set in the settings, **Templates folder name (modules without the plugin)** (default `java-templates`): `src/main/<name>` is marked as a source root and `src/test/<name>` as a test source root, but only when the folder exists.
 
 ### When you change folders in the IDE
 
@@ -79,40 +95,44 @@ The plugin watches the file system for the template folders of each Maven module
 The scan looks for the template folders of every Maven module and marks the ones that exist.
 
 - **At startup**: it runs when a project is opened if **Scan the project on startup** is on (default). No notification is shown.
-- **Manually**: run **Scan Project for Templates** from **Tools** > **Maven Templating**, or from the context menu of the **Project** view. The action is available only in Maven projects.
+- **Manually**: run **Scan Project for Templates** from **Tools** > **Maven Templating**, or from the **Maven Templating** submenu of the right-click menu of the editor, of an editor tab or of the **Project** view. The action is available only in Maven projects.
 - **After changing the folder name** in the settings: a scan runs, first unmarking the folders with the old name.
 
-When a scan you requested ends, a notification shows how many template folders were marked (or that they were already up to date) and, if any, how many were unmarked. A progress indicator shows the Maven module being scanned. Requests arriving close to each other are merged into one scan.
+When a scan you requested ends, a notification titled **Maven Templating assistant** says, for example, "1 template folder marked as a source folder" or "Template folders already up to date" and, if any were unmarked, "1 template folder unmarked as a source folder". A progress indicator shows the Maven module being scanned. Requests arriving close to each other are merged into one scan.
 
 ## Settings
 
-Open **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. The page has an **Open guide** link, which opens the online guide in the browser. The settings are saved per project, except **Show what's new after updates**, which applies to all projects.
+Open **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. The page has an **Open online guide** link, which opens the online guide in the browser. The settings are saved per project, except **Show what's new after updates**, which applies to all projects.
 
 | Option | Default | Effect | When it applies |
 |---|---|---|---|
-| Java templates path | `java-templates` | Folder name under `src/main` and `src/test` for modules without the plugin. It must not be empty, `.` or `..`, start or end with spaces, or contain `/` or `\`. | On apply: a scan runs, unmarking the folders with the old name first. |
+| Templates folder name (modules without the plugin) | `java-templates` | Folder name under `src/main` and `src/test`, used only by modules that don't declare the plugin (for the others the pom decides). It must not be empty, `.` or `..`, start or end with spaces, or contain `/` or `\`. | On apply: a scan runs, unmarking the folders with the old name first. |
 | Scan the project on startup | on | Scans the project each time it is opened. | At the next project opening. |
-| Exclude generated template sources | off | Excludes the generated output folders, see the next section. | After a Maven reimport. On apply, a notification offers a **Reimport** button. |
+| Exclude generated template sources | on | Excludes only the output folders of the templating-maven-plugin, in the modules that declare it; see the next section. | After a Maven reimport. On apply, a notification offers a **Reimport** button. |
 | Show what's new after updates | on | Opens the **What's New** tab after a plugin update (and after the first installation). Applies to all projects. | After the next update. |
 
 ## Excluding generated sources
 
-The plugin generates copies of the templates into the build directory, so the same classes exist twice and the IDE can report **Duplicate class** errors. With **Exclude generated template sources** on, those output folders are excluded from the project:
+The plugin generates copies of the templates into the build directory, so the same classes exist twice and the IDE can report **Duplicate class** errors. **Exclude generated template sources** is on by default: it excludes only the output folders of the templating-maven-plugin, and only in the modules that declare the plugin. Nothing else under `target` is touched. The excluded folders are:
 
 - `target/generated-sources/java-templates` and `target/generated-test-sources/java-templates` (defaults);
 - the folders set with `outputDirectory` (goal `filter-sources`) and `testOutputDirectory` (goal `filter-test-sources`), at plugin or execution level.
 
-The exclusion is declared during the Maven import, so it only takes effect after a reimport; the notification shown when you change the option has a **Reimport** button. It applies to modules that declare the plugin.
+The exclusion is declared during the Maven import, so it only takes effect after a reimport; the notification shown when you change the option has a **Reimport** button.
 
 ## Navigating between templates and generated sources
 
-For a Java file in a template folder, the plugin finds the generated file with the same relative path in the output folder, and the other way round. The generated file must exist on disk, so build the project first.
+For a Java file in a template folder, the plugin finds the generated file with the same relative path in the output folder, and the other way round. The generated file must exist on disk, so build the project first (see below).
 
-- **Gutter icon** next to the top-level class name, with the tooltip **Go to Generated Source** or **Go to Template**.
-- **Navigate** > **Go to Generated Source / Go to Template**.
-- The same entry in the editor context menu.
+- **Gutter icon** next to the top-level class name, with the tooltip **Go to Generated Source** or **Go to Template**. The two directions have different icons: an orange box with `${}` and an arrow to the right on a template, a blue circle with the "C" of a Java class and an arrow to the left on a generated source. With the **Exclude generated template sources** option on (the default), the IDE draws no gutter icons in the generated file: the banner, the menus and the shortcut stay available.
+- **Banner** on top of the editor, in the template and in the generated source, with a link to the other file. On a generated source it reads "Generated by templating-maven-plugin from a template." with the link **Open template**; on a template, "This template is turned into a generated source by templating-maven-plugin." with the link **Open generated source**. It also works where the IDE draws no gutter icons, such as the excluded `target` folder.
+- **Navigate** > **Go to Generated Source / Go to Template**, next to **Related Symbol**, and the same entry in the **Go To** submenu of the editor right-click menu.
+- **Shortcut** Ctrl+Alt+Shift+Space on Windows and Linux, Cmd+Alt+Shift+G on macOS. You can change it in **Settings** > **Keymap**.
+- The **Maven Templating** submenu of the right-click menus: in the editor, on the editor tab and on the file in the **Project** view.
 
-The action is visible only when a counterpart exists.
+### Before the first build
+
+The generated file exists only after a build. Until then, a template shows the banner "No generated source yet: build the project (for example mvn generate-sources) to navigate to it." and **Go to Generated Source** stays visible but disabled. Build the project (for example `mvn generate-sources`) and the jump becomes available. On a generated source, the action is visible only when its template exists.
 
 ## Maven properties in templates
 
@@ -121,12 +141,12 @@ In the Java files of a template folder, `${name}` occurrences inside string lite
 - **Resolution**: Ctrl+click on a property jumps to its definition. Properties are looked up in the `<properties>` of the module pom and of its parent poms (the nearest wins), then among the model properties `project.version`, `project.groupId`, `project.artifactId`, `project.name`, `project.description`, `project.basedir` and `project.build.directory`, then among the properties already resolved by Maven (profiles, config files and so on, with nothing to jump to).
 - **Completion**: after typing `${`, the completion list offers the properties declared in the pom (marked `pom.xml`) and the model or resolved ones (marked `Maven model`).
 - **Inspection**: the **Unresolved Maven property in template** inspection (warning, on by default, group **Maven Templating assistant**) reports properties that cannot be found, with the message `Cannot resolve Maven property 'name'`. Properties still being typed (no closing brace) are not reported.
-- **Quick fix**: **Add property to pom.xml** adds an empty `<name/>` tag to the `<properties>` of the module pom (creating the section if needed), ready for you to fill in.
-- **Ignored properties**: names starting with `env.`, `java.`, `os.`, `user.`, `settings.`, `maven.`, `project.` or `pom.`, `basedir`, and any JVM system property are never reported.
+- **Quick fix**: **Add property to pom.xml** adds an empty `<name/>` tag to the `<properties>` of the module pom (creating the section if needed), then opens the pom with the cursor in the empty value, ready for you to fill in.
+- **Ignored properties**: `basedir`, names starting with `env.`, `java.`, `os.`, `user.`, `settings.`, `maven.`, `project.` or `pom.`, and any JVM system property are never reported.
 
 ## What's New tab
 
-After the plugin is updated, a **What's New** tab opens with the changes of the version, shown in the language of the IDE, and a link that opens this guide as bundled with the plugin. The tab also opens after the first installation, together with a notification with an **Open Guide** action. Both are skipped when **Show what's new after updates** is off. You can also open the tab from **Tools** > **Maven Templating** > **What's New**.
+After the plugin is updated, a **What's New** tab opens. At the top it shows the large plugin icon and a greeting: "Thanks for installing Maven Templating assistant!" after the first installation, "Thanks for updating!" after an update. Then come a short description of what the plugin is for, the section **What's new in** followed by the version number, with the changes of that version in the language of the IDE, the section **Where to find the features**, and a link to the full changelog on GitHub at the bottom. The page takes colors and font from the theme of the IDE, light or dark. The tab does not link to this guide and no notification is shown. It is skipped when **Show what's new after updates** is off, a setting that applies to all projects. You can also open the tab from **Tools** > **Maven Templating** > **What's New**.
 
 ## Troubleshooting and FAQ
 
@@ -134,16 +154,22 @@ After the plugin is updated, a **What's New** tab opens with the changes of the 
 Run **Tools** > **Maven Templating** > **Scan Project for Templates**, or reimport the Maven project. Check that the folder exists, that it matches the path in the plugin configuration (or the name in the settings, for modules without the plugin) and that it belongs to a Maven module.
 
 **I get "Duplicate class" errors.**
-Turn on **Exclude generated template sources** in the settings and reimport the Maven project.
+Make sure **Exclude generated template sources** is on in the settings (it is by default) and reimport the Maven project. The exclusion applies only to modules that declare the templating-maven-plugin.
 
 **The plugin does nothing in my project.**
 It works only with Maven projects: the scan action is hidden otherwise.
 
 **The settings page and messages are in Italian.**
-This happens when the IDE uses the Italian language pack.
+The Italian texts of the plugin appear only when the IDE itself is in Italian, which needs a third-party language pack (JetBrains does not ship one). Otherwise everything is in English.
+
+**Go to Generated Source is greyed out.**
+The generated source does not exist yet: build the project (for example `mvn generate-sources`).
+
+**I see no icon in the margin of the generated source.**
+With **Exclude generated template sources** on, the IDE draws no gutter icons there. Use the banner, the **Maven Templating** submenu or the shortcut.
 
 **Where is the guide?**
-In **Help** > **Maven Templating Guide**, **Tools** > **Maven Templating** > **Open Guide**, or the **Open guide** link in the settings.
+In **Help** > **Maven Templating Guide**, **Tools** > **Maven Templating** > **Open Guide**, or the **Open online guide** link in the settings.
 
 **Is it safe on future IDE versions?**
 To declare the folders during the import, the plugin uses experimental APIs of the Maven plugin. They are verified with the Plugin Verifier on every supported release, which is why the compatibility range is limited.

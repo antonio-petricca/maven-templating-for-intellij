@@ -7,7 +7,7 @@
 <!-- Plugin description -->
 This plugin is an assistant for the official [Maven Templating Plugin](https://www.mojohaus.org/templating-maven-plugin/).
 
-Without using the **Maven Templating assistant**, you have to create your own `java-templates` folders and mark it as **Sources Root** or **Test Sources Root**.
+Without using the **Maven Templating assistant**, you have to create your own `java-templates` folders and mark them as **Sources Root** or **Test Sources Root**.
 
 Unfortunately, IntelliJ often loses those settings, especially when you re-import the Maven project. For large projects, manually reconfiguring folders is tedious and time-consuming.
 
@@ -16,13 +16,13 @@ The **Maven Templating assistant** does all this for you:
 - Declares the template folders (sources and test sources) during the Maven project import, reading them from the `pom.xml`.
 - Manages template folders when adding/removing/moving/renaming.
 - Optionally scans the project on project opening, and shows a notification with the result when a scan you requested ends.
-- Allows you to enforce a project scan via the **Project View Context** menu or the **Tools | Maven Templating** menu.
+- Allows you to enforce a project scan via the **Maven Templating** submenu of the right-click menu of the **Project** view (or of the editor and of the editor tabs) or via the **Tools | Maven Templating** menu.
 - Includes a user guide, available from the **Help** and **Tools | Maven Templating** menus, and shows what's new after each update.
-- Lets you exclude the generated sources (output folders), to avoid duplicate classes.
-- Navigates between a template and its generated source (gutter icon, **Go to** menu and editor context menu).
-- Completes, resolves and inspects the `${...}` Maven properties used in templates, with a quick fix to add a missing property to the `pom.xml`.
+- Excludes the generated sources (output folders of the templating-maven-plugin), on by default, to avoid duplicate classes; it takes effect after a Maven reimport.
+- Navigates between a template and its generated source, with distinct gutter icons, a banner in both files (also before the first build, to remind you to build the project), the Ctrl+Alt+Shift+Space shortcut (Cmd+Alt+Shift+G on macOS), the **Navigate** menu and the **Maven Templating** submenu of the right-click menus (editor, editor tab and **Project** view).
+- Completes, resolves and inspects the `${...}` Maven properties used in templates, with a quick fix that adds a missing property to the `pom.xml` and opens it with the cursor in the empty value.
 
-The `java-templates` folder name, the scan on startup and the exclusion of generated sources can be customized on the settings page under the **Build Tools** section. The settings page is also available in Italian, when the IDE uses the Italian language pack.
+The folder name used by modules that don't declare the templating-maven-plugin (default `java-templates`; for the others the pom decides), the scan on startup and the exclusion of generated sources can be customized on the settings page under the **Build Tools** section. The plugin texts are also available in Italian, when the IDE uses an Italian language pack.
 
 The plugin requires the bundled **Maven** and **Java** plugins.
 
@@ -40,7 +40,7 @@ Read the [user guide](https://github.com/antonio-petricca/maven-templating-for-i
 
 - Using IDE built-in plugin system:
   
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "maven-templating-for-intellij"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Maven Templating assistant"</kbd> >
   <kbd>Install Plugin</kbd>
   
 - Manually:

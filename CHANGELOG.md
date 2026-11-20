@@ -2,16 +2,18 @@
 
 ## [2.0.0]
 
-- Compatible with IntelliJ IDEA from 2026.2 (build 262) up to 2026.3 (build 263.*); older versions are no longer supported.
 - Template folders are now declared during the Maven import, reading them from the pom, so they are no longer lost when the project is reimported.
-- New option to exclude the generated sources, to avoid duplicate classes.
-- Navigation between a template and its generated source.
-- Completion, navigation and inspection of the ${...} Maven properties used in templates, with a quick fix to add a missing property to the pom.
-- Reworked settings, with validation and Italian localization.
+- New option to exclude the generated sources, on by default, to avoid duplicate classes: it excludes only the output folders of the templating-maven-plugin, only in the modules that declare it, and takes effect after a Maven reimport.
+- Navigation between a template and its generated source, with distinct gutter icons, a banner in both files and menu actions; before the first build, the banner on a template tells you to build the project and Go to Generated Source is disabled.
+- New **Maven Templating** submenu in the right-click menus of the editor, of the editor tabs and of the Project view, also available in the Tools menu, with Go to Generated Source / Go to Template in the Navigate menu and in the Go To submenu of the editor.
+- New shortcut for Go to Generated Source / Go to Template: Ctrl+Alt+Shift+Space on Windows and Linux, Cmd+Alt+Shift+G on macOS.
+- Completion, navigation and inspection of the ${...} Maven properties used in templates, with a quick fix that adds a missing property to the pom and opens it with the cursor in the empty value.
+- Reworked settings, with validation and Italian localization; the templates folder name now applies only to the modules that do not declare the templating-maven-plugin (for the others the pom decides).
 - Notification with the result at the end of a scan you request.
 - More robust and faster project scan, also on large projects.
-- User guide in English and Italian, available from the Help and Tools | Maven Templating menus and from the settings page.
-- A What's New tab after each update, with a link to the guide (can be turned off in the settings).
+- User guide in English and Italian, available from the Help and Tools | Maven Templating menus and, as an online guide, from the settings page.
+- A What's New tab after each install and update, styled with the IDE theme and with the news of the installed version (can be turned off in the settings, for all projects).
+- Compatible with IntelliJ IDEA from 2026.2 (build 262) up to 2026.3 (build 263.*); older versions are no longer supported.
 
 ## [1.7.2]
 
