@@ -14,8 +14,8 @@ Italian version: [guide.it.md](https://github.com/antonio-petricca/maven-templat
 | Ctrl+Alt+Shift+Space (Windows/Linux) or Cmd+Alt+Shift+G (macOS) | Go to Generated Source / Go to Template. |
 | **Navigate** > **Go to Generated Source / Go to Template**, and the **Go To** submenu of the editor right-click menu | The same jump, next to **Related Symbol**. |
 | **Tools** > **Maven Templating** | The same entries as the right-click submenu. |
-| **Help** > **Maven Templating Guide** | Opens this guide in an editor tab. |
-| **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant** | Folder name for modules without the plugin, scan on startup, exclusion of generated sources, what's new after updates, link to the online guide. |
+| **Help** > **Maven Templating Guide** | Opens this guide in a window of the plugin. |
+| **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant** | Folder name for modules without the plugin, scan on startup, exclusion of generated sources, what's new after updates, link to this guide. |
 | **Tools** > **Maven Templating** > **What's New** | Reopens the **What's New** tab. |
 
 ## What the plugin does
@@ -102,7 +102,7 @@ When a scan you requested ends, a notification titled **Maven Templating assista
 
 ## Settings
 
-Open **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. The page has an **Open online guide** link, which opens the online guide in the browser. The settings are saved per project, except **Show what's new after updates**, which applies to all projects.
+Open **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. The page has an **Open guide** link, which opens this guide in a window of the plugin. The settings are saved per project, except **Show what's new after updates**, which applies to all projects.
 
 | Option | Default | Effect | When it applies |
 |---|---|---|---|
@@ -166,7 +166,7 @@ The Italian texts of the plugin appear only when the IDE itself is in Italian, w
 The generated source does not exist yet: build the project (for example `mvn generate-sources`).
 
 **Where is the guide?**
-In **Help** > **Maven Templating Guide**, **Tools** > **Maven Templating** > **Open Guide**, or the **Open online guide** link in the settings.
+In **Help** > **Maven Templating Guide**, **Tools** > **Maven Templating** > **Open Guide**, or the **Open guide** link in the settings.
 
 **Is it safe on future IDE versions?**
 To declare the folders during the import, the plugin uses experimental APIs of the Maven plugin. They are verified with the Plugin Verifier on every supported release, which is why the compatibility range is limited.

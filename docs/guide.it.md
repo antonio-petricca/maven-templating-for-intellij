@@ -14,8 +14,8 @@ English version: [guide.md](https://github.com/antonio-petricca/maven-templating
 | Ctrl+Alt+Shift+Space (Windows/Linux) o Cmd+Alt+Shift+G (macOS) | Vai al sorgente generato / Vai al template. |
 | **Navigate** > **Vai al sorgente generato / Vai al template**, e il sottomenu **Go To** del menu del tasto destro dell'editor | Lo stesso salto, accanto a **Related Symbol**. |
 | **Tools** > **Maven Templating** | Le stesse voci del sottomenu del tasto destro. |
-| **Help** > **Maven Templating Guide** | Apre la guida in un tab dell'editor (nel plugin: Guida di Maven Templating). |
-| **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant** | Nome della cartella per i moduli senza il plugin, scansione all'avvio, esclusione dei sorgenti generati, novità dopo gli aggiornamenti, link alla guida online. |
+| **Help** > **Maven Templating Guide** | Apre la guida in una finestra del plugin. |
+| **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant** | Nome della cartella per i moduli senza il plugin, scansione all'avvio, esclusione dei sorgenti generati, novità dopo gli aggiornamenti, link a questa guida. |
 | **Tools** > **Maven Templating** > **Novità** | Riapre il tab **Novità** (What's New). |
 
 ## Cosa fa il plugin
@@ -102,7 +102,7 @@ Al termine di una scansione che hai richiesto, una notifica con titolo **Maven T
 
 ## Impostazioni
 
-Apri **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. La pagina ha il link **Apri la guida online** (Open online guide), che apre la guida online nel browser. Le impostazioni sono salvate per progetto, tranne **Mostra le novità dopo gli aggiornamenti**, che vale per tutti i progetti.
+Apri **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. La pagina ha il link **Apri la guida** (Open guide), che apre questa guida in una finestra del plugin. Le impostazioni sono salvate per progetto, tranne **Mostra le novità dopo gli aggiornamenti**, che vale per tutti i progetti.
 
 | Opzione | Default | Effetto | Quando ha effetto |
 |---|---|---|---|
@@ -166,7 +166,7 @@ I testi italiani del plugin compaiono solo quando anche l'IDE è in italiano, co
 Il sorgente generato non esiste ancora: compila il progetto (per esempio `mvn generate-sources`).
 
 **Dove trovo la guida?**
-In **Help** > **Maven Templating Guide**, **Tools** > **Maven Templating** > **Apri la guida**, oppure nel link **Apri la guida online** delle impostazioni.
+In **Help** > **Maven Templating Guide**, **Tools** > **Maven Templating** > **Apri la guida**, oppure nel link **Apri la guida** delle impostazioni.
 
 **È sicuro con le prossime versioni dell'IDE?**
 Per dichiarare le cartelle durante l'import il plugin usa API sperimentali del plugin Maven. Sono verificate con il Plugin Verifier a ogni release supportata, per questo l'intervallo di compatibilità è limitato.

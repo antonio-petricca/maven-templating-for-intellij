@@ -48,8 +48,8 @@ abstract class RenderGuideTask : DefaultTask() {
         fun write(name: String, text: String) = target.resolve(name).writeText(text, Charsets.UTF_8)
 
         write("guide.css", css)
-        write("guide.html", page("en", title(englishBundle), css, englishGuide.get().asFile.readText()))
-        write("guide_it.html", page("it", title(italianBundle), css, italianGuide.get().asFile.readText()))
+        write("guide.html", page("en", title(englishBundle), css, withoutOnlineLink(englishGuide.get().asFile.readText())))
+        write("guide_it.html", page("it", title(italianBundle), css, withoutOnlineLink(italianGuide.get().asFile.readText())))
 
         // Version and change notes are read at runtime from here, without asking the plugin manager
         write("plugin-info.properties", "version=${pluginVersion.get()}\n")
@@ -71,6 +71,10 @@ abstract class RenderGuideTask : DefaultTask() {
 
         return if (body.isEmpty()) null else markdownToHTML(body)
     }
+
+    /** The guide inside the plugin must not point to its online copy: the line linking the other language is dropped. */
+    private fun withoutOnlineLink(markdown: String): String =
+        markdown.lines().filterNot { it.matches(Regex("^(Italian|English) version: .*")) }.joinToString("\n")
 
     private fun title(bundle: RegularFileProperty): String =
         bundle.get().asFile.reader(Charsets.UTF_8).use { Properties().apply { load(it) } }.getProperty("mt4ij.guide.tab.title")

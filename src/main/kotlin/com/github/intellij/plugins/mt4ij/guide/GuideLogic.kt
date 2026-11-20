@@ -14,7 +14,6 @@ object GuideLogic {
     const val ICON_DARK_RESOURCE = "/META-INF/pluginIcon_dark.svg"
 
     private const val GITHUB = "https://github.com/antonio-petricca/maven-templating-for-intellij/blob/main/"
-    private const val GITHUB_DOCS = GITHUB + "docs/"
 
     /** Italian guide for the Italian language, the English one for any other. */
     fun guideResource(language: String): String =
@@ -23,10 +22,6 @@ object GuideLogic {
     /** Italian change notes for the Italian language, the English ones for any other. */
     fun whatsNewResource(language: String): String =
         if (language == ITALIAN) "/guide/whats-new_it.html" else "/guide/whats-new.html"
-
-    /** Online copy of the guide, for the places where the IDE cannot open the bundled one. */
-    fun guideUrl(language: String): String =
-        GITHUB_DOCS + if (language == ITALIAN) "guide.it.md" else "guide.md"
 
     /** Changelog on GitHub, in the language of the IDE when there is a translation. */
     fun changelogUrl(language: String): String =

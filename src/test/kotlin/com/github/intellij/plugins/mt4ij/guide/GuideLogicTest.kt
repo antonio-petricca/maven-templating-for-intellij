@@ -38,14 +38,12 @@ class GuideLogicTest {
     @Test
     fun italianGuideIsChosenForItalian() {
         assertEquals("/guide/guide_it.html", GuideLogic.guideResource("it"))
-        assertTrue(GuideLogic.guideUrl("it").endsWith("/guide.it.md"))
     }
 
     @Test
     fun englishGuideIsChosenForAnyOtherLanguage() {
         listOf("en", "de", "").forEach {
             assertEquals("/guide/guide.html", GuideLogic.guideResource(it))
-            assertTrue(GuideLogic.guideUrl(it).endsWith("/guide.md"))
         }
     }
 

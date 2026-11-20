@@ -11,7 +11,7 @@
 - Reworked settings, with validation and Italian localization; the templates folder name now applies only to the modules that do not declare the templating-maven-plugin (for the others the pom decides).
 - Notification with the result at the end of a scan you request.
 - More robust and faster project scan, also on large projects.
-- User guide in English and Italian, available from the Help and Tools | Maven Templating menus and, as an online guide, from the settings page.
+- User guide in English and Italian, available from the Help and Tools | Maven Templating menus and from the settings page, in a window of the plugin.
 - A What's New tab after each install and update, styled with the IDE theme and with the news of the installed version (can be turned off in the settings, for all projects).
 - Compatible with IntelliJ IDEA from 2026.2 (build 262) up to 2026.3 (build 263.*); older versions are no longer supported.
 

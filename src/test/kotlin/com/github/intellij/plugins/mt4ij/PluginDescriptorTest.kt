@@ -16,6 +16,12 @@ class PluginDescriptorTest : BasePlatformTestCase() {
         assertEquals("Maven Templating assistant", name)
     }
 
+    fun testBundledGuidesHaveNoLinkToTheOnlineGuide() {
+        listOf("/guide/guide.html", "/guide/guide_it.html").forEach {
+            assertFalse(it, resourceText(it).contains("github.com/antonio-petricca/maven-templating-for-intellij/blob/main/docs/guide"))
+        }
+    }
+
     fun testEveryActionAndGroupOfThePluginHasAnIcon() {
         val manager = ActionManager.getInstance()
         val ids     = manager.getActionIdList("mt4ij.")

@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets
 import java.util.Properties
 
 /*
-    Opens the bundled guide and the "What's New" page in an IDE tab. Colors and font are those of the IDE theme
+    Opens the bundled guide in a window and the "What's New" page in an IDE tab. Colors and font are those of the IDE theme
     when the tab is opened (see GuideTheme).
  */
 object GuideTabs {
@@ -31,11 +31,13 @@ object GuideTabs {
 
     fun installedVersion(): String? = info.getProperty("version")
 
+    /** The bundled guide, themed like the IDE, in a window of the plugin. */
     fun openGuide(project: Project) {
-        val html = readResource(GuideLogic.guideResource(language())) ?: return
-
-        openTab(project, Bundle.message("mt4ij.guide.tab.title"), WhatsNewPage.themedGuide(GuideTheme.current(), html))
+        ApplicationManager.getApplication().invokeLater({ GuideDialog.show(project, themedGuide() ?: return@invokeLater) }, project.disposed)
     }
+
+    internal fun themedGuide(): String? =
+        readResource(GuideLogic.guideResource(language()))?.let { WhatsNewPage.themedGuide(GuideTheme.current(), it) }
 
     fun openWhatsNew(project: Project, visit: WhatsNewVisit = WhatsNewVisit.UPDATE) {
         val theme = GuideTheme.current()
