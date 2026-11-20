@@ -52,7 +52,7 @@ class MenusInAProjectThatIsNotMavenTest : BasePlatformTestCase() {
     }
 
     fun testGuideAndWhatsNewAreEnabled() {
-        listOf("mt4ij.actions.open-guide", "mt4ij.actions.open-guide.help", "mt4ij.actions.whats-new").forEach {
+        listOf("mt4ij.actions.open-settings", "mt4ij.actions.open-guide", "mt4ij.actions.open-guide.help", "mt4ij.actions.whats-new").forEach {
             val presentation = update(actionNamed(it)).presentation
 
             assertTrue("$it is not visible", presentation.isVisible)

@@ -32,6 +32,12 @@
         />
 
         <action
+            class="com.github.intellij.plugins.mt4ij.actions.OpenSettingsAction"
+            id="mt4ij.actions.open-settings"
+            icon="AllIcons.General.Settings"
+        />
+
+        <action
             class="com.github.intellij.plugins.mt4ij.actions.OpenGuideAction"
             id="mt4ij.actions.open-guide"
             icon="AllIcons.Actions.Help"
@@ -81,6 +87,7 @@
             <reference ref="mt4ij.actions.go-to-counterpart"/>
             <reference ref="mt4ij.actions.project-scanner"/>
             <separator/>
+            <reference ref="mt4ij.actions.open-settings"/>
             <reference ref="mt4ij.actions.open-guide"/>
             <reference ref="mt4ij.actions.whats-new"/>
 

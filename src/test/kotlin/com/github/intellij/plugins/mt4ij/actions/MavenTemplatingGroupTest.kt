@@ -65,7 +65,7 @@ class MavenTemplatingGroupTest : MavenTemplatingTestCase() {
         val ids   = group.getChildren(null).map { ActionManager.getInstance().getId(it) }
 
         assertEquals(
-            listOf("mt4ij.actions.go-to-counterpart", "mt4ij.actions.project-scanner", null, "mt4ij.actions.open-guide", "mt4ij.actions.whats-new"),
+            listOf("mt4ij.actions.go-to-counterpart", "mt4ij.actions.project-scanner", null, "mt4ij.actions.open-settings", "mt4ij.actions.open-guide", "mt4ij.actions.whats-new"),
             ids
         )
     }

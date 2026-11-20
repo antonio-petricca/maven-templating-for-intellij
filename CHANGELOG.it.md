@@ -5,7 +5,7 @@
 - Le cartelle dei template sono ora dichiarate durante l'import di Maven, leggendole dal pom, quindi non si perdono più al reimport del progetto.
 - Nuova opzione per escludere i sorgenti generati, attiva di default, per evitare classi duplicate: esclude solo le cartelle di output del templating-maven-plugin, solo nei moduli che lo dichiarano, e ha effetto dopo un reimport di Maven.
 - Navigazione tra un template e il suo sorgente generato, con icone nel margine distinte, un banner in entrambi i file e azioni di menu; prima della prima build, il banner sul template invita a compilare il progetto e Vai al sorgente generato è disabilitata.
-- Nuovo sottomenu **Maven Templating** nei menu del tasto destro dell'editor, dei tab dell'editor e della vista Project, disponibile anche nel menu Tools, con Vai al sorgente generato / Vai al template nel menu Navigate e nel sottomenu Go To dell'editor.
+- Nuovo sottomenu **Maven Templating** nei menu del tasto destro dell'editor, dei tab dell'editor e della vista Project, disponibile anche nel menu Tools, con una voce Impostazioni, e con Vai al sorgente generato / Vai al template nel menu Navigate e nel sottomenu Go To dell'editor.
 - Nuova scorciatoia per Vai al sorgente generato / Vai al template: Ctrl+Alt+Shift+Space su Windows e Linux, Cmd+Alt+Shift+G su macOS.
 - Completamento, navigazione e ispezione delle proprietà Maven ${...} usate nei template, con una quick fix che aggiunge al pom una proprietà mancante e lo apre con il cursore nel valore vuoto.
 - Impostazioni riviste, con validazione e localizzazione in italiano; il nome della cartella dei template vale ora solo per i moduli che non dichiarano il templating-maven-plugin (per gli altri decide il pom).

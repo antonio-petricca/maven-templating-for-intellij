@@ -8,7 +8,7 @@ English version: [guide.md](https://github.com/antonio-petricca/maven-templating
 
 | Dove | Cosa fa |
 |---|---|
-| Tasto destro nell'editor, su un tab dell'editor o nella vista **Project** > **Maven Templating** | Vai al sorgente generato / Vai al template (Go to Generated Source / Go to Template), Cerca le cartelle dei template (Scan Project for Templates), Apri la guida (Open Guide), Novità (What's New). Il sottomenu è sempre presente; in un progetto non importato da Maven, Cerca le cartelle dei template è disabilitata. |
+| Tasto destro nell'editor, su un tab dell'editor o nella vista **Project** > **Maven Templating** | Vai al sorgente generato / Vai al template (Go to Generated Source / Go to Template), Cerca le cartelle dei template (Scan Project for Templates), Impostazioni (Settings), Apri la guida (Open Guide), Novità (What's New). Il sottomenu è sempre presente; in un progetto non importato da Maven, Cerca le cartelle dei template è disabilitata. |
 | Icona nel margine dell'editor, accanto al nome della classe di primo livello | Porta al sorgente generato, o torna al template. |
 | Banner in cima a un template o a un sorgente generato | Stesso salto, con un link. |
 | Ctrl+Alt+Shift+Space (Windows/Linux) o Cmd+Alt+Shift+G (macOS) | Vai al sorgente generato / Vai al template. |
@@ -102,7 +102,7 @@ Al termine di una scansione che hai richiesto, una notifica con titolo **Maven T
 
 ## Impostazioni
 
-Apri **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. La pagina ha il link **Apri la guida** (Open guide), che apre questa guida in una finestra del plugin. Le impostazioni sono salvate per progetto, tranne **Mostra le novità dopo gli aggiornamenti**, che vale per tutti i progetti.
+Apri **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. La pagina ha il link **Apri la guida** (Open guide), che apre questa guida in una finestra del plugin. La pagina si apre anche dal sottomenu **Maven Templating**, con **Impostazioni**. Le impostazioni sono salvate per progetto, tranne **Mostra le novità dopo gli aggiornamenti**, che vale per tutti i progetti.
 
 | Opzione | Default | Effetto | Quando ha effetto |
 |---|---|---|---|

@@ -8,7 +8,7 @@ Italian version: [guide.it.md](https://github.com/antonio-petricca/maven-templat
 
 | Where | What it does |
 |---|---|
-| Right-click in the editor, on an editor tab or in the **Project** view > **Maven Templating** | Go to Generated Source / Go to Template, Scan Project for Templates, Open Guide, What's New. The submenu is always there; in a project that is not imported from Maven, Scan Project for Templates is disabled. |
+| Right-click in the editor, on an editor tab or in the **Project** view > **Maven Templating** | Go to Generated Source / Go to Template, Scan Project for Templates, Settings, Open Guide, What's New. The submenu is always there; in a project that is not imported from Maven, Scan Project for Templates is disabled. |
 | Icon in the editor margin, next to the top-level class name | Jumps to the generated source, or back to the template. |
 | Banner on top of a template or of a generated source | Same jump, with a link. |
 | Ctrl+Alt+Shift+Space (Windows/Linux) or Cmd+Alt+Shift+G (macOS) | Go to Generated Source / Go to Template. |
@@ -102,7 +102,7 @@ When a scan you requested ends, a notification titled **Maven Templating assista
 
 ## Settings
 
-Open **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. The page has an **Open guide** link, which opens this guide in a window of the plugin. The settings are saved per project, except **Show what's new after updates**, which applies to all projects.
+Open **Settings** > **Build, Execution, Deployment** > **Build Tools** > **Maven Templating assistant**. The page has an **Open guide** link, which opens this guide in a window of the plugin. The page can also be opened from the **Maven Templating** submenu, with **Settings**. The settings are saved per project, except **Show what's new after updates**, which applies to all projects.
 
 | Option | Default | Effect | When it applies |
 |---|---|---|---|
